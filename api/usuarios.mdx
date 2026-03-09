@@ -7,7 +7,7 @@ description: 'API endpoints for managing users in the RestAPI system'
 
 The Usuarios API provides endpoints for creating, reading, updating, and deleting users in the system. All user passwords are automatically hashed using SHA-256 encryption upon creation.
 
-**Base URL:** `/Database/usuarios/`
+**Base URL:** `/Database/Database/usuarios/`
 
 ## Usuario Model
 
@@ -64,13 +64,13 @@ The Usuario model represents a user in the system with the following fields:
 Retrieve a list of all users in the system.
 
 ```bash
-GET /Database/usuarios/
+GET /Database/Database/usuarios/
 ```
 
 **Example Request:**
 
 ```bash
-curl -X GET "http://your-domain.com/Database/usuarios/" \
+curl -X GET "http://your-domain.com/Database/Database/usuarios/" \
   -H "Content-Type: application/json"
 ```
 
@@ -99,7 +99,7 @@ curl -X GET "http://your-domain.com/Database/usuarios/" \
 Retrieve details of a specific user by ID.
 
 ```bash
-GET /Database/usuarios/{id}/
+GET /Database/Database/usuarios/{id}/
 ```
 
 **Path Parameters:**
@@ -111,7 +111,7 @@ GET /Database/usuarios/{id}/
 **Example Request:**
 
 ```bash
-curl -X GET "http://your-domain.com/Database/usuarios/1/" \
+curl -X GET "http://your-domain.com/Database/Database/usuarios/1/" \
   -H "Content-Type: application/json"
 ```
 
@@ -138,7 +138,7 @@ curl -X GET "http://your-domain.com/Database/usuarios/1/" \
 Create a new user in the system.
 
 ```bash
-POST /Database/usuarios/
+POST /Database/Database/usuarios/
 ```
 
 **Request Body Parameters:**
@@ -178,7 +178,7 @@ POST /Database/usuarios/
 **Example Request:**
 
 ```bash
-curl -X POST "http://your-domain.com/Database/usuarios/" \
+curl -X POST "http://your-domain.com/Database/Database/usuarios/" \
   -H "Content-Type: application/json" \
   -d '{
     "rol_usuario": 2,
@@ -219,7 +219,7 @@ curl -X POST "http://your-domain.com/Database/usuarios/" \
 Update an existing user's information.
 
 ```bash
-PUT /Database/usuarios/{id}/
+PUT /Database/Database/usuarios/{id}/
 ```
 
 **Path Parameters:**
@@ -265,7 +265,7 @@ PUT /Database/usuarios/{id}/
 **Example Request:**
 
 ```bash
-curl -X PUT "http://your-domain.com/Database/usuarios/1/" \
+curl -X PUT "http://your-domain.com/Database/Database/usuarios/1/" \
   -H "Content-Type: application/json" \
   -d '{
     "rol_usuario": 2,
@@ -306,7 +306,7 @@ curl -X PUT "http://your-domain.com/Database/usuarios/1/" \
 Partially update a user's information (only specified fields).
 
 ```bash
-PATCH /Database/usuarios/{id}/
+PATCH /Database/Database/usuarios/{id}/
 ```
 
 **Path Parameters:**
@@ -318,7 +318,7 @@ PATCH /Database/usuarios/{id}/
 **Example Request:**
 
 ```bash
-curl -X PATCH "http://your-domain.com/Database/usuarios/1/" \
+curl -X PATCH "http://your-domain.com/Database/Database/usuarios/1/" \
   -H "Content-Type: application/json" \
   -d '{
     "estado": 3,
@@ -331,7 +331,7 @@ curl -X PATCH "http://your-domain.com/Database/usuarios/1/" \
 Delete a user from the system.
 
 ```bash
-DELETE /Database/usuarios/{id}/
+DELETE /Database/Database/usuarios/{id}/
 ```
 
 **Path Parameters:**
@@ -343,7 +343,7 @@ DELETE /Database/usuarios/{id}/
 **Example Request:**
 
 ```bash
-curl -X DELETE "http://your-domain.com/Database/usuarios/1/" \
+curl -X DELETE "http://your-domain.com/Database/Database/usuarios/1/" \
   -H "Content-Type: application/json"
 ```
 

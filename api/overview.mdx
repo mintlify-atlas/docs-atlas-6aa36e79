@@ -5,14 +5,20 @@ description: "Complete overview of the RestAPI endpoints, authentication, and re
 
 ## Base URL
 
-All API endpoints are accessible through the following base URL structure:
+The API has two types of endpoints with different base URL structures:
 
+**Model-based CRUD endpoints (via Django REST Framework router):**
+```bash
+https://your-domain.com/Database/Database/
+```
+
+**Custom endpoints (send_email, notifications, user-specific views):**
 ```bash
 https://your-domain.com/Database/
 ```
 
 <Note>
-All endpoints listed in this documentation are relative to the `/Database/` base path.
+Router-based endpoints (usuarios, empresas, vehiculos, etc.) use `/Database/Database/` while custom endpoints use `/Database/` directly.
 </Note>
 
 ## Authentication
@@ -36,7 +42,7 @@ Authorization: Bearer <your-jwt-token>
 ### Example Request with Authentication
 
 ```bash
-curl -X GET https://your-domain.com/Database/usuarios/ \
+curl -X GET https://your-domain.com/Database/Database/usuarios/ \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
@@ -182,62 +188,62 @@ The RestAPI provides comprehensive endpoints organized into the following catego
 
 ### System & Configuration
 
-- **Estado**: `/Database/estado/` - Status management
-- **Países**: `/Database/paises/` - Country information
-- **Ciudades**: `/Database/ciudades/` - City information
-- **Entidades Bancarias**: `/Database/entidadesbancarias/` - Banking entity management
+- **Estado**: `/Database/Database/estado/` - Status management
+- **Países**: `/Database/Database/paises/` - Country information
+- **Ciudades**: `/Database/Database/ciudades/` - City information
+- **Entidades Bancarias**: `/Database/Database/entidadesbancarias/` - Banking entity management
 
 ### User Management
 
-- **Usuarios**: `/Database/usuarios/` - User CRUD operations
-- **Rol Usuarios**: `/Database/rolusuarios/` - User role management
-- **Detalle Permisos**: `/Database/detallepermisos/` - Permission details
-- **Permisos por Rol**: `/Database/permisosxrol/` - Role-based permissions
-- **Menús**: `/Database/menus/` - Menu configuration
-- **Vistas**: `/Database/vistas/` - View management
-- **Opciones**: `/Database/opciones/` - System options
+- **Usuarios**: `/Database/Database/usuarios/` - User CRUD operations
+- **Rol Usuarios**: `/Database/Database/rolusuarios/` - User role management
+- **Detalle Permisos**: `/Database/Database/detallepermisos/` - Permission details
+- **Permisos por Rol**: `/Database/Database/permisosxrol/` - Role-based permissions
+- **Menús**: `/Database/Database/menus/` - Menu configuration
+- **Vistas**: `/Database/Database/vistas/` - View management
+- **Opciones**: `/Database/Database/opciones/` - System options
 
 ### Company & Business
 
-- **Empresas**: `/Database/empresas/` - Company management
-- **Empresa Imágenes**: `/Database/empresaimages/` - Company image uploads
-- **Publicistas**: `/Database/publicistas/` - Advertiser management
-- **Empresa por Publicista**: `/Database/empresaxpublicistas/` - Company-advertiser relationships
-- **Clientes**: `/Database/clientes/` - Client management
-- **Sectores**: `/Database/sectores/` - Sector/zone management
-- **Sectores por Usuario**: `/Database/sectores_por_usuario/<usuario_id>/` - User-specific sectors
+- **Empresas**: `/Database/Database/empresas/` - Company management
+- **Empresa Imágenes**: `/Database/Database/empresaimages/` - Company image uploads
+- **Publicistas**: `/Database/Database/publicistas/` - Advertiser management
+- **Empresa por Publicista**: `/Database/Database/empresaxpublicistas/` - Company-advertiser relationships
+- **Clientes**: `/Database/Database/clientes/` - Client management
+- **Sectores**: `/Database/Database/sectores/` - Sector/zone management
+- **Sectores por Usuario**: `/Database/sectores_por_usuario/<usuario_id>/` - User-specific sectors (custom endpoint)
 
 ### Vehicle Management
 
-- **Marcas de Vehículos**: `/Database/marcasvehiculos/` - Vehicle brands
-- **Modelos de Vehículos**: `/Database/modelosvehiculos/` - Vehicle models
-- **Vehículos**: `/Database/vehiculos/` - Vehicle registry
-- **Choferes**: `/Database/choferes/` - Driver management
-- **Recorridos Realizados**: `/Database/recorridosrealizados/` - Completed route tracking
+- **Marcas de Vehículos**: `/Database/Database/marcasvehiculos/` - Vehicle brands
+- **Modelos de Vehículos**: `/Database/Database/modelosvehiculos/` - Vehicle models
+- **Vehículos**: `/Database/Database/vehiculos/` - Vehicle registry
+- **Choferes**: `/Database/Database/choferes/` - Driver management
+- **Recorridos Realizados**: `/Database/Database/recorridosrealizados/` - Completed route tracking
 
 ### Campaign Management
 
-- **Campañas Publicitarias**: `/Database/campaniaspublicitarias/` - Advertising campaigns
-- **Publicidades**: `/Database/publicidades/` - Advertisement content
-- **Formulario Registro Campaña**: `/Database/formularioregistrocampana/` - Campaign registration forms
-- **Vehículos Admisibles**: `/Database/vehiculosadmisiblescampana/` - Campaign-eligible vehicles
-- **Verificación Conductor**: `/Database/verificacionesconductorcampana/` - Driver verification for campaigns
-- **Ingreso Conductor Campaña**: `/Database/ingresoconductorcampana/` - Driver campaign enrollment
+- **Campañas Publicitarias**: `/Database/Database/campaniaspublicitarias/` - Advertising campaigns
+- **Publicidades**: `/Database/Database/publicidades/` - Advertisement content
+- **Formulario Registro Campaña**: `/Database/Database/formularioregistrocampana/` - Campaign registration forms
+- **Vehículos Admisibles**: `/Database/Database/vehiculosadmisiblescampana/` - Campaign-eligible vehicles
+- **Verificación Conductor**: `/Database/Database/verificacionesconductorcampana/` - Driver verification for campaigns
+- **Ingreso Conductor Campaña**: `/Database/Database/ingresoconductorcampana/` - Driver campaign enrollment
 
 ### Financial Operations
 
-- **Movimiento Capital**: `/Database/movimientocapital/` - Capital movement tracking
+- **Movimiento Capital**: `/Database/Database/movimientocapital/` - Capital movement tracking
 
 ### Services & Operations
 
-- **Taller por Empresa**: `/Database/tallerxempresas/` - Company workshop assignments
-- **Taller Brandeo**: `/Database/tallerbrandeos/` - Branding workshop services
+- **Taller por Empresa**: `/Database/Database/tallerxempresas/` - Company workshop assignments
+- **Taller Brandeo**: `/Database/Database/tallerbrandeos/` - Branding workshop services
 
 ### Communication
 
-- **Notificaciones**: `/Database/notificaciones/` - In-app notifications
-- **Enviar Email**: `/Database/send_email/` - Email sending service
-- **Enviar Notificación FCM**: `/Database/send_fcm_notification/` - Firebase Cloud Messaging notifications
+- **Notificaciones**: `/Database/Database/notificaciones/` - In-app notifications
+- **Enviar Email**: `/Database/send_email/` - Email sending service (custom endpoint)
+- **Enviar Notificación FCM**: `/Database/send_fcm_notification/` - Firebase Cloud Messaging notifications (custom endpoint)
 
 ## Custom Endpoints
 

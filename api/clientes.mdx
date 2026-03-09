@@ -84,7 +84,7 @@ The Cliente model represents a client in the system with the following fields:
 
 ### List All Clients
 
-<Card title="GET /Database/clientes/" icon="list">
+<Card title="GET /Database/Database/clientes/" icon="list">
   Retrieve a list of all clients in the system
 </Card>
 
@@ -187,7 +187,7 @@ The Cliente model represents a client in the system with the following fields:
 
 ### Get Single Client
 
-<Card title="GET /Database/clientes/{id}/" icon="user">
+<Card title="GET /Database/Database/clientes/{id}/" icon="user">
   Retrieve details of a specific client by ID
 </Card>
 
@@ -220,7 +220,7 @@ The Cliente model represents a client in the system with the following fields:
 
 ### Create New Client
 
-<Card title="POST /Database/clientes/" icon="plus">
+<Card title="POST /Database/Database/clientes/" icon="plus">
   Create a new client in the system
 </Card>
 
@@ -321,7 +321,7 @@ The Cliente model represents a client in the system with the following fields:
 
 ### Update Client
 
-<Card title="PUT /Database/clientes/{id}/" icon="pen">
+<Card title="PUT /Database/Database/clientes/{id}/" icon="pen">
   Update an existing client's information (full update)
 </Card>
 
@@ -357,7 +357,7 @@ All fields from the create request are required for a full update.
 
 ### Partial Update Client
 
-<Card title="PATCH /Database/clientes/{id}/" icon="pen-to-square">
+<Card title="PATCH /Database/Database/clientes/{id}/" icon="pen-to-square">
   Partially update a client's information
 </Card>
 
@@ -382,7 +382,7 @@ Include only the fields you want to update.
 
 ### Delete Client
 
-<Card title="DELETE /Database/clientes/{id}/" icon="trash">
+<Card title="DELETE /Database/Database/clientes/{id}/" icon="trash">
   Delete a client from the system
 </Card>
 
@@ -469,7 +469,7 @@ The API supports filtering clients using query parameters:
 ### Creating a New Individual Client
 
 ```bash
-curl -X POST https://api.example.com/Database/clientes/ \
+curl -X POST https://api.example.com/Database/Database/clientes/ \
   -H "Content-Type: application/json" \
   -d '{
     "id_usuario": 75,
@@ -489,7 +489,7 @@ curl -X POST https://api.example.com/Database/clientes/ \
 ### Enrolling a Client in a Campaign
 
 ```bash
-curl -X PATCH https://api.example.com/Database/clientes/1/ \
+curl -X PATCH https://api.example.com/Database/Database/clientes/1/ \
   -H "Content-Type: application/json" \
   -d '{
     "id_campana": 20
@@ -499,13 +499,13 @@ curl -X PATCH https://api.example.com/Database/clientes/1/ \
 ### Filtering Active Clients by Company
 
 ```bash
-curl -X GET "https://api.example.com/Database/clientes/?estado=1&id_empresa=5"
+curl -X GET "https://api.example.com/Database/Database/clientes/?estado=1&id_empresa=5"
 ```
 
 ### Updating Client Contact Information
 
 ```bash
-curl -X PATCH https://api.example.com/Database/clientes/3/ \
+curl -X PATCH https://api.example.com/Database/Database/clientes/3/ \
   -H "Content-Type: application/json" \
   -d '{
     "email": "new.email@example.com",
@@ -516,7 +516,7 @@ curl -X PATCH https://api.example.com/Database/clientes/3/ \
 ### Deactivating a Client
 
 ```bash
-curl -X PATCH https://api.example.com/Database/clientes/2/ \
+curl -X PATCH https://api.example.com/Database/Database/clientes/2/ \
   -H "Content-Type: application/json" \
   -d '{
     "estado": 0

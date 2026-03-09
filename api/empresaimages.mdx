@@ -56,7 +56,7 @@ When creating or updating company images, use `multipart/form-data` encoding to 
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.example.com/Database/Database/empresaimages/ \
+curl -X POST https://api.example.com/Database/Database/Database/empresaimages/ \
   -H "Content-Type: multipart/form-data" \
   -F "id_empresa=12" \
   -F "logo=@/path/to/logo.png" \
@@ -115,7 +115,7 @@ fetch('https://api.example.com/Database/Database/empresaimages/', {
 
 <RequestExample>
 ```bash cURL
-curl -X GET https://api.example.com/Database/Database/empresaimages/8/
+curl -X GET https://api.example.com/Database/Database/Database/empresaimages/8/
 ```
 
 ```python Python
@@ -149,7 +149,7 @@ fetch('https://api.example.com/Database/Database/empresaimages/8/')
 
 <RequestExample>
 ```bash cURL
-curl -X GET https://api.example.com/Database/Database/empresaimages/
+curl -X GET https://api.example.com/Database/Database/Database/empresaimages/
 ```
 
 ```python Python
@@ -194,7 +194,7 @@ You can update individual images or both at once using PUT or PATCH methods.
 
 <RequestExample>
 ```bash cURL
-curl -X PATCH https://api.example.com/Database/Database/empresaimages/8/ \
+curl -X PATCH https://api.example.com/Database/Database/Database/empresaimages/8/ \
   -H "Content-Type: multipart/form-data" \
   -F "logo=@/path/to/new_logo.png"
 ```
@@ -241,7 +241,7 @@ fetch('https://api.example.com/Database/Database/empresaimages/8/', {
 
 <RequestExample>
 ```bash cURL
-curl -X DELETE https://api.example.com/Database/Database/empresaimages/8/
+curl -X DELETE https://api.example.com/Database/Database/Database/empresaimages/8/
 ```
 
 ```python Python
@@ -272,7 +272,7 @@ You can filter images by company using query parameters:
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://api.example.com/Database/Database/empresaimages/?id_empresa=12"
+curl -X GET "https://api.example.com/Database/Database/Database/empresaimages/?id_empresa=12"
 ```
 
 ```python Python

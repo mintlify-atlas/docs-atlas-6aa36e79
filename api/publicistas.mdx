@@ -71,7 +71,7 @@ DELETE /Database/Database/publicistas/{id_publicista}/
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.example.com/Database/Database/publicistas/ \
+curl -X POST https://api.example.com/Database/Database/Database/publicistas/ \
   -H "Content-Type: application/json" \
   -d '{
     "id_usuario": 8,
@@ -154,7 +154,7 @@ fetch('https://api.example.com/Database/Database/publicistas/', {
 
 <RequestExample>
 ```bash cURL
-curl -X GET https://api.example.com/Database/Database/publicistas/5/
+curl -X GET https://api.example.com/Database/Database/Database/publicistas/5/
 ```
 
 ```python Python
@@ -194,7 +194,7 @@ fetch('https://api.example.com/Database/Database/publicistas/5/')
 
 <RequestExample>
 ```bash cURL
-curl -X GET https://api.example.com/Database/Database/publicistas/
+curl -X GET https://api.example.com/Database/Database/Database/publicistas/
 ```
 
 ```python Python
@@ -249,7 +249,7 @@ fetch('https://api.example.com/Database/Database/publicistas/')
 
 <RequestExample>
 ```bash cURL
-curl -X PUT https://api.example.com/Database/Database/publicistas/5/ \
+curl -X PUT https://api.example.com/Database/Database/Database/publicistas/5/ \
   -H "Content-Type: application/json" \
   -d '{
     "id_usuario": 8,
@@ -309,7 +309,7 @@ print(response.json())
 
 <RequestExample>
 ```bash cURL
-curl -X DELETE https://api.example.com/Database/Database/publicistas/5/
+curl -X DELETE https://api.example.com/Database/Database/Database/publicistas/5/
 ```
 
 ```python Python
@@ -340,7 +340,7 @@ You can filter publicists by their status:
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://api.example.com/Database/Database/publicistas/?estado=1"
+curl -X GET "https://api.example.com/Database/Database/Database/publicistas/?estado=1"
 ```
 
 ```python Python
@@ -384,7 +384,7 @@ fetch('https://api.example.com/Database/Database/publicistas/?estado=1')
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://api.example.com/Database/Database/publicistas/?id_ciudad=1&id_pais=1"
+curl -X GET "https://api.example.com/Database/Database/Database/publicistas/?id_ciudad=1&id_pais=1"
 ```
 
 ```python Python

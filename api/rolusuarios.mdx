@@ -7,7 +7,7 @@ description: 'API endpoints for managing user roles in the RestAPI system'
 
 The RolUsuarios (User Roles) API provides endpoints for creating, reading, updating, and deleting user roles in the system. User roles define the permissions and access levels for users.
 
-**Base URL:** `/Database/rolusuarios/`
+**Base URL:** `/Database/Database/rolusuarios/`
 
 ## RolUsuario Model
 
@@ -44,13 +44,13 @@ Based on the system implementation, the following role IDs are commonly used:
 Retrieve a list of all user roles in the system.
 
 ```bash
-GET /Database/rolusuarios/
+GET /Database/Database/rolusuarios/
 ```
 
 **Example Request:**
 
 ```bash
-curl -X GET "http://your-domain.com/Database/rolusuarios/" \
+curl -X GET "http://your-domain.com/Database/Database/rolusuarios/" \
   -H "Content-Type: application/json"
 ```
 
@@ -84,7 +84,7 @@ curl -X GET "http://your-domain.com/Database/rolusuarios/" \
 Retrieve details of a specific user role by ID.
 
 ```bash
-GET /Database/rolusuarios/{id}/
+GET /Database/Database/rolusuarios/{id}/
 ```
 
 **Path Parameters:**
@@ -96,7 +96,7 @@ GET /Database/rolusuarios/{id}/
 **Example Request:**
 
 ```bash
-curl -X GET "http://your-domain.com/Database/rolusuarios/1/" \
+curl -X GET "http://your-domain.com/Database/Database/rolusuarios/1/" \
   -H "Content-Type: application/json"
 ```
 
@@ -116,7 +116,7 @@ curl -X GET "http://your-domain.com/Database/rolusuarios/1/" \
 Create a new user role in the system.
 
 ```bash
-POST /Database/rolusuarios/
+POST /Database/Database/rolusuarios/
 ```
 
 **Request Body Parameters:**
@@ -136,7 +136,7 @@ POST /Database/rolusuarios/
 **Example Request:**
 
 ```bash
-curl -X POST "http://your-domain.com/Database/rolusuarios/" \
+curl -X POST "http://your-domain.com/Database/Database/rolusuarios/" \
   -H "Content-Type: application/json" \
   -d '{
     "nombre": "Conductor",
@@ -161,7 +161,7 @@ curl -X POST "http://your-domain.com/Database/rolusuarios/" \
 Update an existing user role's information.
 
 ```bash
-PUT /Database/rolusuarios/{id}/
+PUT /Database/Database/rolusuarios/{id}/
 ```
 
 **Path Parameters:**
@@ -187,7 +187,7 @@ PUT /Database/rolusuarios/{id}/
 **Example Request:**
 
 ```bash
-curl -X PUT "http://your-domain.com/Database/rolusuarios/4/" \
+curl -X PUT "http://your-domain.com/Database/Database/rolusuarios/4/" \
   -H "Content-Type: application/json" \
   -d '{
     "nombre": "Conductor",
@@ -212,7 +212,7 @@ curl -X PUT "http://your-domain.com/Database/rolusuarios/4/" \
 Partially update a user role's information (only specified fields).
 
 ```bash
-PATCH /Database/rolusuarios/{id}/
+PATCH /Database/Database/rolusuarios/{id}/
 ```
 
 **Path Parameters:**
@@ -224,7 +224,7 @@ PATCH /Database/rolusuarios/{id}/
 **Example Request:**
 
 ```bash
-curl -X PATCH "http://your-domain.com/Database/rolusuarios/4/" \
+curl -X PATCH "http://your-domain.com/Database/Database/rolusuarios/4/" \
   -H "Content-Type: application/json" \
   -d '{
     "estado": 0
@@ -247,7 +247,7 @@ curl -X PATCH "http://your-domain.com/Database/rolusuarios/4/" \
 Delete a user role from the system.
 
 ```bash
-DELETE /Database/rolusuarios/{id}/
+DELETE /Database/Database/rolusuarios/{id}/
 ```
 
 **Path Parameters:**
@@ -259,7 +259,7 @@ DELETE /Database/rolusuarios/{id}/
 **Example Request:**
 
 ```bash
-curl -X DELETE "http://your-domain.com/Database/rolusuarios/4/" \
+curl -X DELETE "http://your-domain.com/Database/Database/rolusuarios/4/" \
   -H "Content-Type: application/json"
 ```
 

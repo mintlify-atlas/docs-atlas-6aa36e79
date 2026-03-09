@@ -68,7 +68,7 @@ The Chofer model represents a driver in the system with the following fields:
 
 ### List All Drivers
 
-<Card title="GET /Database/choferes/" icon="list">
+<Card title="GET /Database/Database/choferes/" icon="list">
   Retrieve a list of all drivers in the system
 </Card>
 
@@ -147,7 +147,7 @@ The Chofer model represents a driver in the system with the following fields:
 
 ### Get Single Driver
 
-<Card title="GET /Database/choferes/{id}/" icon="user">
+<Card title="GET /Database/Database/choferes/{id}/" icon="user">
   Retrieve details of a specific driver by ID
 </Card>
 
@@ -176,7 +176,7 @@ The Chofer model represents a driver in the system with the following fields:
 
 ### Create New Driver
 
-<Card title="POST /Database/choferes/" icon="plus">
+<Card title="POST /Database/Database/choferes/" icon="plus">
   Create a new driver in the system
 </Card>
 
@@ -253,7 +253,7 @@ The Chofer model represents a driver in the system with the following fields:
 
 ### Update Driver
 
-<Card title="PUT /Database/choferes/{id}/" icon="pen">
+<Card title="PUT /Database/Database/choferes/{id}/" icon="pen">
   Update an existing driver's information (full update)
 </Card>
 
@@ -285,7 +285,7 @@ All fields from the create request are required for a full update.
 
 ### Partial Update Driver
 
-<Card title="PATCH /Database/choferes/{id}/" icon="pen-to-square">
+<Card title="PATCH /Database/Database/choferes/{id}/" icon="pen-to-square">
   Partially update a driver's information
 </Card>
 
@@ -310,7 +310,7 @@ Include only the fields you want to update.
 
 ### Delete Driver
 
-<Card title="DELETE /Database/choferes/{id}/" icon="trash">
+<Card title="DELETE /Database/Database/choferes/{id}/" icon="trash">
   Delete a driver from the system
 </Card>
 
@@ -370,7 +370,7 @@ Drivers are referenced by:
 ### Creating a New Driver
 
 ```bash
-curl -X POST https://api.example.com/Database/choferes/ \
+curl -X POST https://api.example.com/Database/Database/choferes/ \
   -H "Content-Type: application/json" \
   -d '{
     "id_usuario": 30,
@@ -388,7 +388,7 @@ curl -X POST https://api.example.com/Database/choferes/ \
 ### Deactivating a Driver
 
 ```bash
-curl -X PATCH https://api.example.com/Database/choferes/1/ \
+curl -X PATCH https://api.example.com/Database/Database/choferes/1/ \
   -H "Content-Type: application/json" \
   -d '{
     "estado": 0
@@ -398,5 +398,5 @@ curl -X PATCH https://api.example.com/Database/choferes/1/ \
 ### Filtering Active Drivers
 
 ```bash
-curl -X GET "https://api.example.com/Database/choferes/?estado=1"
+curl -X GET "https://api.example.com/Database/Database/choferes/?estado=1"
 ```
