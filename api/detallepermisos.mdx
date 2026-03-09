@@ -1,0 +1,538 @@
+---
+title: 'DetallePermisos'
+api: 'GET /api/detallepermisos'
+---
+
+# DetallePermisos API
+
+The DetallePermisos (Permission Details) endpoint manages action-level permissions within the permission system. It defines which specific actions (Opciones) are allowed or denied for each PermisosXRol assignment.
+
+## Permission System Overview
+
+```
+RolUsuario (User Role)
+    ↓
+PermisosXRol (Links Role to Menu + Vista)
+    ↓
+DetallePermisos (Defines allowed actions per Opcion) ← Current Level
+    ↓
+Opciones (Available actions: Crear, Editar, Eliminar, etc.)
+```
+
+## Model Structure
+
+The DetallePermisos model provides granular control over which actions a role can perform within a vista.
+
+### Fields
+
+<ParamField path="id" type="integer" required>
+  Auto-incremented primary key identifying the permission detail record
+</ParamField>
+
+<ParamField path="id_permisos" type="integer" required>
+  Foreign key to PermisosXRol - the parent permission record
+</ParamField>
+
+<ParamField path="id_opcion" type="integer" required>
+  Foreign key to Opciones - the specific action being controlled
+</ParamField>
+
+<ParamField path="accion_permitida" type="boolean" required>
+  Whether the action is allowed
+  - `true`: Action is permitted
+  - `false`: Action is denied
+</ParamField>
+
+<ParamField path="estado" type="integer" required>
+  Status of the permission detail
+  - `0`: Inactive
+  - `1`: Active
+</ParamField>
+
+<ParamField path="permisos" type="object" required>
+  Foreign key relationship to PermisosXRol model
+</ParamField>
+
+<ParamField path="opcion" type="object" required>
+  Foreign key relationship to Opciones model
+</ParamField>
+
+## Endpoints
+
+### List All Permission Details
+
+```http
+GET /api/detallepermisos/
+```
+
+Retrieve all permission details in the system.
+
+#### Query Parameters
+
+<ParamField query="id_permisos" type="integer">
+  Filter by parent permission ID
+</ParamField>
+
+<ParamField query="id_opcion" type="integer">
+  Filter by action/opcion ID
+</ParamField>
+
+<ParamField query="accion_permitida" type="boolean">
+  Filter by whether action is allowed (true/false)
+</ParamField>
+
+<ParamField query="estado" type="integer">
+  Filter by status (0: Inactive, 1: Active)
+</ParamField>
+
+#### Response
+
+<ResponseField name="results" type="array">
+  <ResponseField name="id" type="integer">
+    Unique identifier for the permission detail record
+  </ResponseField>
+  <ResponseField name="id_permisos" type="integer">
+    Parent permission ID
+  </ResponseField>
+  <ResponseField name="id_opcion" type="integer">
+    Action/opcion ID
+  </ResponseField>
+  <ResponseField name="accion_permitida" type="boolean">
+    Whether action is allowed
+  </ResponseField>
+  <ResponseField name="estado" type="integer">
+    Record status
+  </ResponseField>
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "results": [
+    {
+      "id": 1,
+      "id_permisos": 5,
+      "id_opcion": 1,
+      "accion_permitida": true,
+      "estado": 1
+    },
+    {
+      "id": 2,
+      "id_permisos": 5,
+      "id_opcion": 2,
+      "accion_permitida": true,
+      "estado": 1
+    },
+    {
+      "id": 3,
+      "id_permisos": 5,
+      "id_opcion": 3,
+      "accion_permitida": false,
+      "estado": 1
+    }
+  ]
+}
+```
+
+### Get Permission Detail by ID
+
+```http
+GET /api/detallepermisos/{id}/
+```
+
+Retrieve details of a specific permission detail record.
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the permission detail record
+</ParamField>
+
+#### Response
+
+<ResponseField name="id" type="integer">
+  Unique identifier for the permission detail record
+</ResponseField>
+
+<ResponseField name="id_permisos" type="integer">
+  Parent permission ID
+</ResponseField>
+
+<ResponseField name="id_opcion" type="integer">
+  Action/opcion ID
+</ResponseField>
+
+<ResponseField name="accion_permitida" type="boolean">
+  Whether action is allowed
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Record status
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "id": 1,
+  "id_permisos": 5,
+  "id_opcion": 1,
+  "accion_permitida": true,
+  "estado": 1
+}
+```
+
+### Get Permission Details by PermisosXRol
+
+```http
+GET /api/detallepermisos/?id_permisos={id_permisos}
+```
+
+Retrieve all action permissions for a specific PermisosXRol record.
+
+#### Example Response
+
+```json
+{
+  "results": [
+    {
+      "id": 1,
+      "id_permisos": 5,
+      "id_opcion": 1,
+      "accion_permitida": true,
+      "estado": 1
+    },
+    {
+      "id": 2,
+      "id_permisos": 5,
+      "id_opcion": 2,
+      "accion_permitida": true,
+      "estado": 1
+    },
+    {
+      "id": 3,
+      "id_permisos": 5,
+      "id_opcion": 3,
+      "accion_permitida": false,
+      "estado": 1
+    },
+    {
+      "id": 4,
+      "id_permisos": 5,
+      "id_opcion": 4,
+      "accion_permitida": true,
+      "estado": 1
+    }
+  ]
+}
+```
+
+### Create Permission Detail
+
+```http
+POST /api/detallepermisos/
+```
+
+Define whether a specific action is allowed for a permission assignment.
+
+#### Request Body
+
+<ParamField body="id_permisos" type="integer" required>
+  The ID of the parent PermisosXRol record
+</ParamField>
+
+<ParamField body="id_opcion" type="integer" required>
+  The ID of the action/opcion being controlled
+</ParamField>
+
+<ParamField body="accion_permitida" type="boolean" required>
+  Whether the action is allowed (true) or denied (false)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Status of the permission detail (0: Inactive, 1: Active)
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "id_permisos": 5,
+  "id_opcion": 1,
+  "accion_permitida": true,
+  "estado": 1
+}
+```
+
+#### Response
+
+<ResponseField name="id" type="integer">
+  The ID of the newly created permission detail record
+</ResponseField>
+
+<ResponseField name="id_permisos" type="integer">
+  Parent permission ID
+</ResponseField>
+
+<ResponseField name="id_opcion" type="integer">
+  Action/opcion ID
+</ResponseField>
+
+<ResponseField name="accion_permitida" type="boolean">
+  Whether action is allowed
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Record status
+</ResponseField>
+
+### Update Permission Detail
+
+```http
+PUT /api/detallepermisos/{id}/
+PATCH /api/detallepermisos/{id}/
+```
+
+Update an existing permission detail. Use PUT for full updates or PATCH for partial updates.
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the permission detail record to update
+</ParamField>
+
+#### Request Body
+
+<ParamField body="id_permisos" type="integer">
+  Updated parent permission ID
+</ParamField>
+
+<ParamField body="id_opcion" type="integer">
+  Updated action/opcion ID
+</ParamField>
+
+<ParamField body="accion_permitida" type="boolean">
+  Updated permission status
+</ParamField>
+
+<ParamField body="estado" type="integer">
+  Updated record status
+</ParamField>
+
+#### Example Request (Toggle Permission)
+
+```json
+{
+  "accion_permitida": false
+}
+```
+
+### Delete Permission Detail
+
+```http
+DELETE /api/detallepermisos/{id}/
+```
+
+Permanently delete a permission detail record.
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the permission detail record to delete
+</ParamField>
+
+## Complete Permission System Example
+
+Here's a complete example showing the entire permission hierarchy:
+
+```json
+{
+  "role": {
+    "id_rol": 2,
+    "nombre": "Publicista",
+    "estado": 1
+  },
+  "permission": {
+    "id_permisos": 5,
+    "id_rol": 2,
+    "menu": {
+      "id_menu": 2,
+      "nombre_menu": "Campañas",
+      "descripcion": "Campaign management"
+    },
+    "vista": {
+      "id_vista": 2,
+      "nombre_vista": "Gestión de Campañas",
+      "descripcion": "Manage campaigns"
+    },
+    "estado": 1
+  },
+  "action_permissions": [
+    {
+      "id": 1,
+      "id_permisos": 5,
+      "opcion": {
+        "id_opcion": 1,
+        "nombre_vista": "Crear",
+        "descripcion": "Create new campaign"
+      },
+      "accion_permitida": true,
+      "estado": 1
+    },
+    {
+      "id": 2,
+      "id_permisos": 5,
+      "opcion": {
+        "id_opcion": 2,
+        "nombre_vista": "Editar",
+        "descripcion": "Edit campaign"
+      },
+      "accion_permitida": true,
+      "estado": 1
+    },
+    {
+      "id": 3,
+      "id_permisos": 5,
+      "opcion": {
+        "id_opcion": 3,
+        "nombre_vista": "Eliminar",
+        "descripcion": "Delete campaign"
+      },
+      "accion_permitida": false,
+      "estado": 1
+    },
+    {
+      "id": 4,
+      "id_permisos": 5,
+      "opcion": {
+        "id_opcion": 4,
+        "nombre_vista": "Ver",
+        "descripcion": "View campaign"
+      },
+      "accion_permitida": true,
+      "estado": 1
+    }
+  ]
+}
+```
+
+## Setting Up Role Permissions
+
+### Step-by-Step Process
+
+#### 1. Create Menu-Vista Permission
+
+First, grant the role access to a menu and vista:
+
+```json
+POST /api/permisosxrol/
+{
+  "id_rol": 2,
+  "id_menu": 2,
+  "id_vista": 2,
+  "estado": 1
+}
+```
+
+Response:
+```json
+{
+  "id_permisos": 5,
+  "id_rol": 2,
+  "id_menu": 2,
+  "id_vista": 2,
+  "estado": 1
+}
+```
+
+#### 2. Define Action Permissions
+
+Then, specify which actions are allowed:
+
+```json
+POST /api/detallepermisos/
+[
+  {
+    "id_permisos": 5,
+    "id_opcion": 1,
+    "accion_permitida": true,
+    "estado": 1
+  },
+  {
+    "id_permisos": 5,
+    "id_opcion": 2,
+    "accion_permitida": true,
+    "estado": 1
+  },
+  {
+    "id_permisos": 5,
+    "id_opcion": 3,
+    "accion_permitida": false,
+    "estado": 1
+  },
+  {
+    "id_permisos": 5,
+    "id_opcion": 4,
+    "accion_permitida": true,
+    "estado": 1
+  }
+]
+```
+
+## Common Permission Patterns
+
+### Read-Only Access
+
+Allow only viewing, no modifications:
+
+```json
+[
+  {"id_opcion": 1, "accion_permitida": false},  // Crear - Denied
+  {"id_opcion": 2, "accion_permitida": false},  // Editar - Denied
+  {"id_opcion": 3, "accion_permitida": false},  // Eliminar - Denied
+  {"id_opcion": 4, "accion_permitida": true}    // Ver - Allowed
+]
+```
+
+### Full Access
+
+Allow all actions:
+
+```json
+[
+  {"id_opcion": 1, "accion_permitida": true},  // Crear - Allowed
+  {"id_opcion": 2, "accion_permitida": true},  // Editar - Allowed
+  {"id_opcion": 3, "accion_permitida": true},  // Eliminar - Allowed
+  {"id_opcion": 4, "accion_permitida": true}   // Ver - Allowed
+]
+```
+
+### Create and Edit Only
+
+Allow creating and editing, but not deleting:
+
+```json
+[
+  {"id_opcion": 1, "accion_permitida": true},   // Crear - Allowed
+  {"id_opcion": 2, "accion_permitida": true},   // Editar - Allowed
+  {"id_opcion": 3, "accion_permitida": false},  // Eliminar - Denied
+  {"id_opcion": 4, "accion_permitida": true}    // Ver - Allowed
+]
+```
+
+## Related Endpoints
+
+- [PermisosXRol](/api/permisosxrol) - Parent permission assignments
+- [Opciones](/api/opciones) - Available actions
+- [RolUsuario](/api/rolusuario) - User roles
+
+## Usage Notes
+
+- DetallePermisos must reference a valid PermisosXRol record (id_permisos)
+- DetallePermisos must reference a valid Opciones record (id_opcion)
+- The opcion should belong to the vista specified in the parent PermisosXRol
+- Set accion_permitida to false to explicitly deny an action
+- Set estado to 0 to temporarily disable a permission without deleting it
+- Missing DetallePermisos records typically mean the action is denied by default
+- Use batch creation when setting up multiple action permissions for efficiency

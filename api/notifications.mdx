@@ -1,0 +1,157 @@
+---
+title: 'Send FCM Notification'
+api: 'POST /send_fcm_notification/'
+description: 'Send push notifications via Firebase Cloud Messaging'
+---
+
+## Overview
+
+The Send FCM Notification endpoint allows you to send push notifications to mobile devices using Firebase Cloud Messaging (FCM) API v1. The endpoint handles OAuth2 authentication with Google service accounts and sends notifications to specific device registration tokens.
+
+## Endpoint
+
+```
+POST /send_fcm_notification/
+```
+
+## Request Body
+
+<ParamField body="registration_token" type="string" required>
+  The FCM registration token of the target device. This token uniquely identifies the device that will receive the notification.
+</ParamField>
+
+<ParamField body="title" type="string" required>
+  The notification title that appears in the notification tray.
+</ParamField>
+
+<ParamField body="body" type="string" required>
+  The notification body text that appears below the title.
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="string">
+  Success message when the notification is sent successfully.
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message when the notification fails to send or validation fails.
+</ResponseField>
+
+## Firebase Configuration
+
+The endpoint requires a service account JSON file located at:
+
+```
+task_aplication/service-account-file.json
+```
+
+The service account must have the following OAuth2 scope:
+- `https://www.googleapis.com/auth/firebase.messaging`
+
+## FCM API Details
+
+The endpoint sends notifications using FCM API v1:
+
+- **FCM Endpoint**: `https://fcm.googleapis.com/v1/projects/369555004314/messages:send`
+- **Authentication**: OAuth2 Bearer token from Google service account
+- **API Version**: v1
+
+## Notification Payload Structure
+
+The FCM message includes:
+
+- **notification**: Standard notification object with `title` and `body`
+- **data**: Custom data payload with `titulo` and `cuerpo` fields (Spanish versions)
+- **token**: The device registration token
+
+## Example Request
+
+```bash
+curl -X POST https://api.example.com/send_fcm_notification/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "registration_token": "eXZ1234abc...",
+    "title": "New Campaign Available",
+    "body": "A new advertising campaign is available in your area."
+  }'
+```
+
+## Example Response
+
+### Success (200 OK)
+
+```json
+{
+  "success": "Notification sent successfully"
+}
+```
+
+### Validation Error (400 Bad Request)
+
+```json
+{
+  "error": "Invalid data"
+}
+```
+
+With validation details:
+
+```json
+{
+  "registration_token": ["This field is required."]
+}
+```
+
+### Server Error (500 Internal Server Error)
+
+```json
+{
+  "error": "Failed to send notification"
+}
+```
+
+Or when an exception occurs:
+
+```json
+{
+  "error": "An error occurred"
+}
+```
+
+## Error Handling
+
+The endpoint handles several error scenarios:
+
+1. **Validation Errors**: Returns 400 when required fields are missing or invalid
+2. **FCM API Errors**: Returns 500 when FCM returns non-200 status codes
+3. **Authentication Errors**: Returns 500 when service account credentials fail
+4. **General Exceptions**: Returns 500 with generic error message
+
+## Implementation Details
+
+- Uses Google Auth library (`google.auth`) for OAuth2 token generation
+- Service account credentials are loaded from JSON file on each request
+- Access tokens are refreshed for each notification send
+- The notification includes both standard `notification` object and custom `data` payload
+- FCM project ID is hardcoded: `369555004314`
+
+## Security Considerations
+
+- Service account JSON file contains sensitive credentials and should not be committed to version control
+- Registration tokens should be validated before sending to prevent unauthorized notification delivery
+- Consider implementing rate limiting to prevent notification spam
+- OAuth2 tokens are short-lived and refreshed automatically
+
+## Related Endpoints
+
+- [Send Email](/api/email) - Send HTML templated emails
+
+## Troubleshooting
+
+### Common Issues
+
+1. **"Failed to send notification"**: Check that the service account file exists and has correct permissions
+2. **Invalid registration token**: Verify the device token is current and valid
+3. **Authentication failed**: Ensure the service account has Firebase Cloud Messaging API enabled
+4. **Rate limiting**: FCM has rate limits - implement exponential backoff for production use

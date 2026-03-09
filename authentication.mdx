@@ -1,0 +1,386 @@
+---
+title: Authentication
+description: Secure your API requests with JWT token-based authentication
+---
+
+## Overview
+
+The RestAPI project uses **JSON Web Token (JWT)** authentication powered by [Simple JWT](https://django-rest-framework-simplejwt.readthedocs.io/). This provides a secure, stateless authentication mechanism for all API endpoints.
+
+<Note>
+  JWT authentication is configured in `RestAPI/settings.py:203-214` with an 8-hour token lifetime.
+</Note>
+
+## How JWT Authentication Works
+
+<Steps>
+  <Step title="User Login">
+    The client sends credentials (email/password) to obtain access and refresh tokens.
+  </Step>
+  
+  <Step title="Token Storage">
+    The client stores the access token securely (e.g., in memory or secure storage).
+  </Step>
+  
+  <Step title="Authenticated Requests">
+    The client includes the access token in the `Authorization` header for all subsequent requests.
+  </Step>
+  
+  <Step title="Token Refresh">
+    When the access token expires (after 8 hours), use the refresh token to obtain a new access token.
+  </Step>
+</Steps>
+
+## Configuration
+
+The JWT authentication is configured in `RestAPI/settings.py` with the following settings:
+
+```python RestAPI/settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+# Token validity configuration
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
+}
+```
+
+### Key Features
+
+- **Access Token Lifetime**: 8 hours
+- **Authentication Class**: `JWTAuthentication`
+- **Stateless**: No server-side session storage required
+- **Secure**: Tokens are cryptographically signed
+
+## Obtaining Tokens
+
+<Warning>
+  **Note**: The current implementation uses a custom user model with SHA-256 hashed passwords. You'll need to implement token endpoints using Simple JWT's views or create custom authentication endpoints.
+</Warning>
+
+### Standard Simple JWT Endpoints
+
+To enable JWT token endpoints, add the following to your `RestAPI/urls.py`:
+
+```python RestAPI/urls.py
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('Database/', include('task_aplication.urls')),
+    
+    # JWT Authentication endpoints
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+]
+```
+
+### Obtain Access Token
+
+<CodeGroup>
+  ```bash cURL
+  curl -X POST http://localhost:8000/api/token/ \
+    -H "Content-Type: application/json" \
+    -d '{
+      "username": "user@example.com",
+      "password": "your_password"
+    }'
+  ```
+
+  ```python Python
+  import requests
+
+  response = requests.post(
+      'http://localhost:8000/api/token/',
+      json={
+          'username': 'user@example.com',
+          'password': 'your_password'
+      }
+  )
+
+  tokens = response.json()
+  access_token = tokens['access']
+  refresh_token = tokens['refresh']
+  ```
+
+  ```javascript JavaScript
+  const response = await fetch('http://localhost:8000/api/token/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      username: 'user@example.com',
+      password: 'your_password',
+    }),
+  });
+
+  const tokens = await response.json();
+  const accessToken = tokens.access;
+  const refreshToken = tokens.refresh;
+  ```
+</CodeGroup>
+
+**Response:**
+
+```json
+{
+  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+## Making Authenticated Requests
+
+Include the access token in the `Authorization` header with the `Bearer` prefix:
+
+<CodeGroup>
+  ```bash cURL
+  curl -X GET http://localhost:8000/Database/usuarios/ \
+    -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  ```
+
+  ```python Python
+  import requests
+
+  headers = {
+      'Authorization': f'Bearer {access_token}'
+  }
+
+  response = requests.get(
+      'http://localhost:8000/Database/usuarios/',
+      headers=headers
+  )
+
+  users = response.json()
+  ```
+
+  ```javascript JavaScript
+  const response = await fetch('http://localhost:8000/Database/usuarios/', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const users = await response.json();
+  ```
+</CodeGroup>
+
+## Refreshing Tokens
+
+When your access token expires (after 8 hours), use the refresh token to obtain a new access token:
+
+<CodeGroup>
+  ```bash cURL
+  curl -X POST http://localhost:8000/api/token/refresh/ \
+    -H "Content-Type: application/json" \
+    -d '{
+      "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }'
+  ```
+
+  ```python Python
+  response = requests.post(
+      'http://localhost:8000/api/token/refresh/',
+      json={'refresh': refresh_token}
+  )
+
+  new_access_token = response.json()['access']
+  ```
+
+  ```javascript JavaScript
+  const response = await fetch('http://localhost:8000/api/token/refresh/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      refresh: refreshToken,
+    }),
+  });
+
+  const { access } = await response.json();
+  ```
+</CodeGroup>
+
+**Response:**
+
+```json
+{
+  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+## User Model
+
+The custom `Usuario` model is defined in `task_aplication/models.py:55-81` with the following key fields:
+
+```python task_aplication/models.py
+class Usuario(models.Model):
+    id_usuario = models.AutoField(primary_key=True)
+    rol_usuario = models.ForeignKey(RolUsuario, on_delete=models.CASCADE)
+    email = models.CharField(max_length=50)
+    placa = models.CharField(max_length=8, null=True, blank=True)
+    contrasena = models.CharField(max_length=64)  # SHA-256 hash
+    token_notificacion = models.TextField()
+    fecha_creacion = models.DateField(auto_now_add=True)
+    fecha_modificacion = models.DateField(auto_now=True)
+    id_ciudad = models.ForeignKey(Ciudad, on_delete=models.CASCADE, default=1)
+    id_pais = models.ForeignKey(Pais, on_delete=models.CASCADE, default=1)
+    estado = models.IntegerField(choices=[
+        (0, 'Inactivo'),
+        (1, 'Activo'),
+        (3, 'deshabilitado')
+    ], default=0)
+
+    def save(self, *args, **kwargs):
+        # Hash password with SHA-256 on creation
+        if not self.id_usuario:
+            self.contrasena = self._hash_password(self.contrasena)
+        super().save(*args, **kwargs)
+
+    def _hash_password(self, password):
+        sha256 = hashlib.sha256()
+        sha256.update(password.encode('utf-8'))
+        return sha256.hexdigest()
+```
+
+<Warning>
+  The current implementation uses SHA-256 for password hashing. For production use, consider migrating to Django's built-in password hashers which use PBKDF2 with stronger security.
+</Warning>
+
+## CORS Configuration
+
+The API includes CORS support via `django-cors-headers` configured in `RestAPI/settings.py:38-89`:
+
+### Development Mode (`DEBUG=True`)
+
+```python
+CORS_ALLOW_ALL_ORIGINS = True
+ALLOWED_HOSTS = ['*']
+CORS_ALLOW_HEADERS = ['*']
+```
+
+### Production Mode (`DEBUG=False`)
+
+```python
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    'migoadvs.pythonanywhere.com',
+]
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'migoadvs.pythonanywhere.com',
+]
+```
+
+### Allowed Methods and Headers
+
+```python
+CORS_ALLOW_METHODS = (
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'DELETE',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',  # Required for JWT
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+```
+
+## Error Responses
+
+### Invalid Credentials
+
+```json
+{
+  "detail": "No active account found with the given credentials"
+}
+```
+
+### Expired Token
+
+```json
+{
+  "detail": "Given token not valid for any token type",
+  "code": "token_not_valid",
+  "messages": [
+    {
+      "token_class": "AccessToken",
+      "token_type": "access",
+      "message": "Token is invalid or expired"
+    }
+  ]
+}
+```
+
+### Missing Token
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+## Security Best Practices
+
+<AccordionGroup>
+  <Accordion title="Token Storage">
+    - **Never** store tokens in localStorage or sessionStorage in web applications
+    - Use httpOnly cookies or secure in-memory storage
+    - For mobile apps, use secure storage mechanisms (Keychain on iOS, KeyStore on Android)
+  </Accordion>
+
+  <Accordion title="Token Transmission">
+    - Always use HTTPS in production
+    - Never send tokens in URL parameters
+    - Always use the `Authorization` header with `Bearer` prefix
+  </Accordion>
+
+  <Accordion title="Token Expiration">
+    - Implement token refresh logic before expiration (8-hour lifetime)
+    - Handle token expiration gracefully with automatic refresh
+    - Clear tokens on logout
+  </Accordion>
+
+  <Accordion title="Environment Security">
+    - Keep your `DJANGO_KEY` secret and unique
+    - Use environment variables for sensitive configuration
+    - Never commit `.env` files to version control
+    - Rotate secrets regularly
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="code" href="/api/overview">
+    Explore authenticated API endpoints
+  </Card>
+  <Card title="User Management" icon="users" href="/api/usuarios">
+    Learn about user registration and management
+  </Card>
+</CardGroup>

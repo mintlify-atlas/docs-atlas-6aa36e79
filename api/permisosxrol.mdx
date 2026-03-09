@@ -1,0 +1,424 @@
+---
+title: 'PermisosXRol'
+api: 'GET /api/permisosxrol'
+---
+
+# PermisosXRol API
+
+The PermisosXRol (Permissions by Role) endpoint manages the assignment of menu and vista access to user roles. This is the primary mechanism for controlling which parts of the application each role can access.
+
+## Permission System Overview
+
+```
+RolUsuario (User Role)
+    ↓
+PermisosXRol (Links Role to Menu + Vista)
+    ↓
+DetallePermisos (Defines allowed actions per Opcion)
+```
+
+## Model Structure
+
+The PermisosXRol model links user roles to specific menu-vista combinations, with detailed action permissions managed separately in DetallePermisos.
+
+### Fields
+
+<ParamField path="id_permisos" type="integer" required>
+  Auto-incremented primary key identifying the permission record
+</ParamField>
+
+<ParamField path="id_rol" type="integer" required>
+  Foreign key to RolUsuario - the role receiving permissions
+</ParamField>
+
+<ParamField path="id_menu" type="integer" required>
+  Foreign key to Menu - the menu being accessed
+</ParamField>
+
+<ParamField path="id_vista" type="integer" required>
+  Foreign key to Vista - the specific vista within the menu
+</ParamField>
+
+<ParamField path="estado" type="integer" required>
+  Status of the permission
+  - `0`: Inactive/Revoked
+  - `1`: Active/Granted
+</ParamField>
+
+<ParamField path="rol" type="object" required>
+  Foreign key relationship to RolUsuario model
+</ParamField>
+
+<ParamField path="menu" type="object" required>
+  Foreign key relationship to Menu model
+</ParamField>
+
+<ParamField path="vista" type="object" required>
+  Foreign key relationship to Vista model
+</ParamField>
+
+## Endpoints
+
+### List All Permissions
+
+```http
+GET /api/permisosxrol/
+```
+
+Retrieve all permission assignments in the system.
+
+#### Query Parameters
+
+<ParamField query="id_rol" type="integer">
+  Filter permissions by role ID
+</ParamField>
+
+<ParamField query="id_menu" type="integer">
+  Filter permissions by menu ID
+</ParamField>
+
+<ParamField query="id_vista" type="integer">
+  Filter permissions by vista ID
+</ParamField>
+
+<ParamField query="estado" type="integer">
+  Filter by status (0: Inactive, 1: Active)
+</ParamField>
+
+#### Response
+
+<ResponseField name="results" type="array">
+  <ResponseField name="id_permisos" type="integer">
+    Unique identifier for the permission record
+  </ResponseField>
+  <ResponseField name="id_rol" type="integer">
+    Role ID
+  </ResponseField>
+  <ResponseField name="id_menu" type="integer">
+    Menu ID
+  </ResponseField>
+  <ResponseField name="id_vista" type="integer">
+    Vista ID
+  </ResponseField>
+  <ResponseField name="estado" type="integer">
+    Permission status
+  </ResponseField>
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "results": [
+    {
+      "id_permisos": 1,
+      "id_rol": 1,
+      "id_menu": 1,
+      "id_vista": 1,
+      "estado": 1
+    },
+    {
+      "id_permisos": 2,
+      "id_rol": 1,
+      "id_menu": 2,
+      "id_vista": 2,
+      "estado": 1
+    },
+    {
+      "id_permisos": 3,
+      "id_rol": 2,
+      "id_menu": 2,
+      "id_vista": 2,
+      "estado": 1
+    }
+  ]
+}
+```
+
+### Get Permission by ID
+
+```http
+GET /api/permisosxrol/{id_permisos}/
+```
+
+Retrieve details of a specific permission assignment.
+
+#### Path Parameters
+
+<ParamField path="id_permisos" type="integer" required>
+  The unique identifier of the permission record
+</ParamField>
+
+#### Response
+
+<ResponseField name="id_permisos" type="integer">
+  Unique identifier for the permission record
+</ResponseField>
+
+<ResponseField name="id_rol" type="integer">
+  Role ID
+</ResponseField>
+
+<ResponseField name="id_menu" type="integer">
+  Menu ID
+</ResponseField>
+
+<ResponseField name="id_vista" type="integer">
+  Vista ID
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Permission status
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "id_permisos": 1,
+  "id_rol": 1,
+  "id_menu": 1,
+  "id_vista": 1,
+  "estado": 1
+}
+```
+
+### Get Permissions by Role
+
+```http
+GET /api/permisosxrol/?id_rol={id_rol}
+```
+
+Retrieve all permissions assigned to a specific role.
+
+#### Example Response
+
+```json
+{
+  "results": [
+    {
+      "id_permisos": 1,
+      "id_rol": 1,
+      "id_menu": 1,
+      "id_vista": 1,
+      "estado": 1
+    },
+    {
+      "id_permisos": 2,
+      "id_rol": 1,
+      "id_menu": 2,
+      "id_vista": 2,
+      "estado": 1
+    }
+  ]
+}
+```
+
+### Create Permission
+
+```http
+POST /api/permisosxrol/
+```
+
+Grant a role access to a specific menu and vista.
+
+#### Request Body
+
+<ParamField body="id_rol" type="integer" required>
+  The ID of the role to grant permissions to
+</ParamField>
+
+<ParamField body="id_menu" type="integer" required>
+  The ID of the menu to grant access to
+</ParamField>
+
+<ParamField body="id_vista" type="integer" required>
+  The ID of the vista to grant access to
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Status of the permission (0: Inactive, 1: Active)
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "id_rol": 2,
+  "id_menu": 3,
+  "id_vista": 5,
+  "estado": 1
+}
+```
+
+#### Response
+
+<ResponseField name="id_permisos" type="integer">
+  The ID of the newly created permission record
+</ResponseField>
+
+<ResponseField name="id_rol" type="integer">
+  Role ID
+</ResponseField>
+
+<ResponseField name="id_menu" type="integer">
+  Menu ID
+</ResponseField>
+
+<ResponseField name="id_vista" type="integer">
+  Vista ID
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Permission status
+</ResponseField>
+
+### Update Permission
+
+```http
+PUT /api/permisosxrol/{id_permisos}/
+PATCH /api/permisosxrol/{id_permisos}/
+```
+
+Update an existing permission assignment. Use PUT for full updates or PATCH for partial updates.
+
+#### Path Parameters
+
+<ParamField path="id_permisos" type="integer" required>
+  The unique identifier of the permission record to update
+</ParamField>
+
+#### Request Body
+
+<ParamField body="id_rol" type="integer">
+  Updated role ID
+</ParamField>
+
+<ParamField body="id_menu" type="integer">
+  Updated menu ID
+</ParamField>
+
+<ParamField body="id_vista" type="integer">
+  Updated vista ID
+</ParamField>
+
+<ParamField body="estado" type="integer">
+  Updated status (commonly used to revoke permissions by setting to 0)
+</ParamField>
+
+#### Example Request (Revoke Permission)
+
+```json
+{
+  "estado": 0
+}
+```
+
+### Delete Permission
+
+```http
+DELETE /api/permisosxrol/{id_permisos}/
+```
+
+Permanently delete a permission assignment. Note: Consider using estado=0 instead to revoke permissions without deletion.
+
+#### Path Parameters
+
+<ParamField path="id_permisos" type="integer" required>
+  The unique identifier of the permission record to delete
+</ParamField>
+
+## Complete Permission Example
+
+Here's a complete example showing how permissions work across the hierarchy:
+
+```json
+{
+  "role": {
+    "id_rol": 2,
+    "nombre": "Publicista"
+  },
+  "permissions": [
+    {
+      "id_permisos": 5,
+      "menu": {
+        "id_menu": 2,
+        "nombre_menu": "Campañas"
+      },
+      "vista": {
+        "id_vista": 2,
+        "nombre_vista": "Gestión de Campañas"
+      },
+      "estado": 1,
+      "detalle_permisos": [
+        {
+          "id_opcion": 1,
+          "nombre_opcion": "Crear",
+          "accion_permitida": true
+        },
+        {
+          "id_opcion": 2,
+          "nombre_opcion": "Editar",
+          "accion_permitida": true
+        },
+        {
+          "id_opcion": 3,
+          "nombre_opcion": "Eliminar",
+          "accion_permitida": false
+        },
+        {
+          "id_opcion": 4,
+          "nombre_opcion": "Ver",
+          "accion_permitida": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Permission Workflow
+
+### 1. Grant Menu and Vista Access
+
+First, create a PermisosXRol record to grant a role access to a menu and vista:
+
+```json
+POST /api/permisosxrol/
+{
+  "id_rol": 2,
+  "id_menu": 2,
+  "id_vista": 2,
+  "estado": 1
+}
+```
+
+### 2. Define Action-Level Permissions
+
+Then, create DetallePermisos records to specify which actions are allowed:
+
+```json
+POST /api/detallepermisos/
+{
+  "id_permisos": 5,
+  "id_opcion": 1,
+  "accion_permitida": true,
+  "estado": 1
+}
+```
+
+## Related Endpoints
+
+- [RolUsuario](/api/rolusuario) - User roles
+- [Menus](/api/menus) - Menu definitions
+- [Vistas](/api/vistas) - Vista definitions
+- [DetallePermisos](/api/detallepermisos) - Action-level permission details
+
+## Usage Notes
+
+- PermisosXRol grants access to a menu-vista combination for a role
+- Detailed action permissions are controlled via DetallePermisos
+- Set estado to 0 to revoke permissions without deleting the record
+- Each role can have multiple PermisosXRol records for different menu-vista combinations
+- The vista must belong to the specified menu (referential integrity)
+- Deleting a role, menu, or vista will cascade delete associated PermisosXRol records

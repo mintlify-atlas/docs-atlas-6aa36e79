@@ -1,0 +1,423 @@
+---
+title: 'Publicistas API'
+description: 'API endpoints for managing advertisers (publicists) in the platform'
+---
+
+## Overview
+
+The Publicistas (Advertisers/Publicists) API manages advertiser accounts who work with multiple companies to create and manage advertising campaigns. Publicists act as intermediaries between companies and the advertising platform.
+
+## Base Endpoint
+
+```
+POST   /Database/Database/publicistas/
+GET    /Database/Database/publicistas/
+GET    /Database/Database/publicistas/{id_publicista}/
+PUT    /Database/Database/publicistas/{id_publicista}/
+PATCH  /Database/Database/publicistas/{id_publicista}/
+DELETE /Database/Database/publicistas/{id_publicista}/
+```
+
+## The Publicista Object
+
+<ResponseField name="id_publicista" type="integer" required>
+  Unique identifier for the advertiser (auto-generated)
+</ResponseField>
+
+<ResponseField name="id_usuario" type="integer" required>
+  Foreign key reference to the Usuario (User) account associated with this publicist
+</ResponseField>
+
+<ResponseField name="ruc" type="string" required>
+  Tax identification number (RUC) for the publicist's business. Maximum 13 characters
+</ResponseField>
+
+<ResponseField name="nombre" type="string" required>
+  Publicist's name or business name. Maximum 30 characters
+</ResponseField>
+
+<ResponseField name="mail_contacto" type="string" required>
+  Contact email address. Maximum 40 characters
+</ResponseField>
+
+<ResponseField name="telefono" type="string" required>
+  Contact phone number. Maximum 10 characters
+</ResponseField>
+
+<ResponseField name="fecha_creacion" type="date" required>
+  Date when the publicist account was created (YYYY-MM-DD format)
+</ResponseField>
+
+<ResponseField name="fecha_modificacion" type="date" required>
+  Date when the publicist account was last modified (YYYY-MM-DD format)
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer" required>
+  Foreign key reference to the Ciudad (City) where the publicist operates. Defaults to 1
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer" required>
+  Foreign key reference to the Pais (Country) where the publicist operates. Defaults to 1
+</ResponseField>
+
+<ResponseField name="estado" type="integer" required>
+  Status of the publicist account. Common values:
+  - 0: Inactive
+  - 1: Active
+  - 3: Disabled
+</ResponseField>
+
+## Create a Publicist
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.example.com/Database/Database/publicistas/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_usuario": 8,
+    "ruc": "1234567890002",
+    "nombre": "MediaPro Advertising",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234888",
+    "fecha_creacion": "2024-01-20",
+    "fecha_modificacion": "2024-01-20",
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/publicistas/"
+payload = {
+    "id_usuario": 8,
+    "ruc": "1234567890002",
+    "nombre": "MediaPro Advertising",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234888",
+    "fecha_creacion": "2024-01-20",
+    "fecha_modificacion": "2024-01-20",
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+}
+
+response = requests.post(url, json=payload)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/publicistas/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    id_usuario: 8,
+    ruc: '1234567890002',
+    nombre: 'MediaPro Advertising',
+    mail_contacto: '[email protected]',
+    telefono: '0991234888',
+    fecha_creacion: '2024-01-20',
+    fecha_modificacion: '2024-01-20',
+    id_ciudad: 1,
+    id_pais: 1,
+    estado: 1
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_publicista": 5,
+  "id_usuario": 8,
+  "ruc": "1234567890002",
+  "nombre": "MediaPro Advertising",
+  "mail_contacto": "[email protected]",
+  "telefono": "0991234888",
+  "fecha_creacion": "2024-01-20",
+  "fecha_modificacion": "2024-01-20",
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## Retrieve a Publicist
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.example.com/Database/Database/publicistas/5/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/publicistas/5/"
+response = requests.get(url)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/publicistas/5/')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_publicista": 5,
+  "id_usuario": 8,
+  "ruc": "1234567890002",
+  "nombre": "MediaPro Advertising",
+  "mail_contacto": "[email protected]",
+  "telefono": "0991234888",
+  "fecha_creacion": "2024-01-20",
+  "fecha_modificacion": "2024-01-20",
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## List All Publicists
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.example.com/Database/Database/publicistas/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/publicistas/"
+response = requests.get(url)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/publicistas/')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id_publicista": 5,
+    "id_usuario": 8,
+    "ruc": "1234567890002",
+    "nombre": "MediaPro Advertising",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234888",
+    "fecha_creacion": "2024-01-20",
+    "fecha_modificacion": "2024-01-20",
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+  },
+  {
+    "id_publicista": 6,
+    "id_usuario": 9,
+    "ruc": "5555666677778",
+    "nombre": "Creative Campaigns Ltd",
+    "mail_contacto": "[email protected]",
+    "telefono": "0987654321",
+    "fecha_creacion": "2024-02-15",
+    "fecha_modificacion": "2024-02-15",
+    "id_ciudad": 2,
+    "id_pais": 1,
+    "estado": 1
+  }
+]
+```
+</ResponseExample>
+
+## Update a Publicist
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.example.com/Database/Database/publicistas/5/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_usuario": 8,
+    "ruc": "1234567890002",
+    "nombre": "MediaPro Advertising Agency",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234888",
+    "fecha_creacion": "2024-01-20",
+    "fecha_modificacion": "2024-03-09",
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/publicistas/5/"
+payload = {
+    "id_usuario": 8,
+    "ruc": "1234567890002",
+    "nombre": "MediaPro Advertising Agency",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234888",
+    "fecha_creacion": "2024-01-20",
+    "fecha_modificacion": "2024-03-09",
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+}
+
+response = requests.put(url, json=payload)
+print(response.json())
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_publicista": 5,
+  "id_usuario": 8,
+  "ruc": "1234567890002",
+  "nombre": "MediaPro Advertising Agency",
+  "mail_contacto": "[email protected]",
+  "telefono": "0991234888",
+  "fecha_creacion": "2024-01-20",
+  "fecha_modificacion": "2024-03-09",
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## Delete a Publicist
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://api.example.com/Database/Database/publicistas/5/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/publicistas/5/"
+response = requests.delete(url)
+print(response.status_code)
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/publicistas/5/', {
+  method: 'DELETE'
+})
+.then(response => console.log(response.status));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+HTTP 204 No Content
+```
+</ResponseExample>
+
+## Filter Publicists by Status
+
+You can filter publicists by their status:
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.example.com/Database/Database/publicistas/?estado=1"
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/publicistas/"
+params = {'estado': 1}
+
+response = requests.get(url, params=params)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/publicistas/?estado=1')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id_publicista": 5,
+    "id_usuario": 8,
+    "ruc": "1234567890002",
+    "nombre": "MediaPro Advertising Agency",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234888",
+    "fecha_creacion": "2024-01-20",
+    "fecha_modificacion": "2024-03-09",
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+  }
+]
+```
+</ResponseExample>
+
+## Filter Publicists by Location
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.example.com/Database/Database/publicistas/?id_ciudad=1&id_pais=1"
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/publicistas/"
+params = {
+    'id_ciudad': 1,
+    'id_pais': 1
+}
+
+response = requests.get(url, params=params)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/publicistas/?id_ciudad=1&id_pais=1')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+## User Roles and Permissions
+
+<Info>
+  Publicists are typically associated with user accounts that have role ID 2. They have permissions to:
+  - Manage multiple company accounts through EmpresaXPublicista relationships
+  - Create and manage campaigns for associated companies
+  - View sectors and campaigns for their associated companies
+</Info>
+
+## Related Endpoints
+
+- [EmpresaXPublicista API](/api/empresaxpublicistas) - Manage relationships between publicists and companies
+- [Usuarios API](/api/usuarios) - Manage user accounts associated with publicists
+- [Campaigns API](/api/campanaspublicitarias) - View campaigns managed by publicists

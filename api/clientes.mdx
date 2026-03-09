@@ -1,0 +1,542 @@
+---
+title: 'Clients (Clientes)'
+description: 'API endpoints for managing clients in the system'
+---
+
+## Overview
+
+The Clients (Clientes) API allows you to manage client information for the advertising platform. Clients can be associated with companies and campaigns, and may own vehicles that participate in advertising activities.
+
+## Base Endpoint
+
+```
+/Database/clientes/
+```
+
+## Model Structure
+
+### Cliente Model
+
+The Cliente model represents a client in the system with the following fields:
+
+<ParamField path="id_cliente" type="integer" required>
+  Unique identifier for the client (auto-generated primary key)
+</ParamField>
+
+<ParamField path="id_usuario" type="integer" required>
+  Foreign key reference to the Usuario (User) model. Links the client to their user account
+</ParamField>
+
+<ParamField path="cedula_cliente" type="string" required>
+  Client's identification number (cedula). Maximum 10 characters
+</ParamField>
+
+<ParamField path="nombre" type="string" required>
+  Client's first name. Maximum 20 characters
+</ParamField>
+
+<ParamField path="apellido" type="string" required>
+  Client's last name. Maximum 20 characters
+</ParamField>
+
+<ParamField path="fecha_nacimiento" type="date" required>
+  Client's date of birth in ISO 8601 format (YYYY-MM-DD)
+</ParamField>
+
+<ParamField path="email" type="string" required>
+  Client's email address. Maximum 40 characters
+</ParamField>
+
+<ParamField path="sexo" type="integer" required>
+  Client's gender represented as an integer:
+  - `0`: Female
+  - `1`: Male
+</ParamField>
+
+<ParamField path="telefono" type="string" required>
+  Client's phone number. Maximum 10 characters
+</ParamField>
+
+<ParamField path="id_ciudad" type="integer" required>
+  Foreign key reference to the Ciudad (City) model. Defaults to 1
+</ParamField>
+
+<ParamField path="id_pais" type="integer" required>
+  Foreign key reference to the Pais (Country) model. Defaults to 1
+</ParamField>
+
+<ParamField path="id_empresa" type="integer" optional>
+  Foreign key reference to the Empresa (Company) model. Can be null or blank if the client is not associated with a company
+</ParamField>
+
+<ParamField path="id_campana" type="integer" optional>
+  Foreign key reference to the CampanaPublicitaria (Advertising Campaign) model. Can be null or blank if not currently enrolled in a campaign
+</ParamField>
+
+<ParamField path="estado" type="integer" required>
+  Current status of the client:
+  - `0`: Inactive
+  - `1`: Active
+  - `3`: Disabled
+</ParamField>
+
+## Endpoints
+
+### List All Clients
+
+<Card title="GET /Database/clientes/" icon="list">
+  Retrieve a list of all clients in the system
+</Card>
+
+#### Response
+
+<ResponseField name="id_cliente" type="integer">
+  Client's unique identifier
+</ResponseField>
+
+<ResponseField name="id_usuario" type="integer">
+  Associated user account ID
+</ResponseField>
+
+<ResponseField name="cedula_cliente" type="string">
+  Client's identification number
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  Client's first name
+</ResponseField>
+
+<ResponseField name="apellido" type="string">
+  Client's last name
+</ResponseField>
+
+<ResponseField name="fecha_nacimiento" type="date">
+  Client's date of birth
+</ResponseField>
+
+<ResponseField name="email" type="string">
+  Client's email address
+</ResponseField>
+
+<ResponseField name="sexo" type="integer">
+  Client's gender (0: Female, 1: Male)
+</ResponseField>
+
+<ResponseField name="telefono" type="string">
+  Client's phone number
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer">
+  City ID where the client is located
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  Country ID where the client is located
+</ResponseField>
+
+<ResponseField name="id_empresa" type="integer">
+  Associated company ID (nullable)
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer">
+  Associated campaign ID (nullable)
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Client's status (0: Inactive, 1: Active, 3: Disabled)
+</ResponseField>
+
+#### Example Response
+
+```json
+[
+  {
+    "id_cliente": 1,
+    "id_usuario": 45,
+    "cedula_cliente": "1234567890",
+    "nombre": "Ana",
+    "apellido": "García",
+    "fecha_nacimiento": "1995-08-20",
+    "email": "ana.garcia@example.com",
+    "sexo": 0,
+    "telefono": "0987654321",
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "id_empresa": 5,
+    "id_campana": 12,
+    "estado": 1
+  },
+  {
+    "id_cliente": 2,
+    "id_usuario": 52,
+    "cedula_cliente": "0987654321",
+    "nombre": "Pedro",
+    "apellido": "Sánchez",
+    "fecha_nacimiento": "1987-12-05",
+    "email": "pedro.sanchez@example.com",
+    "sexo": 1,
+    "telefono": "0912345678",
+    "id_ciudad": 2,
+    "id_pais": 1,
+    "id_empresa": null,
+    "id_campana": null,
+    "estado": 1
+  }
+]
+```
+
+### Get Single Client
+
+<Card title="GET /Database/clientes/{id}/" icon="user">
+  Retrieve details of a specific client by ID
+</Card>
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the client
+</ParamField>
+
+#### Example Response
+
+```json
+{
+  "id_cliente": 1,
+  "id_usuario": 45,
+  "cedula_cliente": "1234567890",
+  "nombre": "Ana",
+  "apellido": "García",
+  "fecha_nacimiento": "1995-08-20",
+  "email": "ana.garcia@example.com",
+  "sexo": 0,
+  "telefono": "0987654321",
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "id_empresa": 5,
+  "id_campana": 12,
+  "estado": 1
+}
+```
+
+### Create New Client
+
+<Card title="POST /Database/clientes/" icon="plus">
+  Create a new client in the system
+</Card>
+
+#### Request Body
+
+<ParamField body="id_usuario" type="integer" required>
+  User account ID to associate with this client
+</ParamField>
+
+<ParamField body="cedula_cliente" type="string" required>
+  Client's identification number (max 10 characters)
+</ParamField>
+
+<ParamField body="nombre" type="string" required>
+  Client's first name (max 20 characters)
+</ParamField>
+
+<ParamField body="apellido" type="string" required>
+  Client's last name (max 20 characters)
+</ParamField>
+
+<ParamField body="fecha_nacimiento" type="date" required>
+  Client's date of birth (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="email" type="string" required>
+  Client's email address (max 40 characters)
+</ParamField>
+
+<ParamField body="sexo" type="integer" required>
+  Client's gender (0 or 1)
+</ParamField>
+
+<ParamField body="telefono" type="string" required>
+  Client's phone number (max 10 characters)
+</ParamField>
+
+<ParamField body="id_ciudad" type="integer" default="1">
+  City ID (defaults to 1 if not provided)
+</ParamField>
+
+<ParamField body="id_pais" type="integer" default="1">
+  Country ID (defaults to 1 if not provided)
+</ParamField>
+
+<ParamField body="id_empresa" type="integer" optional>
+  Company ID to associate with this client (optional)
+</ParamField>
+
+<ParamField body="id_campana" type="integer" optional>
+  Campaign ID to associate with this client (optional)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Client status (0, 1, or 3)
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "id_usuario": 60,
+  "cedula_cliente": "1122334455",
+  "nombre": "Laura",
+  "apellido": "Mendoza",
+  "fecha_nacimiento": "1993-04-12",
+  "email": "laura.mendoza@example.com",
+  "sexo": 0,
+  "telefono": "0998877665",
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "id_empresa": 3,
+  "id_campana": 8,
+  "estado": 1
+}
+```
+
+#### Example Response
+
+```json
+{
+  "id_cliente": 3,
+  "id_usuario": 60,
+  "cedula_cliente": "1122334455",
+  "nombre": "Laura",
+  "apellido": "Mendoza",
+  "fecha_nacimiento": "1993-04-12",
+  "email": "laura.mendoza@example.com",
+  "sexo": 0,
+  "telefono": "0998877665",
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "id_empresa": 3,
+  "id_campana": 8,
+  "estado": 1
+}
+```
+
+### Update Client
+
+<Card title="PUT /Database/clientes/{id}/" icon="pen">
+  Update an existing client's information (full update)
+</Card>
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the client to update
+</ParamField>
+
+#### Request Body
+
+All fields from the create request are required for a full update.
+
+#### Example Request
+
+```json
+{
+  "id_usuario": 60,
+  "cedula_cliente": "1122334455",
+  "nombre": "Laura Patricia",
+  "apellido": "Mendoza López",
+  "fecha_nacimiento": "1993-04-12",
+  "email": "laura.mendoza@example.com",
+  "sexo": 0,
+  "telefono": "0998877665",
+  "id_ciudad": 2,
+  "id_pais": 1,
+  "id_empresa": 3,
+  "id_campana": 10,
+  "estado": 1
+}
+```
+
+### Partial Update Client
+
+<Card title="PATCH /Database/clientes/{id}/" icon="pen-to-square">
+  Partially update a client's information
+</Card>
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the client to update
+</ParamField>
+
+#### Request Body
+
+Include only the fields you want to update.
+
+#### Example Request
+
+```json
+{
+  "id_campana": 15,
+  "estado": 1
+}
+```
+
+### Delete Client
+
+<Card title="DELETE /Database/clientes/{id}/" icon="trash">
+  Delete a client from the system
+</Card>
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the client to delete
+</ParamField>
+
+#### Response
+
+```
+HTTP 204 No Content
+```
+
+## Relationships
+
+### Related Models
+
+The Cliente model has foreign key relationships with:
+
+- **Usuario** (`id_usuario`): Links to the user account. Each client must have an associated user account with authentication credentials
+- **Ciudad** (`id_ciudad`): Links to the city where the client is located
+- **Pais** (`id_pais`): Links to the country where the client is located
+- **Empresa** (`id_empresa`): Optional link to a company that the client represents or works with
+- **CampanaPublicitaria** (`id_campana`): Optional link to an active advertising campaign the client is participating in
+
+### Referenced By
+
+Clients are referenced by:
+
+- **Vehiculo** model via `id_cliente` - Links vehicles owned by clients
+- **MovimientoCapital** model - Tracks financial transactions associated with clients
+
+## Business Logic
+
+### Client Registration Flow
+
+1. A user account must be created first with appropriate role
+2. The Cliente record is then created linking to the user via `id_usuario`
+3. Clients can optionally be associated with a company during or after registration
+4. Clients can enroll in advertising campaigns by setting `id_campana`
+
+### Campaign Association
+
+- Clients can be associated with advertising campaigns to track their participation
+- The `id_campana` field allows tracking which campaign a client is currently active in
+- Multiple clients can be associated with the same campaign
+- Clients can change campaigns by updating the `id_campana` field
+
+### Company Association
+
+- Clients can represent companies by linking via `id_empresa`
+- This is useful for corporate clients who manage vehicles on behalf of their organization
+- The company association is optional and can be null for individual clients
+
+### Status Management
+
+- **Active (1)**: Client can participate in campaigns and use the system
+- **Inactive (0)**: Client account exists but is not currently active
+- **Disabled (3)**: Client has been disabled by administrators and cannot access the system
+
+## Validation Notes
+
+- `cedula_cliente` should be exactly 10 digits for most Latin American countries
+- `email` must be a valid email format
+- `telefono` should follow local phone number format (typically 10 digits)
+- `id_usuario` must reference an existing user with appropriate client role
+- `id_empresa` and `id_campana` are optional and can be null
+- The same `cedula_cliente` should not be registered multiple times
+
+## Query Parameters
+
+The API supports filtering clients using query parameters:
+
+- `?estado=1` - Filter by status
+- `?id_empresa=5` - Filter by company
+- `?id_campana=12` - Filter by campaign
+- `?id_ciudad=2` - Filter by city
+- `?id_pais=1` - Filter by country
+
+## Example Use Cases
+
+### Creating a New Individual Client
+
+```bash
+curl -X POST https://api.example.com/Database/clientes/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_usuario": 75,
+    "cedula_cliente": "5544332211",
+    "nombre": "Roberto",
+    "apellido": "Torres",
+    "fecha_nacimiento": "1991-09-25",
+    "email": "roberto.torres@example.com",
+    "sexo": 1,
+    "telefono": "0991234567",
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+  }'
+```
+
+### Enrolling a Client in a Campaign
+
+```bash
+curl -X PATCH https://api.example.com/Database/clientes/1/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_campana": 20
+  }'
+```
+
+### Filtering Active Clients by Company
+
+```bash
+curl -X GET "https://api.example.com/Database/clientes/?estado=1&id_empresa=5"
+```
+
+### Updating Client Contact Information
+
+```bash
+curl -X PATCH https://api.example.com/Database/clientes/3/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "new.email@example.com",
+    "telefono": "0999988777"
+  }'
+```
+
+### Deactivating a Client
+
+```bash
+curl -X PATCH https://api.example.com/Database/clientes/2/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "estado": 0
+  }'
+```
+
+## Financial Integration
+
+Clients are connected to the financial system through the `MovimientoCapital` model, which tracks:
+
+- Capital transactions related to campaigns
+- Payment history
+- Account balances
+- Transaction descriptions
+
+This allows for complete financial tracking per client across their campaign participation.
+
+## Data Privacy Notes
+
+- Client personal information (cedula, email, phone) should be handled according to data protection regulations
+- Email addresses should be validated and verified
+- Phone numbers may be used for notifications and authentication
+- Identification numbers (cedula) are sensitive and should be protected

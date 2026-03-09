@@ -1,0 +1,346 @@
+---
+title: 'Estado API'
+description: 'Manage system states and status values'
+---
+
+## Overview
+
+The Estado (State/Status) API manages system-wide state definitions used across multiple entities in the RestAPI system.
+
+## Model Structure
+
+The Estado model represents various states that entities can have throughout the system, such as active, inactive, pending, approved, etc.
+
+### Fields
+
+<ParamField path="id" type="integer" required>
+  Primary key. Auto-incremented unique identifier for the state.
+</ParamField>
+
+<ParamField path="id_estado" type="integer" required>
+  State identifier code. Used for programmatic state checking.
+  
+  Default: `0`
+</ParamField>
+
+<ParamField path="nombre" type="string" required>
+  State name. Human-readable label for the state. Maximum 30 characters.
+</ParamField>
+
+## Endpoints
+
+### List States
+
+```http
+GET /api/estados/
+```
+
+Retrieves all available states in the system.
+
+#### Response
+
+<ResponseField name="id" type="integer">
+  Unique database identifier
+</ResponseField>
+
+<ResponseField name="id_estado" type="integer">
+  State identifier code
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  State name
+</ResponseField>
+
+#### Example Response
+
+```json
+[
+  {
+    "id": 1,
+    "id_estado": 0,
+    "nombre": "Inactivo"
+  },
+  {
+    "id": 2,
+    "id_estado": 1,
+    "nombre": "Activo"
+  },
+  {
+    "id": 3,
+    "id_estado": 2,
+    "nombre": "Pendiente"
+  },
+  {
+    "id": 4,
+    "id_estado": 3,
+    "nombre": "Deshabilitado"
+  },
+  {
+    "id": 5,
+    "id_estado": 4,
+    "nombre": "Aprobado"
+  },
+  {
+    "id": 6,
+    "id_estado": 5,
+    "nombre": "Rechazado"
+  }
+]
+```
+
+### Get State
+
+```http
+GET /api/estados/{id}/
+```
+
+Retrieves a specific state by its database ID.
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique database identifier of the state to retrieve
+</ParamField>
+
+#### Response
+
+<ResponseField name="id" type="integer">
+  Unique database identifier
+</ResponseField>
+
+<ResponseField name="id_estado" type="integer">
+  State identifier code
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  State name
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "id": 2,
+  "id_estado": 1,
+  "nombre": "Activo"
+}
+```
+
+### Get State by Code
+
+```http
+GET /api/estados/?id_estado={id_estado}
+```
+
+Retrieves a state by its identifier code.
+
+#### Query Parameters
+
+<ParamField query="id_estado" type="integer" required>
+  The state identifier code to filter by
+</ParamField>
+
+#### Response
+
+Returns an array of matching states.
+
+#### Example Response
+
+```json
+[
+  {
+    "id": 2,
+    "id_estado": 1,
+    "nombre": "Activo"
+  }
+]
+```
+
+### Create State
+
+```http
+POST /api/estados/
+```
+
+Creates a new state definition.
+
+#### Request Body
+
+<ParamField body="id_estado" type="integer" required>
+  State identifier code. Should be unique within the system.
+</ParamField>
+
+<ParamField body="nombre" type="string" required>
+  State name. Maximum 30 characters.
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "id_estado": 6,
+  "nombre": "En Proceso"
+}
+```
+
+#### Response
+
+<ResponseField name="id" type="integer">
+  Unique database identifier for the newly created state
+</ResponseField>
+
+<ResponseField name="id_estado" type="integer">
+  State identifier code
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  State name
+</ResponseField>
+
+### Update State
+
+```http
+PUT /api/estados/{id}/
+```
+
+Updates an existing state definition.
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique database identifier of the state to update
+</ParamField>
+
+#### Request Body
+
+<ParamField body="id_estado" type="integer" required>
+  Updated state identifier code
+</ParamField>
+
+<ParamField body="nombre" type="string" required>
+  Updated state name. Maximum 30 characters.
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "id_estado": 1,
+  "nombre": "Activo - Verificado"
+}
+```
+
+### Partial Update State
+
+```http
+PATCH /api/estados/{id}/
+```
+
+Partially updates a state. Only provided fields will be updated.
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique database identifier of the state to update
+</ParamField>
+
+#### Request Body
+
+Any subset of the state fields can be provided.
+
+#### Example Request
+
+```json
+{
+  "nombre": "Activo"
+}
+```
+
+### Delete State
+
+```http
+DELETE /api/estados/{id}/
+```
+
+Deletes a state from the system.
+
+<Warning>
+  Deleting a state that is referenced by other entities (like Empresa) will fail due to foreign key constraints. Ensure no entities reference this state before deletion.
+</Warning>
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique database identifier of the state to delete
+</ParamField>
+
+#### Response
+
+Returns 204 No Content on successful deletion.
+
+## Common State Codes
+
+The following state codes are commonly used throughout the system:
+
+| id_estado | nombre | Description |
+|-----------|--------|-------------|
+| 0 | Inactivo | Entity is inactive or not in use |
+| 1 | Activo | Entity is active and operational |
+| 2 | Pendiente | Entity is pending approval or processing |
+| 3 | Deshabilitado | Entity is disabled by administrator |
+| 4 | Aprobado | Entity has been approved |
+| 5 | Rechazado | Entity has been rejected |
+
+## Relationships
+
+The Estado model is referenced by:
+- **Empresa**: Companies have a state (active, inactive, etc.)
+
+Many other models use integer state fields directly rather than foreign keys:
+- **Usuario**: User status (0=Inactive, 1=Active, 3=Disabled)
+- **RolUsuario**: Role status
+- **Vehiculo**: Vehicle status
+- **Publicista**: Advertiser status
+- **Chofer**: Driver status
+- **Cliente**: Client status
+- **CampanaPublicitaria**: Campaign status
+- **Sector**: Geographic sector status
+
+## Usage Notes
+
+- The `id_estado` field is used for programmatic state checking in business logic
+- The `nombre` field provides human-readable labels for UI display
+- While some models use Estado as a foreign key, many use direct integer fields for state
+- Consider standardizing state codes across the application for consistency
+- State 0 typically represents inactive/initial state
+- State 1 typically represents active/approved state
+- Higher state codes are used for specific statuses like pending, disabled, rejected
+
+## Best Practices
+
+1. **Consistency**: Use consistent `id_estado` values across the application
+2. **Documentation**: Keep state definitions well-documented for developers
+3. **Validation**: Validate state transitions in business logic (e.g., can't go from Rejected directly to Active)
+4. **Audit**: Consider logging state changes for audit purposes
+5. **Localization**: The `nombre` field should be in the application's primary language (Spanish in this case)
+
+## State Transition Examples
+
+### Common State Flows
+
+#### User Registration Flow
+```
+Inactivo (0) → Activo (1) → Deshabilitado (3)
+```
+
+#### Campaign Approval Flow
+```
+Pendiente (2) → Aprobado (4) → Activo (1)
+Pendiente (2) → Rechazado (5)
+```
+
+#### Entity Lifecycle
+```
+Activo (1) → Inactivo (0) → [Deleted]
+Activo (1) → Deshabilitado (3) → Activo (1)
+```

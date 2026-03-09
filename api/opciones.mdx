@@ -1,0 +1,394 @@
+---
+title: 'Opciones'
+api: 'GET /api/opciones'
+---
+
+# Opciones API
+
+The Opciones (Options/Actions) endpoint manages action-level entries in the hierarchical permission system. Opciones belong to Vistas and represent specific actions users can perform.
+
+## Hierarchy
+
+```
+Menu (Top Level)
+ └── Vista (Views within menu)
+     └── Opciones (Actions within view) ← Current Level
+```
+
+## Model Structure
+
+The Opciones model represents the lowest level of the permission hierarchy, defining specific actions available within a Vista.
+
+### Fields
+
+<ParamField path="id_opcion" type="integer" required>
+  Auto-incremented primary key identifying the opcion
+</ParamField>
+
+<ParamField path="id_vista" type="integer" required>
+  Foreign key reference to the parent Vista
+</ParamField>
+
+<ParamField path="nombre_vista" type="string" required>
+  Name of the action/option (max 40 characters)
+  Examples: "Crear", "Editar", "Eliminar", "Ver", "Exportar"
+</ParamField>
+
+<ParamField path="descripcion" type="string">
+  Description of the action's purpose (max 40 characters)
+</ParamField>
+
+<ParamField path="estado" type="integer" required>
+  Status of the opcion
+  - `0`: Inactive
+  - `1`: Active
+</ParamField>
+
+## Endpoints
+
+### List All Opciones
+
+```http
+GET /api/opciones/
+```
+
+Retrieve all opciones in the system.
+
+#### Query Parameters
+
+<ParamField query="id_vista" type="integer">
+  Filter opciones by vista ID
+</ParamField>
+
+<ParamField query="estado" type="integer">
+  Filter by status (0: Inactive, 1: Active)
+</ParamField>
+
+#### Response
+
+<ResponseField name="results" type="array">
+  <ResponseField name="id_opcion" type="integer">
+    Unique identifier for the opcion
+  </ResponseField>
+  <ResponseField name="id_vista" type="integer">
+    Parent vista ID
+  </ResponseField>
+  <ResponseField name="nombre_vista" type="string">
+    Action name
+  </ResponseField>
+  <ResponseField name="descripcion" type="string">
+    Action description
+  </ResponseField>
+  <ResponseField name="estado" type="integer">
+    Action status
+  </ResponseField>
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "results": [
+    {
+      "id_opcion": 1,
+      "id_vista": 2,
+      "nombre_vista": "Crear",
+      "descripcion": "Create new campaign",
+      "estado": 1
+    },
+    {
+      "id_opcion": 2,
+      "id_vista": 2,
+      "nombre_vista": "Editar",
+      "descripcion": "Edit existing campaign",
+      "estado": 1
+    },
+    {
+      "id_opcion": 3,
+      "id_vista": 2,
+      "nombre_vista": "Eliminar",
+      "descripcion": "Delete campaign",
+      "estado": 1
+    },
+    {
+      "id_opcion": 4,
+      "id_vista": 2,
+      "nombre_vista": "Ver",
+      "descripcion": "View campaign details",
+      "estado": 1
+    }
+  ]
+}
+```
+
+### Get Opcion by ID
+
+```http
+GET /api/opciones/{id_opcion}/
+```
+
+Retrieve details of a specific opcion.
+
+#### Path Parameters
+
+<ParamField path="id_opcion" type="integer" required>
+  The unique identifier of the opcion
+</ParamField>
+
+#### Response
+
+<ResponseField name="id_opcion" type="integer">
+  Unique identifier for the opcion
+</ResponseField>
+
+<ResponseField name="id_vista" type="integer">
+  Parent vista ID
+</ResponseField>
+
+<ResponseField name="nombre_vista" type="string">
+  Action name
+</ResponseField>
+
+<ResponseField name="descripcion" type="string">
+  Action description
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Action status
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "id_opcion": 1,
+  "id_vista": 2,
+  "nombre_vista": "Crear",
+  "descripcion": "Create new campaign",
+  "estado": 1
+}
+```
+
+### Get Opciones by Vista
+
+```http
+GET /api/opciones/?id_vista={id_vista}
+```
+
+Retrieve all opciones belonging to a specific vista.
+
+#### Example Response
+
+```json
+{
+  "results": [
+    {
+      "id_opcion": 1,
+      "id_vista": 2,
+      "nombre_vista": "Crear",
+      "descripcion": "Create new campaign",
+      "estado": 1
+    },
+    {
+      "id_opcion": 2,
+      "id_vista": 2,
+      "nombre_vista": "Editar",
+      "descripcion": "Edit existing campaign",
+      "estado": 1
+    }
+  ]
+}
+```
+
+### Create Opcion
+
+```http
+POST /api/opciones/
+```
+
+Create a new action option within a vista.
+
+#### Request Body
+
+<ParamField body="id_vista" type="integer" required>
+  The ID of the parent vista
+</ParamField>
+
+<ParamField body="nombre_vista" type="string" required>
+  Name of the action (max 40 characters)
+</ParamField>
+
+<ParamField body="descripcion" type="string">
+  Description of the action (max 40 characters)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Status of the action (0: Inactive, 1: Active)
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "id_vista": 2,
+  "nombre_vista": "Exportar",
+  "descripcion": "Export campaign data",
+  "estado": 1
+}
+```
+
+#### Response
+
+<ResponseField name="id_opcion" type="integer">
+  The ID of the newly created opcion
+</ResponseField>
+
+<ResponseField name="id_vista" type="integer">
+  Parent vista ID
+</ResponseField>
+
+<ResponseField name="nombre_vista" type="string">
+  Action name
+</ResponseField>
+
+<ResponseField name="descripcion" type="string">
+  Action description
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Action status
+</ResponseField>
+
+### Update Opcion
+
+```http
+PUT /api/opciones/{id_opcion}/
+PATCH /api/opciones/{id_opcion}/
+```
+
+Update an existing opcion. Use PUT for full updates or PATCH for partial updates.
+
+#### Path Parameters
+
+<ParamField path="id_opcion" type="integer" required>
+  The unique identifier of the opcion to update
+</ParamField>
+
+#### Request Body
+
+<ParamField body="id_vista" type="integer">
+  Updated parent vista ID
+</ParamField>
+
+<ParamField body="nombre_vista" type="string">
+  Updated action name
+</ParamField>
+
+<ParamField body="descripcion" type="string">
+  Updated description
+</ParamField>
+
+<ParamField body="estado" type="integer">
+  Updated status
+</ParamField>
+
+### Delete Opcion
+
+```http
+DELETE /api/opciones/{id_opcion}/
+```
+
+Delete an opcion from the system.
+
+#### Path Parameters
+
+<ParamField path="id_opcion" type="integer" required>
+  The unique identifier of the opcion to delete
+</ParamField>
+
+## Complete Hierarchy Example
+
+Here's a complete example showing the full permission hierarchy:
+
+```json
+{
+  "menu": {
+    "id_menu": 2,
+    "nombre_menu": "Campañas",
+    "descripcion": "Campaign management",
+    "vistas": [
+      {
+        "id_vista": 2,
+        "nombre_vista": "Gestión de Campañas",
+        "descripcion": "Manage campaigns",
+        "opciones": [
+          {
+            "id_opcion": 1,
+            "nombre_vista": "Crear",
+            "descripcion": "Create new campaign"
+          },
+          {
+            "id_opcion": 2,
+            "nombre_vista": "Editar",
+            "descripcion": "Edit campaign"
+          },
+          {
+            "id_opcion": 3,
+            "nombre_vista": "Eliminar",
+            "descripcion": "Delete campaign"
+          },
+          {
+            "id_opcion": 4,
+            "nombre_vista": "Ver",
+            "descripcion": "View campaign details"
+          }
+        ]
+      },
+      {
+        "id_vista": 3,
+        "nombre_vista": "Estadísticas",
+        "descripcion": "Campaign statistics",
+        "opciones": [
+          {
+            "id_opcion": 5,
+            "nombre_vista": "Ver Reportes",
+            "descripcion": "View campaign reports"
+          },
+          {
+            "id_opcion": 6,
+            "nombre_vista": "Exportar",
+            "descripcion": "Export statistics"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## Common Action Names
+
+Typical action names used in the system:
+
+- **Crear** - Create new records
+- **Editar** - Edit existing records
+- **Eliminar** - Delete records
+- **Ver** - View/read records
+- **Exportar** - Export data
+- **Importar** - Import data
+- **Aprobar** - Approve records
+- **Rechazar** - Reject records
+
+## Related Endpoints
+
+- [Menus](/api/menus) - Top-level menus
+- [Vistas](/api/vistas) - Parent vistas containing opciones
+- [DetallePermisos](/api/detallepermisos) - Detailed action-level permissions
+
+## Usage Notes
+
+- Opciones must belong to a valid Vista (id_vista foreign key)
+- Each opcion represents a specific action within a vista
+- Use DetallePermisos to control whether specific opciones are allowed for a role
+- Set estado to 0 to disable an action rather than deleting it
+- Action names should be consistent across similar vistas for better UX

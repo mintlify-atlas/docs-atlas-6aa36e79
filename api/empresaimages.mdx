@@ -1,0 +1,340 @@
+---
+title: 'EmpresaImages API'
+description: 'API endpoints for managing company images (logos and banners)'
+---
+
+## Overview
+
+The EmpresaImages API manages visual assets for companies, including logos and banner images. Each company can have associated image files that are uploaded and stored on the server.
+
+## Base Endpoint
+
+```
+POST   /Database/Database/empresaimages/
+GET    /Database/Database/empresaimages/
+GET    /Database/Database/empresaimages/{id_images}/
+PUT    /Database/Database/empresaimages/{id_images}/
+PATCH  /Database/Database/empresaimages/{id_images}/
+DELETE /Database/Database/empresaimages/{id_images}/
+```
+
+## The EmpresaImages Object
+
+<ResponseField name="id_images" type="integer" required>
+  Unique identifier for the image record (auto-generated)
+</ResponseField>
+
+<ResponseField name="id_empresa" type="integer" required>
+  Foreign key reference to the Empresa (Company) that owns these images
+</ResponseField>
+
+<ResponseField name="logo" type="file" required>
+  Company logo image file. Uploaded to `empresas/logos/` directory. Supported formats: JPG, PNG, GIF
+</ResponseField>
+
+<ResponseField name="banner" type="file" required>
+  Company banner image file. Uploaded to `empresas/banners/` directory. Supported formats: JPG, PNG, GIF
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Status of the image record. Defaults to 1 (active)
+</ResponseField>
+
+## Image Upload Guidelines
+
+<Info>
+  **Recommended Specifications:**
+  - **Logo**: 512x512px (square), PNG with transparent background preferred
+  - **Banner**: 1200x400px (3:1 ratio), JPG or PNG
+  - **Maximum file size**: 5MB per image
+  - **Formats**: JPG, PNG, GIF
+</Info>
+
+## Upload Company Images
+
+When creating or updating company images, use `multipart/form-data` encoding to handle file uploads.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.example.com/Database/Database/empresaimages/ \
+  -H "Content-Type: multipart/form-data" \
+  -F "id_empresa=12" \
+  -F "logo=@/path/to/logo.png" \
+  -F "banner=@/path/to/banner.jpg" \
+  -F "estado=1"
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaimages/"
+
+files = {
+    'logo': ('logo.png', open('logo.png', 'rb'), 'image/png'),
+    'banner': ('banner.jpg', open('banner.jpg', 'rb'), 'image/jpeg')
+}
+
+data = {
+    'id_empresa': 12,
+    'estado': 1
+}
+
+response = requests.post(url, files=files, data=data)
+print(response.json())
+```
+
+```javascript JavaScript
+const formData = new FormData();
+formData.append('id_empresa', 12);
+formData.append('logo', logoFile); // File object from input
+formData.append('banner', bannerFile); // File object from input
+formData.append('estado', 1);
+
+fetch('https://api.example.com/Database/Database/empresaimages/', {
+  method: 'POST',
+  body: formData
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_images": 8,
+  "id_empresa": 12,
+  "logo": "/media/empresas/logos/logo_techcorp_2024.png",
+  "banner": "/media/empresas/banners/banner_techcorp_2024.jpg",
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## Retrieve Company Images
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.example.com/Database/Database/empresaimages/8/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaimages/8/"
+response = requests.get(url)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaimages/8/')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_images": 8,
+  "id_empresa": 12,
+  "logo": "/media/empresas/logos/logo_techcorp_2024.png",
+  "banner": "/media/empresas/banners/banner_techcorp_2024.jpg",
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## List All Company Images
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.example.com/Database/Database/empresaimages/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaimages/"
+response = requests.get(url)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaimages/')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id_images": 8,
+    "id_empresa": 12,
+    "logo": "/media/empresas/logos/logo_techcorp_2024.png",
+    "banner": "/media/empresas/banners/banner_techcorp_2024.jpg",
+    "estado": 1
+  },
+  {
+    "id_images": 9,
+    "id_empresa": 13,
+    "logo": "/media/empresas/logos/logo_marketing_plus.png",
+    "banner": "/media/empresas/banners/banner_marketing_plus.jpg",
+    "estado": 1
+  }
+]
+```
+</ResponseExample>
+
+## Update Company Images
+
+You can update individual images or both at once using PUT or PATCH methods.
+
+<RequestExample>
+```bash cURL
+curl -X PATCH https://api.example.com/Database/Database/empresaimages/8/ \
+  -H "Content-Type: multipart/form-data" \
+  -F "logo=@/path/to/new_logo.png"
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaimages/8/"
+
+files = {
+    'logo': ('new_logo.png', open('new_logo.png', 'rb'), 'image/png')
+}
+
+response = requests.patch(url, files=files)
+print(response.json())
+```
+
+```javascript JavaScript
+const formData = new FormData();
+formData.append('logo', newLogoFile);
+
+fetch('https://api.example.com/Database/Database/empresaimages/8/', {
+  method: 'PATCH',
+  body: formData
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_images": 8,
+  "id_empresa": 12,
+  "logo": "/media/empresas/logos/new_logo_techcorp_2024.png",
+  "banner": "/media/empresas/banners/banner_techcorp_2024.jpg",
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## Delete Company Images
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://api.example.com/Database/Database/empresaimages/8/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaimages/8/"
+response = requests.delete(url)
+print(response.status_code)
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaimages/8/', {
+  method: 'DELETE'
+})
+.then(response => console.log(response.status));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+HTTP 204 No Content
+```
+</ResponseExample>
+
+## Filter Images by Company
+
+You can filter images by company using query parameters:
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.example.com/Database/Database/empresaimages/?id_empresa=12"
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaimages/"
+params = {'id_empresa': 12}
+
+response = requests.get(url, params=params)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaimages/?id_empresa=12')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id_images": 8,
+    "id_empresa": 12,
+    "logo": "/media/empresas/logos/logo_techcorp_2024.png",
+    "banner": "/media/empresas/banners/banner_techcorp_2024.jpg",
+    "estado": 1
+  }
+]
+```
+</ResponseExample>
+
+## Image File Paths
+
+<Warning>
+  The API returns relative paths to image files. To construct full URLs:
+  - Production: `https://yourdomain.com{logo_path}`
+  - Development: `http://localhost:8000{logo_path}`
+</Warning>
+
+### Example Full URL Construction
+
+```python Python
+base_url = "https://yourdomain.com"
+logo_url = base_url + response_data['logo']
+banner_url = base_url + response_data['banner']
+
+print(f"Logo: {logo_url}")
+print(f"Banner: {banner_url}")
+```
+
+```javascript JavaScript
+const baseUrl = 'https://yourdomain.com';
+const logoUrl = baseUrl + data.logo;
+const bannerUrl = baseUrl + data.banner;
+
+console.log(`Logo: ${logoUrl}`);
+console.log(`Banner: ${bannerUrl}`);
+```
+
+## Related Endpoints
+
+- [Empresas API](/api/empresas) - Manage company information
+- [Campaigns API](/api/campanaspublicitarias) - View campaigns using company branding

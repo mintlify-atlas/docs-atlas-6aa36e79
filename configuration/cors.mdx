@@ -1,0 +1,333 @@
+---
+title: 'CORS Configuration'
+description: 'Cross-Origin Resource Sharing (CORS) setup using django-cors-headers'
+icon: 'globe'
+---
+
+## Overview
+
+The RestAPI project uses `django-cors-headers` to handle Cross-Origin Resource Sharing (CORS). This allows your API to accept requests from frontend applications hosted on different domains.
+
+## Installation
+
+The `django-cors-headers` package is included in the project. Verify it's in your `INSTALLED_APPS`:
+
+```python RestAPI/settings.py
+INSTALLED_APPS = [
+    # ...
+    'corsheaders',
+    'rest_framework',
+    'task_aplication'
+]
+```
+
+And in `MIDDLEWARE`:
+
+```python RestAPI/settings.py
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Must be before CommonMiddleware
+    'django.middleware.common.CommonMiddleware',
+    # ...
+]
+```
+
+<Note>
+The `CorsMiddleware` must be placed before `CommonMiddleware` in the middleware list.
+</Note>
+
+## Configuration Modes
+
+CORS behavior changes based on the `DEBUG` environment variable:
+
+### Development Mode (DEBUG=True)
+
+In development, CORS is configured permissively to allow easy testing:
+
+```python RestAPI/settings.py
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+    ALLOWED_HOSTS = ['*']
+    CORS_ALLOW_HEADERS = ['*']
+```
+
+<ParamField path="CORS_ALLOW_ALL_ORIGINS" type="boolean" default="True">
+  Allows requests from any origin in development mode.
+</ParamField>
+
+<ParamField path="ALLOWED_HOSTS" type="list" default="['*']">
+  Accepts requests to any host in development.
+</ParamField>
+
+<ParamField path="CORS_ALLOW_HEADERS" type="list" default="['*']">
+  Allows all HTTP headers in development.
+</ParamField>
+
+<Warning>
+Development settings are insecure and should never be used in production. Always set `DEBUG=False` in production environments.
+</Warning>
+
+### Production Mode (DEBUG=False)
+
+In production, CORS is restricted to specific trusted origins:
+
+```python RestAPI/settings.py
+if not DEBUG:
+    CORS_ALLOW_CREDENTIALS = True
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = [
+        'migoadvs.pythonanywhere.com',
+    ]
+    ALLOWED_HOSTS = [
+        'localhost',
+        '127.0.0.1',
+        'migoadvs.pythonanywhere.com',
+    ]
+```
+
+<ParamField path="CORS_ALLOW_CREDENTIALS" type="boolean" default="True">
+  Allows cookies and authentication credentials to be included in cross-origin requests.
+</ParamField>
+
+<ParamField path="CORS_ALLOW_ALL_ORIGINS" type="boolean" default="False">
+  Disables unrestricted CORS access in production.
+</ParamField>
+
+<ParamField path="CORS_ALLOWED_ORIGINS" type="list" required>
+  Whitelist of allowed origins in production. Only these domains can make requests to your API.
+  
+  **Example:**
+  ```python
+  CORS_ALLOWED_ORIGINS = [
+      'https://myapp.com',
+      'https://www.myapp.com',
+      'https://app.example.com',
+  ]
+  ```
+</ParamField>
+
+<ParamField path="ALLOWED_HOSTS" type="list" required>
+  List of host/domain names that Django will serve. This is a security measure to prevent HTTP Host header attacks.
+</ParamField>
+
+## Allowed HTTP Methods
+
+The API accepts the following HTTP methods:
+
+```python RestAPI/settings.py
+CORS_ALLOW_METHODS = (
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'DELETE',
+)
+```
+
+This configuration applies to both development and production environments.
+
+## Allowed Headers
+
+In production mode, specific headers are whitelisted:
+
+```python RestAPI/settings.py
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+```
+
+<Note>
+The `authorization` header is included to support JWT authentication with `rest_framework_simplejwt`.
+</Note>
+
+## Adding Custom Origins
+
+To add new allowed origins in production, update `CORS_ALLOWED_ORIGINS` in `settings.py`:
+
+<CodeGroup>
+```python Single Origin
+CORS_ALLOWED_ORIGINS = [
+    'https://myapp.com',
+    'https://migoadvs.pythonanywhere.com',
+]
+```
+
+```python Multiple Origins
+CORS_ALLOWED_ORIGINS = [
+    'https://myapp.com',
+    'https://www.myapp.com',
+    'https://app.myapp.com',
+    'https://staging.myapp.com',
+]
+```
+
+```python With Port Numbers
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:4200',
+    'https://myapp.com',
+]
+```
+</CodeGroup>
+
+<Warning>
+- Always use `https://` in production
+- Do not include trailing slashes
+- Include the full protocol and domain
+- Update `ALLOWED_HOSTS` to match
+</Warning>
+
+## Testing CORS Configuration
+
+### Development Testing
+
+With `DEBUG=True`, test from any origin:
+
+```javascript
+fetch('http://localhost:8000/api/endpoint/', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+### Production Testing
+
+Verify CORS headers are present:
+
+```bash
+curl -H "Origin: https://myapp.com" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: Content-Type" \
+  -X OPTIONS \
+  https://api.example.com/api/endpoint/ \
+  -v
+```
+
+Look for these response headers:
+
+```
+Access-Control-Allow-Origin: https://myapp.com
+Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+Access-Control-Allow-Headers: accept, authorization, content-type
+Access-Control-Allow-Credentials: true
+```
+
+## Common CORS Issues
+
+### Origin Not Allowed
+
+**Error:** `Access to fetch at '...' from origin '...' has been blocked by CORS policy`
+
+**Solution:** Add the origin to `CORS_ALLOWED_ORIGINS`:
+
+```python
+CORS_ALLOWED_ORIGINS = [
+    'https://your-frontend-domain.com',
+    # Add more origins as needed
+]
+```
+
+### Credentials Not Allowed
+
+**Error:** `The value of the 'Access-Control-Allow-Credentials' header is '' when credentials are needed`
+
+**Solution:** Ensure `CORS_ALLOW_CREDENTIALS = True` in production mode.
+
+### Method Not Allowed
+
+**Error:** `Method PUT is not allowed by Access-Control-Allow-Methods`
+
+**Solution:** Verify the method is in `CORS_ALLOW_METHODS`.
+
+### Header Not Allowed
+
+**Error:** `Request header 'Authorization' is not allowed by Access-Control-Allow-Headers`
+
+**Solution:** Add the header to `CORS_ALLOW_HEADERS` (it's already included by default).
+
+## Security Best Practices
+
+<Note>
+**Production Checklist:**
+- Set `DEBUG=False`
+- Use specific origins in `CORS_ALLOWED_ORIGINS` (never use `*`)
+- Enable `CORS_ALLOW_CREDENTIALS` only if needed
+- Use HTTPS for all production origins
+- Regularly audit allowed origins
+- Remove unused origins from the whitelist
+</Note>
+
+### Avoid Wildcards in Production
+
+Never use wildcard origins in production:
+
+```python
+# DON'T DO THIS IN PRODUCTION
+CORS_ALLOW_ALL_ORIGINS = True  # ❌ Insecure
+```
+
+Always specify exact origins:
+
+```python
+# DO THIS INSTEAD
+CORS_ALLOWED_ORIGINS = [
+    'https://myapp.com',  # ✅ Secure
+]
+```
+
+### Credentials and Authentication
+
+When using JWT authentication:
+
+```javascript Frontend Request
+fetch('https://api.example.com/api/endpoint/', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer ' + token,
+    'Content-Type': 'application/json',
+  },
+  credentials: 'include',  // Include credentials
+})
+```
+
+Ensure backend allows credentials:
+
+```python
+CORS_ALLOW_CREDENTIALS = True
+```
+
+## Advanced Configuration
+
+For more complex CORS requirements, you can add additional settings:
+
+```python RestAPI/settings.py
+# Cache preflight requests for 1 hour
+CORS_PREFLIGHT_MAX_AGE = 3600
+
+# Expose additional headers to the browser
+CORS_EXPOSE_HEADERS = [
+    'Content-Type',
+    'X-Total-Count',
+]
+
+# Allow specific origins with regex patterns
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://\w+\.myapp\.com$",
+]
+```
+
+Refer to the [django-cors-headers documentation](https://github.com/adamchainz/django-cors-headers) for all available options.

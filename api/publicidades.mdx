@@ -1,0 +1,180 @@
+---
+title: 'Publicidades'
+description: 'Manage advertisement media files for campaigns'
+---
+
+## Overview
+
+The Publicidades (Advertisements) endpoint allows you to upload and manage advertisement media files associated with specific cities and countries. This endpoint handles file uploads for advertising materials that will be displayed as part of campaigns.
+
+## Base URL
+
+```
+/api/publicidades/
+```
+
+## Endpoints
+
+### List All Advertisements
+
+<api-endpoint endpoint="GET /api/publicidades/" />
+
+Retrieve a list of all advertisement media files.
+
+**Response**
+
+<ResponseField name="id_publicidad" type="integer">
+  Unique identifier for the advertisement (auto-generated)
+</ResponseField>
+
+<ResponseField name="fecha_creacion" type="date">
+  Date when the advertisement was created (format: YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Advertisement status (0: inactive, 1: active)
+</ResponseField>
+
+<ResponseField name="imagen_publicitaria" type="file">
+  The advertisement media file (image, video, or other supported format). Uploaded files are stored in the `ads/` directory.
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer">
+  Foreign key to the city where this advertisement is targeted
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  Foreign key to the country where this advertisement is targeted
+</ResponseField>
+
+<ResponseField name="fecha_modificacion" type="date">
+  Date when the advertisement was last modified (format: YYYY-MM-DD)
+</ResponseField>
+
+### Create an Advertisement
+
+<api-endpoint endpoint="POST /api/publicidades/" />
+
+Upload a new advertisement media file.
+
+**Request Body**
+
+This endpoint requires `multipart/form-data` encoding for file uploads.
+
+<ParamField body="fecha_creacion" type="date" required>
+  Creation date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Advertisement status (0: inactive, 1: active)
+</ParamField>
+
+<ParamField body="imagen_publicitaria" type="file" required>
+  The advertisement media file to upload. Supported formats depend on server configuration. Files are uploaded to the `ads/` directory.
+</ParamField>
+
+<ParamField body="id_ciudad" type="integer" required>
+  ID of the target city
+</ParamField>
+
+<ParamField body="id_pais" type="integer" required>
+  ID of the target country
+</ParamField>
+
+<ParamField body="fecha_modificacion" type="date" required>
+  Modification date (YYYY-MM-DD)
+</ParamField>
+
+### Retrieve an Advertisement
+
+<api-endpoint endpoint="GET /api/publicidades/{id_publicidad}/" />
+
+Retrieve details of a specific advertisement by ID, including the file URL.
+
+### Update an Advertisement
+
+<api-endpoint endpoint="PUT /api/publicidades/{id_publicidad}/" />
+
+Update all fields of a specific advertisement, including replacing the media file.
+
+**Request Body**
+
+Use `multipart/form-data` encoding when updating the file.
+
+<api-endpoint endpoint="PATCH /api/publicidades/{id_publicidad}/" />
+
+Partially update specific fields of an advertisement. You can update metadata without replacing the file.
+
+### Delete an Advertisement
+
+<api-endpoint endpoint="DELETE /api/publicidades/{id_publicidad}/" />
+
+Delete a specific advertisement by ID. This also removes the associated media file from storage.
+
+## File Upload
+
+When uploading advertisement files:
+
+1. Use `multipart/form-data` encoding
+2. Include the file in the `imagen_publicitaria` field
+3. Files are automatically stored in the `ads/` directory
+4. The response includes the file URL path
+
+## Example Usage
+
+### Creating an Advertisement (JSON representation)
+
+```json
+{
+  "fecha_creacion": "2024-05-15",
+  "estado": 1,
+  "imagen_publicitaria": "ads/campaign_banner_2024.png",
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "fecha_modificacion": "2024-05-15"
+}
+```
+
+### Using cURL to Upload a File
+
+```bash
+curl -X POST http://your-api-url/api/publicidades/ \
+  -F "fecha_creacion=2024-05-15" \
+  -F "estado=1" \
+  -F "imagen_publicitaria=@/path/to/your/ad_image.png" \
+  -F "id_ciudad=1" \
+  -F "id_pais=1" \
+  -F "fecha_modificacion=2024-05-15" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Using JavaScript with FormData
+
+```javascript
+const formData = new FormData();
+formData.append('fecha_creacion', '2024-05-15');
+formData.append('estado', 1);
+formData.append('imagen_publicitaria', fileInput.files[0]);
+formData.append('id_ciudad', 1);
+formData.append('id_pais', 1);
+formData.append('fecha_modificacion', '2024-05-15');
+
+fetch('http://your-api-url/api/publicidades/', {
+  method: 'POST',
+  body: formData,
+  headers: {
+    'Authorization': 'Bearer YOUR_TOKEN'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+## Notes
+
+- The `imagen_publicitaria` field accepts file uploads using Django's `FileField`
+- Files are stored in the `ads/` directory relative to the media root
+- When retrieving advertisements, the file URL will be provided in the response
+- File type validation depends on server configuration
+- Consider implementing file size limits for production use
+- The endpoint returns the file path relative to the media URL

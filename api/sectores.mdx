@@ -1,0 +1,213 @@
+---
+title: 'Sectores'
+description: 'Define geographic sectors with virtual boundaries for advertising campaigns'
+---
+
+## Overview
+
+The Sectores (Sectors) endpoint allows you to create and manage geographic sectors for advertising campaigns. Each sector defines a virtual geofence with coordinate boundaries and is associated with a specific company and campaign. The geographic data is stored in JSON format for flexibility.
+
+## Base URL
+
+```
+/api/sectores/
+```
+
+## Endpoints
+
+### List All Sectors
+
+<api-endpoint endpoint="GET /api/sectores/" />
+
+Retrieve a list of all geographic sectors.
+
+**Response**
+
+<ResponseField name="id_sector" type="integer">
+  Unique identifier for the sector (auto-generated)
+</ResponseField>
+
+<ResponseField name="id_empresa" type="integer">
+  Foreign key to the company (Empresa) that owns this sector
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer">
+  Foreign key to the advertising campaign (CampanaPublicitaria) this sector belongs to
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  Name of the sector (max 100 characters)
+</ResponseField>
+
+<ResponseField name="fecha_creacion" type="date">
+  Date when the sector was created (format: YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="cerco_virtual" type="json">
+  JSON field containing the virtual geofence coordinates. Typically an array of coordinate objects defining the polygon boundary.
+</ResponseField>
+
+<ResponseField name="centro" type="json">
+  JSON field containing the center coordinates of the sector. Typically includes latitude and longitude (default: empty object)
+</ResponseField>
+
+<ResponseField name="zoom" type="integer">
+  Map zoom level for displaying the sector
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer">
+  Foreign key to the city where the sector is located
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  Foreign key to the country where the sector is located
+</ResponseField>
+
+<ResponseField name="fecha_modificacion" type="date">
+  Date when the sector was last modified (format: YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Sector status (0: inactive, 1: active)
+</ResponseField>
+
+### Create a Sector
+
+<api-endpoint endpoint="POST /api/sectores/" />
+
+Create a new geographic sector with virtual boundaries.
+
+**Request Body**
+
+<ParamField body="id_empresa" type="integer" required>
+  ID of the company owning this sector
+</ParamField>
+
+<ParamField body="id_campana" type="integer" required>
+  ID of the campaign this sector belongs to
+</ParamField>
+
+<ParamField body="nombre" type="string" required>
+  Name of the sector (max 100 characters)
+</ParamField>
+
+<ParamField body="fecha_creacion" type="date" required>
+  Creation date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="cerco_virtual" type="json" required>
+  Virtual geofence coordinates defining the sector boundary. Should be a JSON array of coordinate objects.
+  
+  Example structure:
+  ```json
+  [
+    {"lat": -0.1234, "lng": -78.5678},
+    {"lat": -0.1235, "lng": -78.5679},
+    {"lat": -0.1236, "lng": -78.5680}
+  ]
+  ```
+</ParamField>
+
+<ParamField body="centro" type="json">
+  Center coordinates of the sector (default: {})
+  
+  Example structure:
+  ```json
+  {"lat": -0.1235, "lng": -78.5679}
+  ```
+</ParamField>
+
+<ParamField body="zoom" type="integer" required>
+  Map zoom level (typically between 1-20)
+</ParamField>
+
+<ParamField body="id_ciudad" type="integer" required>
+  ID of the city for this sector
+</ParamField>
+
+<ParamField body="id_pais" type="integer" required>
+  ID of the country for this sector
+</ParamField>
+
+<ParamField body="fecha_modificacion" type="date" required>
+  Modification date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Sector status (0: inactive, 1: active)
+</ParamField>
+
+### Retrieve a Sector
+
+<api-endpoint endpoint="GET /api/sectores/{id_sector}/" />
+
+Retrieve details of a specific sector by ID.
+
+### Update a Sector
+
+<api-endpoint endpoint="PUT /api/sectores/{id_sector}/" />
+
+Update all fields of a specific sector.
+
+<api-endpoint endpoint="PATCH /api/sectores/{id_sector}/" />
+
+Partially update specific fields of a sector.
+
+### Delete a Sector
+
+<api-endpoint endpoint="DELETE /api/sectores/{id_sector}/" />
+
+Delete a specific sector by ID.
+
+## Special Endpoints
+
+### Get Sectors by User
+
+<api-endpoint endpoint="GET /api/sectores/usuario/{usuario_id}/" />
+
+Retrieve sectors filtered by user role and permissions.
+
+**Behavior by Role:**
+- **Administrator (role 1)**: Returns all sectors
+- **Publicista (role 2)**: Returns sectors for companies associated with the publicist
+- **Empresa (role 3)**: Returns sectors for the specific company
+
+**Response**
+
+Returns an array of sector objects following the same structure as the list endpoint.
+
+## Example Usage
+
+### Creating a Sector with Geographic Boundaries
+
+```json
+{
+  "id_empresa": 1,
+  "id_campana": 5,
+  "nombre": "Downtown Business District",
+  "fecha_creacion": "2024-05-01",
+  "cerco_virtual": [
+    {"lat": -0.1807, "lng": -78.4678},
+    {"lat": -0.1825, "lng": -78.4650},
+    {"lat": -0.1843, "lng": -78.4670},
+    {"lat": -0.1830, "lng": -78.4698},
+    {"lat": -0.1807, "lng": -78.4678}
+  ],
+  "centro": {
+    "lat": -0.1825,
+    "lng": -78.4674
+  },
+  "zoom": 15,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "fecha_modificacion": "2024-05-01",
+  "estado": 1
+}
+```
+
+## Notes
+
+- The `cerco_virtual` field must contain valid JSON with coordinate data
+- The `centro` field is typically used for map centering and can be calculated as the centroid of the polygon
+- Coordinates should follow standard latitude/longitude format
+- The `zoom` level should be appropriate for the size of the sector area

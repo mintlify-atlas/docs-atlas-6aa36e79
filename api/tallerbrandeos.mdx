@@ -1,0 +1,530 @@
+---
+title: "TallerBrandeo"
+description: "API endpoints for managing vehicle branding workshops and service centers"
+---
+
+## Overview
+
+The TallerBrandeo API manages workshops and service centers that handle vehicle branding services for advertising campaigns. These workshops apply stickers, LED panels, and other branding materials to vehicles participating in campaigns.
+
+## The TallerBrandeo Object
+
+<ResponseField name="id_taller" type="integer" required>
+  Unique identifier for the branding workshop
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer" required>
+  Foreign key reference to the city where the workshop is located
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer" required>
+  Foreign key reference to the country where the workshop operates
+</ResponseField>
+
+<ResponseField name="nombre" type="string" required>
+  Name of the branding workshop (max 50 characters)
+</ResponseField>
+
+<ResponseField name="direccion" type="string" required>
+  Physical address of the workshop (max 100 characters)
+</ResponseField>
+
+<ResponseField name="referencia" type="string" required>
+  Additional location reference or landmarks (max 150 characters)
+</ResponseField>
+
+<ResponseField name="telefono" type="string" required>
+  Contact phone number of the workshop (max 15 characters)
+</ResponseField>
+
+<ResponseField name="estado" type="integer" required>
+  Workshop status:
+  - `0` - Inactive
+  - `1` - Active
+  - `2` - Suspended
+  - `3` - Closed
+</ResponseField>
+
+<ResponseField name="fecha_creacion" type="date" required>
+  Date when the workshop was registered (YYYY-MM-DD format)
+</ResponseField>
+
+<ResponseField name="fecha_modificacion" type="date" required>
+  Date when the workshop information was last updated (YYYY-MM-DD format)
+</ResponseField>
+
+## Create Branding Workshop
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.restapi.com/taller-brandeo \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "nombre": "Auto Wrap Ecuador",
+    "direccion": "Av. 6 de Diciembre N45-123",
+    "referencia": "Frente al Centro Comercial Quicentro Norte",
+    "telefono": "+593987654321",
+    "estado": 1,
+    "fecha_creacion": "2026-03-09",
+    "fecha_modificacion": "2026-03-09"
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-brandeo"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+data = {
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "nombre": "Auto Wrap Ecuador",
+    "direccion": "Av. 6 de Diciembre N45-123",
+    "referencia": "Frente al Centro Comercial Quicentro Norte",
+    "telefono": "+593987654321",
+    "estado": 1,
+    "fecha_creacion": "2026-03-09",
+    "fecha_modificacion": "2026-03-09"
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-brandeo', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    id_ciudad: 1,
+    id_pais: 1,
+    nombre: 'Auto Wrap Ecuador',
+    direccion: 'Av. 6 de Diciembre N45-123',
+    referencia: 'Frente al Centro Comercial Quicentro Norte',
+    telefono: '+593987654321',
+    estado: 1,
+    fecha_creacion: '2026-03-09',
+    fecha_modificacion: '2026-03-09'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_taller": 1,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "nombre": "Auto Wrap Ecuador",
+  "direccion": "Av. 6 de Diciembre N45-123",
+  "referencia": "Frente al Centro Comercial Quicentro Norte",
+  "telefono": "+593987654321",
+  "estado": 1,
+  "fecha_creacion": "2026-03-09",
+  "fecha_modificacion": "2026-03-09"
+}
+```
+</ResponseExample>
+
+<ParamField body="id_ciudad" type="integer" required>
+  City ID where the workshop is located
+</ParamField>
+
+<ParamField body="id_pais" type="integer" required>
+  Country ID where the workshop operates
+</ParamField>
+
+<ParamField body="nombre" type="string" required>
+  Workshop name (max 50 characters)
+</ParamField>
+
+<ParamField body="direccion" type="string" required>
+  Physical address of the workshop (max 100 characters)
+</ParamField>
+
+<ParamField body="referencia" type="string" required>
+  Location reference or nearby landmarks (max 150 characters)
+</ParamField>
+
+<ParamField body="telefono" type="string" required>
+  Contact phone number (max 15 characters)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Workshop status (0: Inactive, 1: Active, 2: Suspended, 3: Closed)
+</ParamField>
+
+<ParamField body="fecha_creacion" type="date" required>
+  Registration date in YYYY-MM-DD format
+</ParamField>
+
+<ParamField body="fecha_modificacion" type="date" required>
+  Last modification date in YYYY-MM-DD format
+</ParamField>
+
+## Get Branding Workshop
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.restapi.com/taller-brandeo/1 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-brandeo/1"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-brandeo/1', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_taller": 1,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "nombre": "Auto Wrap Ecuador",
+  "direccion": "Av. 6 de Diciembre N45-123",
+  "referencia": "Frente al Centro Comercial Quicentro Norte",
+  "telefono": "+593987654321",
+  "estado": 1,
+  "fecha_creacion": "2026-03-09",
+  "fecha_modificacion": "2026-03-09",
+  "ciudad": {
+    "id_ciudad": 1,
+    "nombre": "Quito"
+  },
+  "pais": {
+    "id_pais": 1,
+    "nombre": "Ecuador"
+  }
+}
+```
+</ResponseExample>
+
+## List Branding Workshops
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.restapi.com/taller-brandeo?id_ciudad=1&estado=1&limit=50 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-brandeo"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+params = {"id_ciudad": 1, "estado": 1, "limit": 50}
+
+response = requests.get(url, headers=headers, params=params)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-brandeo?id_ciudad=1&estado=1&limit=50', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "data": [
+    {
+      "id_taller": 1,
+      "id_ciudad": 1,
+      "id_pais": 1,
+      "nombre": "Auto Wrap Ecuador",
+      "direccion": "Av. 6 de Diciembre N45-123",
+      "referencia": "Frente al Centro Comercial Quicentro Norte",
+      "telefono": "+593987654321",
+      "estado": 1,
+      "fecha_creacion": "2026-03-09",
+      "fecha_modificacion": "2026-03-09"
+    },
+    {
+      "id_taller": 2,
+      "id_ciudad": 1,
+      "id_pais": 1,
+      "nombre": "Vinyl Graphics Pro",
+      "direccion": "Av. República del Salvador N34-567",
+      "referencia": "Sector La Carolina, junto al parque",
+      "telefono": "+593998765432",
+      "estado": 1,
+      "fecha_creacion": "2026-02-15",
+      "fecha_modificacion": "2026-02-15"
+    },
+    {
+      "id_taller": 3,
+      "id_ciudad": 1,
+      "id_pais": 1,
+      "nombre": "LED Panel Installers",
+      "direccion": "Calle Los Pinos E12-890",
+      "referencia": "A dos cuadras del Hospital Metropolitano",
+      "telefono": "+593987123456",
+      "estado": 1,
+      "fecha_creacion": "2026-01-20",
+      "fecha_modificacion": "2026-03-05"
+    }
+  ],
+  "total": 3,
+  "page": 1,
+  "limit": 50
+}
+```
+</ResponseExample>
+
+<ParamField query="id_ciudad" type="integer">
+  Filter workshops by city ID
+</ParamField>
+
+<ParamField query="id_pais" type="integer">
+  Filter workshops by country ID
+</ParamField>
+
+<ParamField query="estado" type="integer">
+  Filter workshops by status (0: Inactive, 1: Active, 2: Suspended, 3: Closed)
+</ParamField>
+
+<ParamField query="nombre" type="string">
+  Search workshops by name (partial match)
+</ParamField>
+
+<ParamField query="limit" type="integer" default="20">
+  Number of records to return per page
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination
+</ParamField>
+
+## Update Branding Workshop
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.restapi.com/taller-brandeo/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "telefono": "+593999888777",
+    "direccion": "Av. 6 de Diciembre N45-125",
+    "fecha_modificacion": "2026-03-10"
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-brandeo/1"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+data = {
+    "telefono": "+593999888777",
+    "direccion": "Av. 6 de Diciembre N45-125",
+    "fecha_modificacion": "2026-03-10"
+}
+
+response = requests.put(url, json=data, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-brandeo/1', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    telefono: '+593999888777',
+    direccion: 'Av. 6 de Diciembre N45-125',
+    fecha_modificacion: '2026-03-10'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_taller": 1,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "nombre": "Auto Wrap Ecuador",
+  "direccion": "Av. 6 de Diciembre N45-125",
+  "referencia": "Frente al Centro Comercial Quicentro Norte",
+  "telefono": "+593999888777",
+  "estado": 1,
+  "fecha_creacion": "2026-03-09",
+  "fecha_modificacion": "2026-03-10"
+}
+```
+</ResponseExample>
+
+<ParamField body="nombre" type="string">
+  Updated workshop name
+</ParamField>
+
+<ParamField body="direccion" type="string">
+  Updated physical address
+</ParamField>
+
+<ParamField body="referencia" type="string">
+  Updated location reference
+</ParamField>
+
+<ParamField body="telefono" type="string">
+  Updated contact phone number
+</ParamField>
+
+<ParamField body="estado" type="integer">
+  Updated workshop status
+</ParamField>
+
+<ParamField body="id_ciudad" type="integer">
+  Updated city ID
+</ParamField>
+
+<ParamField body="fecha_modificacion" type="date">
+  Update timestamp in YYYY-MM-DD format
+</ParamField>
+
+## Delete Branding Workshop
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://api.restapi.com/taller-brandeo/1 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-brandeo/1"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+response = requests.delete(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-brandeo/1', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "message": "Branding workshop deleted successfully",
+  "id_taller": 1
+}
+```
+</ResponseExample>
+
+## Get Workshops by City
+
+Retrieve all active branding workshops in a specific city.
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.restapi.com/taller-brandeo/ciudad/1/active \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-brandeo/ciudad/1/active"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-brandeo/ciudad/1/active', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_ciudad": 1,
+  "nombre_ciudad": "Quito",
+  "talleres_activos": [
+    {
+      "id_taller": 1,
+      "nombre": "Auto Wrap Ecuador",
+      "direccion": "Av. 6 de Diciembre N45-125",
+      "telefono": "+593999888777"
+    },
+    {
+      "id_taller": 2,
+      "nombre": "Vinyl Graphics Pro",
+      "direccion": "Av. República del Salvador N34-567",
+      "telefono": "+593998765432"
+    },
+    {
+      "id_taller": 3,
+      "nombre": "LED Panel Installers",
+      "direccion": "Calle Los Pinos E12-890",
+      "telefono": "+593987123456"
+    }
+  ],
+  "total": 3
+}
+```
+</ResponseExample>

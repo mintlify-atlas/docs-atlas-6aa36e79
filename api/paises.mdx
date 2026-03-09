@@ -1,0 +1,188 @@
+---
+title: 'Países API'
+description: 'Manage countries in the RestAPI system'
+---
+
+## Overview
+
+The Países (Countries) API manages country records used throughout the system for location-based operations.
+
+## Model Structure
+
+The Pais model represents countries with basic identification and naming.
+
+### Fields
+
+<ParamField path="id_pais" type="integer" required>
+  Primary key. Auto-incremented unique identifier for the country.
+</ParamField>
+
+<ParamField path="nombre" type="string" required>
+  Country name. Maximum 50 characters.
+</ParamField>
+
+## Endpoints
+
+### List Countries
+
+```http
+GET /api/paises/
+```
+
+Retrieves all countries in the system.
+
+#### Response
+
+<ResponseField name="id_pais" type="integer">
+  Unique identifier for the country
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  Name of the country
+</ResponseField>
+
+#### Example Response
+
+```json
+[
+  {
+    "id_pais": 1,
+    "nombre": "Ecuador"
+  },
+  {
+    "id_pais": 2,
+    "nombre": "Colombia"
+  },
+  {
+    "id_pais": 3,
+    "nombre": "Perú"
+  }
+]
+```
+
+### Get Country
+
+```http
+GET /api/paises/{id_pais}/
+```
+
+Retrieves a specific country by ID.
+
+#### Path Parameters
+
+<ParamField path="id_pais" type="integer" required>
+  The unique identifier of the country to retrieve
+</ParamField>
+
+#### Response
+
+<ResponseField name="id_pais" type="integer">
+  Unique identifier for the country
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  Name of the country
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "id_pais": 1,
+  "nombre": "Ecuador"
+}
+```
+
+### Create Country
+
+```http
+POST /api/paises/
+```
+
+Creates a new country.
+
+#### Request Body
+
+<ParamField body="nombre" type="string" required>
+  Name of the country. Maximum 50 characters.
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "nombre": "Argentina"
+}
+```
+
+#### Response
+
+<ResponseField name="id_pais" type="integer">
+  Unique identifier for the newly created country
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  Name of the country
+</ResponseField>
+
+### Update Country
+
+```http
+PUT /api/paises/{id_pais}/
+```
+
+Updates an existing country.
+
+#### Path Parameters
+
+<ParamField path="id_pais" type="integer" required>
+  The unique identifier of the country to update
+</ParamField>
+
+#### Request Body
+
+<ParamField body="nombre" type="string" required>
+  Updated name of the country. Maximum 50 characters.
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "nombre": "República del Ecuador"
+}
+```
+
+### Delete Country
+
+```http
+DELETE /api/paises/{id_pais}/
+```
+
+Deletes a country from the system.
+
+#### Path Parameters
+
+<ParamField path="id_pais" type="integer" required>
+  The unique identifier of the country to delete
+</ParamField>
+
+#### Response
+
+Returns 204 No Content on successful deletion.
+
+## Relationships
+
+The Pais model is referenced by:
+- **Ciudad**: Cities belong to countries
+- **Usuario**: Users are associated with countries
+- **Empresa**: Companies operate in specific countries
+- **CampanaPublicitaria**: Advertising campaigns target specific countries
+- **Chofer**: Drivers are registered in specific countries
+- **Cliente**: Clients are located in specific countries
+
+## Usage Notes
+
+- Countries are foundational data and should be created before cities
+- Deleting a country will cascade delete all related cities and other dependent records
+- The `nombre` field should use the Spanish name of the country

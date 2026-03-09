@@ -1,0 +1,351 @@
+---
+title: "Campaign Registration Form"
+api: "POST /api/formularioregistrocampana"
+description: "Submit a driver's application to register for a campaign with vehicle and document verification"
+---
+
+This endpoint handles the complete campaign registration workflow, allowing drivers to apply for advertising campaigns by submitting their personal information, banking details, vehicle information, and required documentation (license and vehicle registration).
+
+## Request Body
+
+<ParamField body="id_usuario" type="integer" required>
+  User ID of the driver applying for the campaign
+</ParamField>
+
+<ParamField body="id_campana" type="integer" required>
+  Campaign ID that the driver wants to join
+</ParamField>
+
+<ParamField body="id_vehiculo" type="integer" required>
+  Vehicle ID that will be used in the campaign
+</ParamField>
+
+<ParamField body="telefono_conductor" type="integer" required>
+  Driver's contact phone number
+</ParamField>
+
+<ParamField body="cedula" type="string" required>
+  Driver's national ID number (10 digits)
+</ParamField>
+
+<ParamField body="correo_electronico" type="string" required>
+  Driver's email address (max 50 characters)
+</ParamField>
+
+<ParamField body="licencia" type="file" required>
+  Driver's license document (PDF, image formats accepted)
+  - Uploaded to: `documents/` directory
+  - Required for verification
+</ParamField>
+
+<ParamField body="matricula" type="file" required>
+  Vehicle registration document (PDF, image formats accepted)
+  - Uploaded to: `documents/` directory
+  - Required for vehicle verification
+</ParamField>
+
+<ParamField body="numero_cuenta_bancaria" type="string" required>
+  Bank account number (max 15 characters) for payment transfers
+</ParamField>
+
+<ParamField body="entidad_bancaria" type="string" required>
+  Name of the banking institution
+</ParamField>
+
+<ParamField body="tipo_cuenta_bancaria" type="string" required>
+  Type of bank account (e.g., "savings", "checking")
+</ParamField>
+
+<ParamField body="id_ciudad" type="integer" default="1">
+  City ID where the driver is located
+</ParamField>
+
+<ParamField body="id_pais" type="integer" default="1">
+  Country ID where the driver is located
+</ParamField>
+
+### Branding Selection Fields
+
+<ParamField body="brandeo" type="boolean" default="false">
+  Whether the vehicle requires complete branding
+</ParamField>
+
+<ParamField body="carroceria_capo" type="boolean" default="false">
+  Apply branding to vehicle hood
+</ParamField>
+
+<ParamField body="carroceria_techo" type="boolean" default="false">
+  Apply branding to vehicle roof
+</ParamField>
+
+<ParamField body="puerta_conductor" type="boolean" default="false">
+  Apply branding to driver's door
+</ParamField>
+
+<ParamField body="puerta_pasajero" type="boolean" default="false">
+  Apply branding to passenger door
+</ParamField>
+
+<ParamField body="puerta_trasera_iz" type="boolean" default="false">
+  Apply branding to rear left door
+</ParamField>
+
+<ParamField body="puerta_trasera_der" type="boolean" default="false">
+  Apply branding to rear right door
+</ParamField>
+
+<ParamField body="puerta_maletero" type="boolean" default="false">
+  Apply branding to trunk/rear door
+</ParamField>
+
+## Response
+
+<ResponseField name="id_formulario" type="integer">
+  Unique identifier for the registration form
+</ResponseField>
+
+<ResponseField name="id_usuario" type="integer">
+  User ID of the applicant
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer">
+  Campaign ID applied for
+</ResponseField>
+
+<ResponseField name="id_vehiculo" type="integer">
+  Vehicle ID registered for campaign
+</ResponseField>
+
+<ResponseField name="telefono_conductor" type="integer">
+  Driver's contact phone
+</ResponseField>
+
+<ResponseField name="cedula" type="string">
+  Driver's national ID
+</ResponseField>
+
+<ResponseField name="correo_electronico" type="string">
+  Driver's email address
+</ResponseField>
+
+<ResponseField name="licencia" type="string">
+  URL path to uploaded license document
+</ResponseField>
+
+<ResponseField name="matricula" type="string">
+  URL path to uploaded vehicle registration
+</ResponseField>
+
+<ResponseField name="numero_cuenta_bancaria" type="string">
+  Bank account number for payments
+</ResponseField>
+
+<ResponseField name="entidad_bancaria" type="string">
+  Banking institution name
+</ResponseField>
+
+<ResponseField name="tipo_cuenta_bancaria" type="string">
+  Type of bank account
+</ResponseField>
+
+<ResponseField name="fecha_envio" type="string">
+  Date when the form was submitted (YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="estado_solicitud" type="string">
+  Application status: "pendiente" (pending), "aprobado" (approved), "rechazado" (rejected)
+</ResponseField>
+
+<ResponseField name="brandeo" type="boolean">
+  Complete branding flag
+</ResponseField>
+
+<ResponseField name="carroceria_capo" type="boolean">
+  Hood branding selection
+</ResponseField>
+
+<ResponseField name="carroceria_techo" type="boolean">
+  Roof branding selection
+</ResponseField>
+
+<ResponseField name="puerta_conductor" type="boolean">
+  Driver's door branding
+</ResponseField>
+
+<ResponseField name="puerta_pasajero" type="boolean">
+  Passenger door branding
+</ResponseField>
+
+<ResponseField name="puerta_trasera_iz" type="boolean">
+  Rear left door branding
+</ResponseField>
+
+<ResponseField name="puerta_trasera_der" type="boolean">
+  Rear right door branding
+</ResponseField>
+
+<ResponseField name="puerta_maletero" type="boolean">
+  Trunk branding selection
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer">
+  City ID
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  Country ID
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.example.com/api/formularioregistrocampana \
+  -H "Content-Type: multipart/form-data" \
+  -F "id_usuario=123" \
+  -F "id_campana=45" \
+  -F "id_vehiculo=78" \
+  -F "telefono_conductor=0987654321" \
+  -F "cedula=1234567890" \
+  -F "correo_electronico=driver@example.com" \
+  -F "licencia=@/path/to/license.pdf" \
+  -F "matricula=@/path/to/registration.pdf" \
+  -F "numero_cuenta_bancaria=1234567890123" \
+  -F "entidad_bancaria=Banco Nacional" \
+  -F "tipo_cuenta_bancaria=savings" \
+  -F "brandeo=true" \
+  -F "carroceria_capo=true" \
+  -F "carroceria_techo=true" \
+  -F "puerta_conductor=true" \
+  -F "puerta_pasajero=true" \
+  -F "id_ciudad=1" \
+  -F "id_pais=1"
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/api/formularioregistrocampana"
+
+files = {
+    'licencia': open('license.pdf', 'rb'),
+    'matricula': open('registration.pdf', 'rb')
+}
+
+data = {
+    'id_usuario': 123,
+    'id_campana': 45,
+    'id_vehiculo': 78,
+    'telefono_conductor': 987654321,
+    'cedula': '1234567890',
+    'correo_electronico': 'driver@example.com',
+    'numero_cuenta_bancaria': '1234567890123',
+    'entidad_bancaria': 'Banco Nacional',
+    'tipo_cuenta_bancaria': 'savings',
+    'brandeo': True,
+    'carroceria_capo': True,
+    'carroceria_techo': True,
+    'puerta_conductor': True,
+    'puerta_pasajero': True,
+    'id_ciudad': 1,
+    'id_pais': 1
+}
+
+response = requests.post(url, files=files, data=data)
+print(response.json())
+```
+
+```javascript JavaScript
+const formData = new FormData();
+
+formData.append('id_usuario', '123');
+formData.append('id_campana', '45');
+formData.append('id_vehiculo', '78');
+formData.append('telefono_conductor', '987654321');
+formData.append('cedula', '1234567890');
+formData.append('correo_electronico', 'driver@example.com');
+formData.append('licencia', licenseFile);
+formData.append('matricula', registrationFile);
+formData.append('numero_cuenta_bancaria', '1234567890123');
+formData.append('entidad_bancaria', 'Banco Nacional');
+formData.append('tipo_cuenta_bancaria', 'savings');
+formData.append('brandeo', 'true');
+formData.append('carroceria_capo', 'true');
+formData.append('carroceria_techo', 'true');
+formData.append('puerta_conductor', 'true');
+formData.append('puerta_pasajero', 'true');
+formData.append('id_ciudad', '1');
+formData.append('id_pais', '1');
+
+fetch('https://api.example.com/api/formularioregistrocampana', {
+  method: 'POST',
+  body: formData
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Success
+{
+  "id_formulario": 567,
+  "id_usuario": 123,
+  "id_campana": 45,
+  "id_vehiculo": 78,
+  "telefono_conductor": 987654321,
+  "cedula": "1234567890",
+  "correo_electronico": "driver@example.com",
+  "licencia": "documents/license_20260309_123.pdf",
+  "matricula": "documents/registration_20260309_123.pdf",
+  "numero_cuenta_bancaria": "1234567890123",
+  "entidad_bancaria": "Banco Nacional",
+  "tipo_cuenta_bancaria": "savings",
+  "fecha_envio": "2026-03-09",
+  "estado_solicitud": "pendiente",
+  "brandeo": true,
+  "carroceria_capo": true,
+  "carroceria_techo": true,
+  "puerta_conductor": true,
+  "puerta_pasajero": true,
+  "puerta_trasera_iz": false,
+  "puerta_trasera_der": false,
+  "puerta_maletero": false,
+  "id_ciudad": 1,
+  "id_pais": 1
+}
+```
+
+```json 400 - Bad Request
+{
+  "error": "Missing required field: licencia",
+  "message": "Driver's license document is required for registration"
+}
+```
+
+```json 404 - Not Found
+{
+  "error": "Campaign not found",
+  "message": "The specified campaign ID does not exist or is no longer accepting registrations"
+}
+```
+</ResponseExample>
+
+## Campaign Registration Workflow
+
+1. **Form Submission**: Driver submits registration form with personal info, banking details, and documents
+2. **Document Upload**: License and vehicle registration files are uploaded to `documents/` directory
+3. **Branding Selection**: Driver selects which parts of their vehicle will display campaign branding
+4. **Validation**: System validates all required fields and file uploads
+5. **Status Assignment**: Form is marked as "pendiente" (pending) awaiting admin approval
+6. **Next Steps**: 
+   - Admin reviews the application
+   - If approved, driver proceeds to `IngresoConductorCampana` with QR code generation
+   - Driver must complete `VerificacionConductorCampana` before starting routes
+
+## Notes
+
+- All file uploads use `multipart/form-data` encoding
+- Supported document formats: PDF, JPG, PNG
+- Maximum file size: 10MB per document
+- Application status transitions: `pendiente` → `aprobado` or `rechazado`
+- Branding pricing is calculated based on selected vehicle parts and campaign rates
+- The `fecha_envio` field is automatically set to the submission date

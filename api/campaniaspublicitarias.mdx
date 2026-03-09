@@ -1,0 +1,370 @@
+---
+title: 'Campañas Publicitarias'
+description: 'Manage advertising campaigns with vehicle branding and geographic sectors'
+---
+
+## Overview
+
+The Campañas Publicitarias (Advertising Campaigns) endpoint allows you to create and manage advertising campaigns that target specific vehicles within defined geographic sectors. Campaigns include budget management, vehicle type eligibility, branding specifications, and monetization schedules.
+
+## Base URL
+
+```
+/api/campaniaspublicitarias/
+```
+
+## Endpoints
+
+### List All Campaigns
+
+<api-endpoint endpoint="GET /api/campaniaspublicitarias/" />
+
+Retrieve a list of all advertising campaigns.
+
+**Response**
+
+<ResponseField name="id_campana" type="integer">
+  Unique identifier for the campaign (auto-generated)
+</ResponseField>
+
+<ResponseField name="id_empresa" type="integer">
+  Foreign key to the company (Empresa) that owns this campaign
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer">
+  Foreign key to the city where the campaign operates
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  Foreign key to the country where the campaign operates
+</ResponseField>
+
+<ResponseField name="nombre_campana" type="string">
+  Name of the campaign (max 20 characters)
+</ResponseField>
+
+<ResponseField name="correo_responsable" type="string">
+  Email address of the campaign manager (max 40 characters)
+</ResponseField>
+
+<ResponseField name="id_sector" type="integer">
+  Reference to the sector ID (nullable)
+</ResponseField>
+
+<ResponseField name="fecha_inicio" type="date">
+  Campaign start date (format: YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="fecha_fin" type="date">
+  Campaign end date (format: YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="fecha_fin_registro" type="date">
+  Registration deadline for drivers to join the campaign (format: YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="presupuesto" type="float">
+  Total budget allocated for the campaign
+</ResponseField>
+
+<ResponseField name="nombre_responsable" type="string">
+  Name of the person responsible for the campaign (max 20 characters)
+</ResponseField>
+
+<ResponseField name="tarifa_base" type="float">
+  Base rate for driver compensation
+</ResponseField>
+
+<ResponseField name="tarifa_min" type="float">
+  Minimum compensation rate
+</ResponseField>
+
+<ResponseField name="tarifa_max" type="float">
+  Maximum compensation rate
+</ResponseField>
+
+<ResponseField name="hora_monetizable_inicio" type="string">
+  Start time for monetizable hours (format: HH:MM, max 5 characters)
+</ResponseField>
+
+<ResponseField name="hora_monetizable_fin" type="string">
+  End time for monetizable hours (format: HH:MM, max 5 characters)
+</ResponseField>
+
+<ResponseField name="cobro_minimo" type="float">
+  Minimum charge amount
+</ResponseField>
+
+<ResponseField name="tipo_brandeo" type="string">
+  Type of vehicle branding. Choices: `sticker` or `panel led`
+</ResponseField>
+
+<ResponseField name="id_talleres" type="json">
+  JSON array of workshop IDs where branding can be applied
+</ResponseField>
+
+<ResponseField name="carroceria_capo" type="float">
+  Rate for hood branding (default: 0.0)
+</ResponseField>
+
+<ResponseField name="carroceria_techo" type="float">
+  Rate for roof branding (default: 0.0)
+</ResponseField>
+
+<ResponseField name="puerta_conductor" type="float">
+  Rate for driver door branding (default: 0.0)
+</ResponseField>
+
+<ResponseField name="puerta_pasajero" type="float">
+  Rate for passenger door branding (default: 0.0)
+</ResponseField>
+
+<ResponseField name="puerta_trasera_iz" type="float">
+  Rate for left rear door branding (default: 0.0)
+</ResponseField>
+
+<ResponseField name="puerta_trasera_der" type="float">
+  Rate for right rear door branding (default: 0.0)
+</ResponseField>
+
+<ResponseField name="puerta_maletero" type="float">
+  Rate for trunk/boot branding (default: 0.0)
+</ResponseField>
+
+<ResponseField name="fecha_creacion" type="date">
+  Date when the campaign was created (format: YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="fecha_modificacion" type="date">
+  Date when the campaign was last modified (format: YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Campaign status (0: inactive, 1: active)
+</ResponseField>
+
+<ResponseField name="sedan_admisible" type="boolean">
+  Whether sedan vehicles are eligible for this campaign
+</ResponseField>
+
+<ResponseField name="suv_admisible" type="boolean">
+  Whether SUV vehicles are eligible for this campaign
+</ResponseField>
+
+<ResponseField name="camion_admisible" type="boolean">
+  Whether truck vehicles are eligible for this campaign
+</ResponseField>
+
+<ResponseField name="camioneta_admisible" type="boolean">
+  Whether pickup truck vehicles are eligible for this campaign
+</ResponseField>
+
+<ResponseField name="bus_admisible" type="boolean">
+  Whether bus vehicles are eligible for this campaign
+</ResponseField>
+
+### Create a Campaign
+
+<api-endpoint endpoint="POST /api/campaniaspublicitarias/" />
+
+Create a new advertising campaign.
+
+**Request Body**
+
+<ParamField body="id_empresa" type="integer" required>
+  ID of the company creating the campaign
+</ParamField>
+
+<ParamField body="id_ciudad" type="integer" required>
+  ID of the city for the campaign
+</ParamField>
+
+<ParamField body="id_pais" type="integer" required>
+  ID of the country for the campaign
+</ParamField>
+
+<ParamField body="nombre_campana" type="string" required>
+  Campaign name (max 20 characters)
+</ParamField>
+
+<ParamField body="correo_responsable" type="string" required>
+  Email of the campaign manager (max 40 characters)
+</ParamField>
+
+<ParamField body="id_sector" type="integer">
+  Sector ID (optional)
+</ParamField>
+
+<ParamField body="fecha_inicio" type="date" required>
+  Campaign start date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="fecha_fin" type="date" required>
+  Campaign end date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="fecha_fin_registro" type="date" required>
+  Driver registration deadline (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="presupuesto" type="float" required>
+  Total campaign budget
+</ParamField>
+
+<ParamField body="nombre_responsable" type="string" required>
+  Name of campaign manager (max 20 characters)
+</ParamField>
+
+<ParamField body="tarifa_base" type="float" required>
+  Base compensation rate
+</ParamField>
+
+<ParamField body="tarifa_min" type="float" required>
+  Minimum compensation rate
+</ParamField>
+
+<ParamField body="tarifa_max" type="float" required>
+  Maximum compensation rate
+</ParamField>
+
+<ParamField body="hora_monetizable_inicio" type="string" required>
+  Monetizable hours start time (HH:MM)
+</ParamField>
+
+<ParamField body="hora_monetizable_fin" type="string" required>
+  Monetizable hours end time (HH:MM)
+</ParamField>
+
+<ParamField body="cobro_minimo" type="float" required>
+  Minimum charge amount
+</ParamField>
+
+<ParamField body="tipo_brandeo" type="string" required>
+  Branding type: `sticker` or `panel led`
+</ParamField>
+
+<ParamField body="id_talleres" type="json">
+  Array of workshop IDs (default: [])
+</ParamField>
+
+<ParamField body="carroceria_capo" type="float">
+  Hood branding rate (default: 0.0)
+</ParamField>
+
+<ParamField body="carroceria_techo" type="float">
+  Roof branding rate (default: 0.0)
+</ParamField>
+
+<ParamField body="puerta_conductor" type="float">
+  Driver door branding rate (default: 0.0)
+</ParamField>
+
+<ParamField body="puerta_pasajero" type="float">
+  Passenger door branding rate (default: 0.0)
+</ParamField>
+
+<ParamField body="puerta_trasera_iz" type="float">
+  Left rear door branding rate (default: 0.0)
+</ParamField>
+
+<ParamField body="puerta_trasera_der" type="float">
+  Right rear door branding rate (default: 0.0)
+</ParamField>
+
+<ParamField body="puerta_maletero" type="float">
+  Trunk branding rate (default: 0.0)
+</ParamField>
+
+<ParamField body="fecha_creacion" type="date" required>
+  Creation date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="fecha_modificacion" type="date" required>
+  Modification date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Campaign status (0 or 1)
+</ParamField>
+
+<ParamField body="sedan_admisible" type="boolean" required>
+  Allow sedan vehicles
+</ParamField>
+
+<ParamField body="suv_admisible" type="boolean" required>
+  Allow SUV vehicles
+</ParamField>
+
+<ParamField body="camion_admisible" type="boolean" required>
+  Allow truck vehicles
+</ParamField>
+
+<ParamField body="camioneta_admisible" type="boolean" required>
+  Allow pickup vehicles
+</ParamField>
+
+<ParamField body="bus_admisible" type="boolean" required>
+  Allow bus vehicles
+</ParamField>
+
+### Retrieve a Campaign
+
+<api-endpoint endpoint="GET /api/campaniaspublicitarias/{id_campana}/" />
+
+Retrieve details of a specific campaign by ID.
+
+### Update a Campaign
+
+<api-endpoint endpoint="PUT /api/campaniaspublicitarias/{id_campana}/" />
+
+Update all fields of a specific campaign.
+
+<api-endpoint endpoint="PATCH /api/campaniaspublicitarias/{id_campana}/" />
+
+Partially update specific fields of a campaign.
+
+### Delete a Campaign
+
+<api-endpoint endpoint="DELETE /api/campaniaspublicitarias/{id_campana}/" />
+
+Delete a specific campaign by ID.
+
+## Example Usage
+
+```json
+{
+  "id_empresa": 1,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "nombre_campana": "Summer Campaign",
+  "correo_responsable": "manager@example.com",
+  "fecha_inicio": "2024-06-01",
+  "fecha_fin": "2024-08-31",
+  "fecha_fin_registro": "2024-05-25",
+  "presupuesto": 50000.00,
+  "nombre_responsable": "John Doe",
+  "tarifa_base": 15.00,
+  "tarifa_min": 10.00,
+  "tarifa_max": 25.00,
+  "hora_monetizable_inicio": "06:00",
+  "hora_monetizable_fin": "22:00",
+  "cobro_minimo": 5.00,
+  "tipo_brandeo": "sticker",
+  "id_talleres": [1, 2, 3],
+  "carroceria_capo": 100.00,
+  "carroceria_techo": 150.00,
+  "puerta_conductor": 75.00,
+  "puerta_pasajero": 75.00,
+  "puerta_trasera_iz": 50.00,
+  "puerta_trasera_der": 50.00,
+  "puerta_maletero": 60.00,
+  "fecha_creacion": "2024-05-01",
+  "fecha_modificacion": "2024-05-01",
+  "estado": 1,
+  "sedan_admisible": true,
+  "suv_admisible": true,
+  "camion_admisible": false,
+  "camioneta_admisible": true,
+  "bus_admisible": false
+}
+```

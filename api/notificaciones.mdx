@@ -1,0 +1,543 @@
+---
+title: 'Notificaciones API'
+description: 'Manage system notifications and alerts'
+---
+
+## Overview
+
+The Notificaciones (Notifications) API manages notifications sent to users regarding campaigns and system events.
+
+## Model Structure
+
+The Notificacion model represents notifications with read/unread status tracking.
+
+### Fields
+
+<ParamField path="id_notificacion" type="integer" required>
+  Primary key. Auto-incremented unique identifier for the notification.
+</ParamField>
+
+<ParamField path="fecha_envio" type="date" required>
+  Date when the notification was sent. Format: `YYYY-MM-DD`
+</ParamField>
+
+<ParamField path="id_campana" type="integer" required>
+  Campaign ID associated with this notification. Links to CampanaPublicitaria.
+</ParamField>
+
+<ParamField path="estado" type="string" required>
+  Notification read status. Must be one of the following choices:
+  - `"leido"`: Notification has been read by the user
+  - `"no leido"`: Notification has not been read yet
+  
+  Maximum 20 characters.
+</ParamField>
+
+<ParamField path="titulo" type="string" required>
+  Notification title. Brief subject line. Maximum 20 characters.
+</ParamField>
+
+<ParamField path="descripcion" type="string" required>
+  Notification description. Detailed message content. Maximum 100 characters.
+</ParamField>
+
+## Endpoints
+
+### List Notifications
+
+```http
+GET /api/notificaciones/
+```
+
+Retrieves all notifications in the system.
+
+#### Query Parameters
+
+<ParamField query="estado" type="string">
+  Filter notifications by read status. Values: `"leido"` or `"no leido"`
+</ParamField>
+
+<ParamField query="id_campana" type="integer">
+  Filter notifications by campaign ID
+</ParamField>
+
+<ParamField query="fecha_envio" type="date">
+  Filter notifications by send date (YYYY-MM-DD)
+</ParamField>
+
+#### Response
+
+<ResponseField name="id_notificacion" type="integer">
+  Unique identifier for the notification
+</ResponseField>
+
+<ResponseField name="fecha_envio" type="date">
+  Date the notification was sent
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer">
+  Associated campaign ID
+</ResponseField>
+
+<ResponseField name="estado" type="string">
+  Read status: `"leido"` or `"no leido"`
+</ResponseField>
+
+<ResponseField name="titulo" type="string">
+  Notification title
+</ResponseField>
+
+<ResponseField name="descripcion" type="string">
+  Notification description
+</ResponseField>
+
+#### Example Response
+
+```json
+[
+  {
+    "id_notificacion": 1,
+    "fecha_envio": "2024-03-15",
+    "id_campana": 5,
+    "estado": "no leido",
+    "titulo": "Nueva Campaña",
+    "descripcion": "Se ha lanzado una nueva campaña publicitaria en tu ciudad. ¡Participa y gana!"
+  },
+  {
+    "id_notificacion": 2,
+    "fecha_envio": "2024-03-14",
+    "id_campana": 3,
+    "estado": "leido",
+    "titulo": "Pago Procesado",
+    "descripcion": "Tu pago de $250.00 ha sido procesado exitosamente."
+  },
+  {
+    "id_notificacion": 3,
+    "fecha_envio": "2024-03-13",
+    "id_campana": 5,
+    "estado": "leido",
+    "titulo": "Recordatorio",
+    "descripcion": "Recuerda completar tu registro para la campaña antes del 20 de marzo."
+  }
+]
+```
+
+### Get Notification
+
+```http
+GET /api/notificaciones/{id_notificacion}/
+```
+
+Retrieves a specific notification by ID.
+
+#### Path Parameters
+
+<ParamField path="id_notificacion" type="integer" required>
+  The unique identifier of the notification to retrieve
+</ParamField>
+
+#### Response
+
+<ResponseField name="id_notificacion" type="integer">
+  Unique identifier for the notification
+</ResponseField>
+
+<ResponseField name="fecha_envio" type="date">
+  Date the notification was sent
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer">
+  Associated campaign ID
+</ResponseField>
+
+<ResponseField name="estado" type="string">
+  Read status: `"leido"` or `"no leido"`
+</ResponseField>
+
+<ResponseField name="titulo" type="string">
+  Notification title
+</ResponseField>
+
+<ResponseField name="descripcion" type="string">
+  Notification description
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "id_notificacion": 1,
+  "fecha_envio": "2024-03-15",
+  "id_campana": 5,
+  "estado": "no leido",
+  "titulo": "Nueva Campaña",
+  "descripcion": "Se ha lanzado una nueva campaña publicitaria en tu ciudad. ¡Participa y gana!"
+}
+```
+
+### Get Unread Notifications
+
+```http
+GET /api/notificaciones/?estado=no leido
+```
+
+Retrieves all unread notifications.
+
+#### Example Response
+
+```json
+[
+  {
+    "id_notificacion": 1,
+    "fecha_envio": "2024-03-15",
+    "id_campana": 5,
+    "estado": "no leido",
+    "titulo": "Nueva Campaña",
+    "descripcion": "Se ha lanzado una nueva campaña publicitaria en tu ciudad. ¡Participa y gana!"
+  },
+  {
+    "id_notificacion": 4,
+    "fecha_envio": "2024-03-15",
+    "id_campana": 7,
+    "estado": "no leido",
+    "titulo": "Aprobación Pendiente",
+    "descripcion": "Tu solicitud está siendo revisada por el equipo administrativo."
+  }
+]
+```
+
+### Create Notification
+
+```http
+POST /api/notificaciones/
+```
+
+Creates a new notification.
+
+#### Request Body
+
+<ParamField body="fecha_envio" type="date" required>
+  Date the notification is sent. Format: `YYYY-MM-DD`
+</ParamField>
+
+<ParamField body="id_campana" type="integer" required>
+  ID of the associated campaign
+</ParamField>
+
+<ParamField body="estado" type="string" required>
+  Initial read status. Values: `"leido"` or `"no leido"`. Typically set to `"no leido"` for new notifications.
+</ParamField>
+
+<ParamField body="titulo" type="string" required>
+  Notification title. Maximum 20 characters.
+</ParamField>
+
+<ParamField body="descripcion" type="string" required>
+  Notification description. Maximum 100 characters.
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "fecha_envio": "2024-03-16",
+  "id_campana": 8,
+  "estado": "no leido",
+  "titulo": "Bienvenido",
+  "descripcion": "Gracias por registrarte. Tu cuenta ha sido activada exitosamente."
+}
+```
+
+#### Response
+
+<ResponseField name="id_notificacion" type="integer">
+  Unique identifier for the newly created notification
+</ResponseField>
+
+<ResponseField name="fecha_envio" type="date">
+  Date the notification was sent
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer">
+  Associated campaign ID
+</ResponseField>
+
+<ResponseField name="estado" type="string">
+  Read status
+</ResponseField>
+
+<ResponseField name="titulo" type="string">
+  Notification title
+</ResponseField>
+
+<ResponseField name="descripcion" type="string">
+  Notification description
+</ResponseField>
+
+### Update Notification
+
+```http
+PUT /api/notificaciones/{id_notificacion}/
+```
+
+Updates an existing notification.
+
+#### Path Parameters
+
+<ParamField path="id_notificacion" type="integer" required>
+  The unique identifier of the notification to update
+</ParamField>
+
+#### Request Body
+
+<ParamField body="fecha_envio" type="date" required>
+  Date the notification was sent
+</ParamField>
+
+<ParamField body="id_campana" type="integer" required>
+  ID of the associated campaign
+</ParamField>
+
+<ParamField body="estado" type="string" required>
+  Read status. Values: `"leido"` or `"no leido"`
+</ParamField>
+
+<ParamField body="titulo" type="string" required>
+  Notification title. Maximum 20 characters.
+</ParamField>
+
+<ParamField body="descripcion" type="string" required>
+  Notification description. Maximum 100 characters.
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "fecha_envio": "2024-03-15",
+  "id_campana": 5,
+  "estado": "leido",
+  "titulo": "Nueva Campaña",
+  "descripcion": "Se ha lanzado una nueva campaña publicitaria en tu ciudad. ¡Participa y gana!"
+}
+```
+
+### Mark as Read
+
+```http
+PATCH /api/notificaciones/{id_notificacion}/
+```
+
+Marks a notification as read. This is a partial update endpoint commonly used to change notification status.
+
+#### Path Parameters
+
+<ParamField path="id_notificacion" type="integer" required>
+  The unique identifier of the notification to mark as read
+</ParamField>
+
+#### Request Body
+
+<ParamField body="estado" type="string" required>
+  Set to `"leido"` to mark as read
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "estado": "leido"
+}
+```
+
+#### Example Response
+
+```json
+{
+  "id_notificacion": 1,
+  "fecha_envio": "2024-03-15",
+  "id_campana": 5,
+  "estado": "leido",
+  "titulo": "Nueva Campaña",
+  "descripcion": "Se ha lanzado una nueva campaña publicitaria en tu ciudad. ¡Participa y gana!"
+}
+```
+
+### Bulk Mark as Read
+
+```http
+POST /api/notificaciones/bulk_mark_read/
+```
+
+Marks multiple notifications as read in a single request.
+
+#### Request Body
+
+<ParamField body="notification_ids" type="array" required>
+  Array of notification IDs to mark as read
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "notification_ids": [1, 4, 7, 9]
+}
+```
+
+#### Example Response
+
+```json
+{
+  "updated": 4,
+  "message": "4 notifications marked as read"
+}
+```
+
+### Delete Notification
+
+```http
+DELETE /api/notificaciones/{id_notificacion}/
+```
+
+Deletes a notification from the system.
+
+#### Path Parameters
+
+<ParamField path="id_notificacion" type="integer" required>
+  The unique identifier of the notification to delete
+</ParamField>
+
+#### Response
+
+Returns 204 No Content on successful deletion.
+
+## Estado Field Values
+
+The `estado` field uses specific string choices:
+
+### Available States
+
+<ParamField path="leido" type="string">
+  **Leido** - Notification has been read by the user
+  
+  - Used when: User opens and views the notification
+  - Display label: "Leído"
+</ParamField>
+
+<ParamField path="no leido" type="string">
+  **No Leido** - Notification has not been read
+  
+  - Used when: Notification is first created or hasn't been opened
+  - Display label: "No Leído"
+  - Default state for new notifications
+</ParamField>
+
+### Example Estado Usage
+
+```json
+{
+  "estado": "no leido"  // Correct
+}
+```
+
+```json
+{
+  "estado": "No Leido"  // Incorrect - case sensitive
+}
+```
+
+```json
+{
+  "estado": "unread"  // Incorrect - must use Spanish values
+}
+```
+
+## Relationships
+
+The Notificacion model references:
+- **CampanaPublicitaria**: Notifications are associated with specific campaigns via `id_campana`
+
+## Usage Notes
+
+- The `estado` field must be exactly `"leido"` or `"no leido"` (case-sensitive)
+- New notifications should typically be created with `estado: "no leido"`
+- The `titulo` field is limited to 20 characters - keep titles concise
+- The `descripcion` field is limited to 100 characters - keep messages brief
+- Use the `fecha_envio` to track when notifications were sent for sorting and filtering
+- Consider implementing pagination for notification lists in high-volume scenarios
+
+## Best Practices
+
+1. **User Experience**: Show unread count as a badge in the UI
+2. **Automatic Marking**: Mark notifications as read when user views them
+3. **Sorting**: Display newest notifications first (`orden_by=-fecha_envio`)
+4. **Cleanup**: Implement periodic cleanup of old read notifications
+5. **Push Notifications**: Integrate with `Usuario.token_notificacion` for push notifications
+6. **Grouping**: Group notifications by campaign or date for better organization
+7. **Validation**: Ensure `id_campana` references a valid campaign before creating
+
+## Integration with Push Notifications
+
+The notification system integrates with user push notification tokens:
+
+```python
+# Example: Send push notification when creating a Notificacion
+user = Usuario.objects.get(...)  # Get target user
+notification = Notificacion.objects.create(
+    fecha_envio=date.today(),
+    id_campana=campaign_id,
+    estado="no leido",
+    titulo="Nueva Campaña",
+    descripcion="Se ha lanzado una nueva campaña..."
+)
+
+# Send push notification using user.token_notificacion
+send_push_notification(
+    token=user.token_notificacion,
+    title=notification.titulo,
+    body=notification.descripcion
+)
+```
+
+## Common Notification Types
+
+### Campaign Notifications
+- New campaign launches
+- Campaign approval/rejection
+- Campaign expiration reminders
+- Registration deadlines
+
+### Payment Notifications
+- Payment processed
+- Payment pending
+- Payment failed
+
+### System Notifications
+- Account activation
+- Profile updates
+- Document verification status
+- Terms and conditions updates
+
+### Example Notification Templates
+
+```json
+[
+  {
+    "titulo": "Campaña Activa",
+    "descripcion": "Tu campaña publicitaria está ahora activa y visible para conductores."
+  },
+  {
+    "titulo": "Pago Recibido",
+    "descripcion": "Se ha acreditado $150.00 a tu cuenta por tu participación en la campaña."
+  },
+  {
+    "titulo": "Verificación Req.",
+    "descripcion": "Por favor sube tu licencia de conducir para completar tu perfil."
+  },
+  {
+    "titulo": "Último Día",
+    "descripcion": "Hoy es el último día para registrarte en la campaña de Coca-Cola."
+  }
+]
+```

@@ -1,0 +1,279 @@
+---
+title: 'Vehiculos'
+api: 'GET/POST /api/vehiculos'
+---
+
+# Vehiculos API
+
+Manage vehicle records including makes, models, images, and categories.
+
+## Vehicle Object
+
+<ResponseField name="id_vehiculo" type="integer" required>
+  Unique identifier for the vehicle (auto-generated primary key)
+</ResponseField>
+
+<ResponseField name="placa" type="string" required>
+  Vehicle license plate number (max 7 characters)
+</ResponseField>
+
+<ResponseField name="id_marca" type="integer" required>
+  Foreign key reference to MarcasVehiculos (vehicle make)
+</ResponseField>
+
+<ResponseField name="id_modelo" type="integer" required>
+  Foreign key reference to ModelosVehiculos (vehicle model)
+</ResponseField>
+
+<ResponseField name="anio" type="integer" required>
+  Year of manufacture
+</ResponseField>
+
+<ResponseField name="categoria_vehiculo" type="string" required>
+  Vehicle category. Must be one of:
+  - `sedan` - Sedan
+  - `suv` - SUV
+  - `camioneta` - Pickup truck
+  - `camion` - Truck
+  - `bus` - Bus
+</ResponseField>
+
+<ResponseField name="color_vehiculo" type="string" required>
+  Vehicle color (max 20 characters)
+</ResponseField>
+
+### Vehicle Images
+
+<ResponseField name="imagen_izq" type="image">
+  Left side view photo (uploaded to media/)
+</ResponseField>
+
+<ResponseField name="imagen_der" type="image">
+  Right side view photo (uploaded to media/)
+</ResponseField>
+
+<ResponseField name="imagen_frontal" type="image">
+  Front view photo (uploaded to media/)
+</ResponseField>
+
+<ResponseField name="imagen_trasera" type="image">
+  Rear/back view photo (uploaded to media/)
+</ResponseField>
+
+<ResponseField name="imagen_techo" type="image">
+  Roof/top view photo (uploaded to media/)
+</ResponseField>
+
+### Relationships
+
+<ResponseField name="id_usuario" type="integer">
+  Foreign key to Usuario (nullable)
+</ResponseField>
+
+<ResponseField name="id_chofer" type="integer">
+  Foreign key to Chofer/driver (nullable)
+</ResponseField>
+
+<ResponseField name="id_cliente" type="integer">
+  Foreign key to Cliente/client (nullable)
+</ResponseField>
+
+<ResponseField name="estado" type="integer" required>
+  Vehicle status/state
+</ResponseField>
+
+## GET /api/vehiculos
+
+Retrieve a list of all vehicles.
+
+### Query Parameters
+
+<ParamField query="categoria_vehiculo" type="string">
+  Filter by vehicle category (sedan, suv, camioneta, camion, bus)
+</ParamField>
+
+<ParamField query="id_marca" type="integer">
+  Filter by vehicle make ID
+</ParamField>
+
+<ParamField query="id_modelo" type="integer">
+  Filter by vehicle model ID
+</ParamField>
+
+<ParamField query="placa" type="string">
+  Filter by license plate
+</ParamField>
+
+<ParamField query="estado" type="integer">
+  Filter by status
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+[
+  {
+    "id_vehiculo": 1,
+    "placa": "ABC1234",
+    "id_marca": 5,
+    "id_modelo": 12,
+    "anio": 2022,
+    "categoria_vehiculo": "sedan",
+    "color_vehiculo": "Negro",
+    "imagen_izq": "/media/vehicle_left_1.jpg",
+    "imagen_der": "/media/vehicle_right_1.jpg",
+    "imagen_frontal": "/media/vehicle_front_1.jpg",
+    "imagen_trasera": "/media/vehicle_back_1.jpg",
+    "imagen_techo": "/media/vehicle_roof_1.jpg",
+    "id_usuario": 45,
+    "id_chofer": 23,
+    "id_cliente": null,
+    "estado": 1
+  },
+  {
+    "id_vehiculo": 2,
+    "placa": "XYZ5678",
+    "id_marca": 8,
+    "id_modelo": 34,
+    "anio": 2021,
+    "categoria_vehiculo": "suv",
+    "color_vehiculo": "Blanco",
+    "imagen_izq": "/media/vehicle_left_2.jpg",
+    "imagen_der": "/media/vehicle_right_2.jpg",
+    "imagen_frontal": "/media/vehicle_front_2.jpg",
+    "imagen_trasera": "/media/vehicle_back_2.jpg",
+    "imagen_techo": "/media/vehicle_roof_2.jpg",
+    "id_usuario": 67,
+    "id_chofer": 45,
+    "id_cliente": 12,
+    "estado": 1
+  }
+]
+```
+</ResponseExample>
+
+## POST /api/vehiculos
+
+Create a new vehicle record.
+
+### Request Body
+
+<ParamField body="placa" type="string" required>
+  Vehicle license plate (max 7 characters)
+</ParamField>
+
+<ParamField body="id_marca" type="integer" required>
+  Vehicle make ID (references MarcasVehiculos)
+</ParamField>
+
+<ParamField body="id_modelo" type="integer" required>
+  Vehicle model ID (references ModelosVehiculos)
+</ParamField>
+
+<ParamField body="anio" type="integer" required>
+  Year of manufacture
+</ParamField>
+
+<ParamField body="categoria_vehiculo" type="string" required>
+  Vehicle category: `sedan`, `suv`, `camioneta`, `camion`, or `bus`
+</ParamField>
+
+<ParamField body="color_vehiculo" type="string" required>
+  Vehicle color
+</ParamField>
+
+<ParamField body="imagen_izq" type="file">
+  Left side view photo
+</ParamField>
+
+<ParamField body="imagen_der" type="file">
+  Right side view photo
+</ParamField>
+
+<ParamField body="imagen_frontal" type="file">
+  Front view photo
+</ParamField>
+
+<ParamField body="imagen_trasera" type="file">
+  Rear view photo
+</ParamField>
+
+<ParamField body="imagen_techo" type="file">
+  Roof view photo
+</ParamField>
+
+<ParamField body="id_usuario" type="integer">
+  Associated user ID (optional)
+</ParamField>
+
+<ParamField body="id_chofer" type="integer">
+  Associated driver ID (optional)
+</ParamField>
+
+<ParamField body="id_cliente" type="integer">
+  Associated client ID (optional)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Vehicle status
+</ParamField>
+
+### Request Example
+
+```json
+{
+  "placa": "ABC1234",
+  "id_marca": 5,
+  "id_modelo": 12,
+  "anio": 2022,
+  "categoria_vehiculo": "sedan",
+  "color_vehiculo": "Negro",
+  "id_usuario": 45,
+  "id_chofer": 23,
+  "estado": 1
+}
+```
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "id_vehiculo": 1,
+  "placa": "ABC1234",
+  "id_marca": 5,
+  "id_modelo": 12,
+  "anio": 2022,
+  "categoria_vehiculo": "sedan",
+  "color_vehiculo": "Negro",
+  "imagen_izq": "",
+  "imagen_der": "",
+  "imagen_frontal": "",
+  "imagen_trasera": "",
+  "imagen_techo": "",
+  "id_usuario": 45,
+  "id_chofer": 23,
+  "id_cliente": null,
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## Vehicle Categories
+
+The system supports five vehicle categories:
+
+| Value | Display Name | Description |
+|-------|--------------|-------------|
+| `sedan` | Sedan | Standard passenger car |
+| `suv` | SUV | Sport utility vehicle |
+| `camioneta` | Camioneta | Pickup truck |
+| `camion` | Camion | Large truck |
+| `bus` | Bus | Passenger bus |
+
+## Related Endpoints
+
+- [MarcasVehiculos](/api/marcasvehiculos) - Vehicle makes/brands
+- [ModelosVehiculos](/api/modelosvehiculos) - Vehicle models
+- [VehiculosAdmisiblesCampana](/api/vehiculosadmisiblescampana) - Campaign-eligible vehicles

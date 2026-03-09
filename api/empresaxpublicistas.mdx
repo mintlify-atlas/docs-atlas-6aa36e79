@@ -1,0 +1,538 @@
+---
+title: 'EmpresaXPublicista API'
+description: 'API endpoints for managing relationships between companies and advertisers'
+---
+
+## Overview
+
+The EmpresaXPublicista API manages the many-to-many relationships between companies (Empresas) and publicists (Publicistas). This allows publicists to work with multiple companies, and companies to work with multiple publicists.
+
+## Base Endpoint
+
+```
+POST   /Database/Database/empresaxpublicistas/
+GET    /Database/Database/empresaxpublicistas/
+GET    /Database/Database/empresaxpublicistas/{id}/
+PUT    /Database/Database/empresaxpublicistas/{id}/
+PATCH  /Database/Database/empresaxpublicistas/{id}/
+DELETE /Database/Database/empresaxpublicistas/{id}/
+```
+
+## The EmpresaXPublicista Object
+
+<ResponseField name="id" type="integer" required>
+  Unique identifier for the relationship (auto-generated)
+</ResponseField>
+
+<ResponseField name="id_publicista" type="integer" required>
+  Foreign key reference to the Publicista (Advertiser) in this relationship
+</ResponseField>
+
+<ResponseField name="id_empresa" type="integer" required>
+  Foreign key reference to the Empresa (Company) in this relationship
+</ResponseField>
+
+<ResponseField name="estado" type="integer" required>
+  Status of the relationship. Common values:
+  - 0: Inactive
+  - 1: Active
+  - 3: Terminated
+</ResponseField>
+
+<ResponseField name="fecha_creacion" type="date" required>
+  Date when the relationship was established (YYYY-MM-DD format)
+</ResponseField>
+
+<ResponseField name="fecha_modificacion" type="date" required>
+  Date when the relationship was last modified (YYYY-MM-DD format)
+</ResponseField>
+
+## Create a Company-Publicist Relationship
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.example.com/Database/Database/empresaxpublicistas/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_publicista": 5,
+    "id_empresa": 12,
+    "estado": 1,
+    "fecha_creacion": "2024-01-25",
+    "fecha_modificacion": "2024-01-25"
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaxpublicistas/"
+payload = {
+    "id_publicista": 5,
+    "id_empresa": 12,
+    "estado": 1,
+    "fecha_creacion": "2024-01-25",
+    "fecha_modificacion": "2024-01-25"
+}
+
+response = requests.post(url, json=payload)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaxpublicistas/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    id_publicista: 5,
+    id_empresa: 12,
+    estado: 1,
+    fecha_creacion: '2024-01-25',
+    fecha_modificacion: '2024-01-25'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id": 18,
+  "id_publicista": 5,
+  "id_empresa": 12,
+  "estado": 1,
+  "fecha_creacion": "2024-01-25",
+  "fecha_modificacion": "2024-01-25"
+}
+```
+</ResponseExample>
+
+## Retrieve a Relationship
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.example.com/Database/Database/empresaxpublicistas/18/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaxpublicistas/18/"
+response = requests.get(url)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaxpublicistas/18/')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id": 18,
+  "id_publicista": 5,
+  "id_empresa": 12,
+  "estado": 1,
+  "fecha_creacion": "2024-01-25",
+  "fecha_modificacion": "2024-01-25"
+}
+```
+</ResponseExample>
+
+## List All Relationships
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.example.com/Database/Database/empresaxpublicistas/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaxpublicistas/"
+response = requests.get(url)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaxpublicistas/')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id": 18,
+    "id_publicista": 5,
+    "id_empresa": 12,
+    "estado": 1,
+    "fecha_creacion": "2024-01-25",
+    "fecha_modificacion": "2024-01-25"
+  },
+  {
+    "id": 19,
+    "id_publicista": 5,
+    "id_empresa": 13,
+    "estado": 1,
+    "fecha_creacion": "2024-02-01",
+    "fecha_modificacion": "2024-02-01"
+  },
+  {
+    "id": 20,
+    "id_publicista": 6,
+    "id_empresa": 12,
+    "estado": 1,
+    "fecha_creacion": "2024-02-10",
+    "fecha_modificacion": "2024-02-10"
+  }
+]
+```
+</ResponseExample>
+
+## Update a Relationship
+
+<RequestExample>
+```bash cURL
+curl -X PATCH https://api.example.com/Database/Database/empresaxpublicistas/18/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "estado": 0,
+    "fecha_modificacion": "2024-03-09"
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaxpublicistas/18/"
+payload = {
+    "estado": 0,
+    "fecha_modificacion": "2024-03-09"
+}
+
+response = requests.patch(url, json=payload)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaxpublicistas/18/', {
+  method: 'PATCH',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    estado: 0,
+    fecha_modificacion: '2024-03-09'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id": 18,
+  "id_publicista": 5,
+  "id_empresa": 12,
+  "estado": 0,
+  "fecha_creacion": "2024-01-25",
+  "fecha_modificacion": "2024-03-09"
+}
+```
+</ResponseExample>
+
+## Delete a Relationship
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://api.example.com/Database/Database/empresaxpublicistas/18/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaxpublicistas/18/"
+response = requests.delete(url)
+print(response.status_code)
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaxpublicistas/18/', {
+  method: 'DELETE'
+})
+.then(response => console.log(response.status));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+HTTP 204 No Content
+```
+</ResponseExample>
+
+## Filter by Publicist
+
+Retrieve all companies associated with a specific publicist:
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.example.com/Database/Database/empresaxpublicistas/?id_publicista=5"
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaxpublicistas/"
+params = {'id_publicista': 5}
+
+response = requests.get(url, params=params)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaxpublicistas/?id_publicista=5')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id": 18,
+    "id_publicista": 5,
+    "id_empresa": 12,
+    "estado": 1,
+    "fecha_creacion": "2024-01-25",
+    "fecha_modificacion": "2024-01-25"
+  },
+  {
+    "id": 19,
+    "id_publicista": 5,
+    "id_empresa": 13,
+    "estado": 1,
+    "fecha_creacion": "2024-02-01",
+    "fecha_modificacion": "2024-02-01"
+  }
+]
+```
+</ResponseExample>
+
+## Filter by Company
+
+Retrieve all publicists associated with a specific company:
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.example.com/Database/Database/empresaxpublicistas/?id_empresa=12"
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaxpublicistas/"
+params = {'id_empresa': 12}
+
+response = requests.get(url, params=params)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaxpublicistas/?id_empresa=12')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id": 18,
+    "id_publicista": 5,
+    "id_empresa": 12,
+    "estado": 1,
+    "fecha_creacion": "2024-01-25",
+    "fecha_modificacion": "2024-01-25"
+  },
+  {
+    "id": 20,
+    "id_publicista": 6,
+    "id_empresa": 12,
+    "estado": 1,
+    "fecha_creacion": "2024-02-10",
+    "fecha_modificacion": "2024-02-10"
+  }
+]
+```
+</ResponseExample>
+
+## Filter by Status
+
+Retrieve only active relationships:
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.example.com/Database/Database/empresaxpublicistas/?estado=1"
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaxpublicistas/"
+params = {'estado': 1}
+
+response = requests.get(url, params=params)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaxpublicistas/?estado=1')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+## Combined Filters
+
+You can combine multiple filters to narrow down results:
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.example.com/Database/Database/empresaxpublicistas/?id_publicista=5&estado=1"
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresaxpublicistas/"
+params = {
+    'id_publicista': 5,
+    'estado': 1
+}
+
+response = requests.get(url, params=params)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresaxpublicistas/?id_publicista=5&estado=1')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id": 18,
+    "id_publicista": 5,
+    "id_empresa": 12,
+    "estado": 1,
+    "fecha_creacion": "2024-01-25",
+    "fecha_modificacion": "2024-01-25"
+  },
+  {
+    "id": 19,
+    "id_publicista": 5,
+    "id_empresa": 13,
+    "estado": 1,
+    "fecha_creacion": "2024-02-01",
+    "fecha_modificacion": "2024-02-01"
+  }
+]
+```
+</ResponseExample>
+
+## Use Cases
+
+### Grant Publicist Access to Company
+
+When a company wants to work with a publicist, create an active relationship:
+
+```python Python
+import requests
+from datetime import date
+
+url = "https://api.example.com/Database/Database/empresaxpublicistas/"
+today = date.today().isoformat()
+
+payload = {
+    "id_publicista": 5,
+    "id_empresa": 12,
+    "estado": 1,
+    "fecha_creacion": today,
+    "fecha_modificacion": today
+}
+
+response = requests.post(url, json=payload)
+if response.status_code == 201:
+    print("Publicist granted access to company")
+```
+
+### Revoke Publicist Access
+
+To revoke a publicist's access to a company, update the relationship status:
+
+```python Python
+import requests
+from datetime import date
+
+relationship_id = 18
+url = f"https://api.example.com/Database/Database/empresaxpublicistas/{relationship_id}/"
+
+payload = {
+    "estado": 0,
+    "fecha_modificacion": date.today().isoformat()
+}
+
+response = requests.patch(url, json=payload)
+if response.status_code == 200:
+    print("Publicist access revoked")
+```
+
+### Get All Companies for a Publicist
+
+Retrieve all companies that a publicist can manage:
+
+```python Python
+import requests
+
+publicist_id = 5
+url = f"https://api.example.com/Database/Database/empresaxpublicistas/?id_publicista={publicist_id}&estado=1"
+
+response = requests.get(url)
+relationships = response.json()
+
+company_ids = [rel['id_empresa'] for rel in relationships]
+print(f"Publicist {publicist_id} manages companies: {company_ids}")
+```
+
+## Integration with Views
+
+<Info>
+  The platform includes specialized views that use these relationships:
+  - `empresas_list/{usuario_id}/` - Returns companies accessible to a publicist user
+  - `sectores_por_usuario/{usuario_id}/` - Returns sectors for companies a publicist manages
+  
+  These views automatically filter based on the user's role and their EmpresaXPublicista relationships.
+</Info>
+
+## Related Endpoints
+
+- [Empresas API](/api/empresas) - Manage company information
+- [Publicistas API](/api/publicistas) - Manage publicist accounts
+- [Campaigns API](/api/campanaspublicitarias) - View campaigns for associated companies

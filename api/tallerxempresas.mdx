@@ -1,0 +1,594 @@
+---
+title: "TallerXEmpresa"
+description: "API endpoints for managing relationships between branding workshops and companies"
+---
+
+## Overview
+
+The TallerXEmpresa API manages the many-to-many relationship between branding workshops and companies. This allows companies to have preferred workshops for their campaign vehicle branding needs, and workshops to serve multiple company clients.
+
+## The TallerXEmpresa Object
+
+<ResponseField name="id_taller" type="integer" required>
+  Unique identifier for the workshop-company relationship
+</ResponseField>
+
+<ResponseField name="id_empresa" type="integer" required>
+  Foreign key reference to the company (Empresa)
+</ResponseField>
+
+<ResponseField name="estado" type="integer" required>
+  Relationship status:
+  - `0` - Inactive/Terminated
+  - `1` - Active
+  - `2` - Suspended
+  - `3` - Pending approval
+</ResponseField>
+
+<ResponseField name="fecha_creacion" type="date" required>
+  Date when the relationship was established (YYYY-MM-DD format)
+</ResponseField>
+
+<ResponseField name="fecha_modificacion" type="date" required>
+  Date when the relationship was last modified (YYYY-MM-DD format)
+</ResponseField>
+
+## Create Workshop-Company Relationship
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.restapi.com/taller-empresa \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "id_empresa": 5,
+    "estado": 1,
+    "fecha_creacion": "2026-03-09",
+    "fecha_modificacion": "2026-03-09"
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-empresa"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+data = {
+    "id_empresa": 5,
+    "estado": 1,
+    "fecha_creacion": "2026-03-09",
+    "fecha_modificacion": "2026-03-09"
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-empresa', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    id_empresa: 5,
+    estado: 1,
+    fecha_creacion: '2026-03-09',
+    fecha_modificacion: '2026-03-09'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_taller": 1,
+  "id_empresa": 5,
+  "estado": 1,
+  "fecha_creacion": "2026-03-09",
+  "fecha_modificacion": "2026-03-09"
+}
+```
+</ResponseExample>
+
+<ParamField body="id_empresa" type="integer" required>
+  Company ID to associate with the workshop
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Status of the relationship (0: Inactive, 1: Active, 2: Suspended, 3: Pending)
+</ParamField>
+
+<ParamField body="fecha_creacion" type="date" required>
+  Date when the relationship was created in YYYY-MM-DD format
+</ParamField>
+
+<ParamField body="fecha_modificacion" type="date" required>
+  Last modification date in YYYY-MM-DD format
+</ParamField>
+
+## Get Workshop-Company Relationship
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.restapi.com/taller-empresa/1 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-empresa/1"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-empresa/1', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_taller": 1,
+  "id_empresa": 5,
+  "estado": 1,
+  "fecha_creacion": "2026-03-09",
+  "fecha_modificacion": "2026-03-09",
+  "empresa": {
+    "id_empresa": 5,
+    "nombre": "TechCorp Ecuador",
+    "ruc": "1234567890001"
+  }
+}
+```
+</ResponseExample>
+
+## List Workshop-Company Relationships
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.restapi.com/taller-empresa?id_empresa=5&estado=1&limit=50 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-empresa"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+params = {"id_empresa": 5, "estado": 1, "limit": 50}
+
+response = requests.get(url, headers=headers, params=params)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-empresa?id_empresa=5&estado=1&limit=50', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "data": [
+    {
+      "id_taller": 1,
+      "id_empresa": 5,
+      "estado": 1,
+      "fecha_creacion": "2026-03-09",
+      "fecha_modificacion": "2026-03-09"
+    },
+    {
+      "id_taller": 2,
+      "id_empresa": 5,
+      "estado": 1,
+      "fecha_creacion": "2026-02-20",
+      "fecha_modificacion": "2026-02-20"
+    },
+    {
+      "id_taller": 3,
+      "id_empresa": 5,
+      "estado": 1,
+      "fecha_creacion": "2026-01-15",
+      "fecha_modificacion": "2026-03-01"
+    }
+  ],
+  "total": 3,
+  "page": 1,
+  "limit": 50
+}
+```
+</ResponseExample>
+
+<ParamField query="id_empresa" type="integer">
+  Filter relationships by company ID
+</ParamField>
+
+<ParamField query="estado" type="integer">
+  Filter relationships by status (0: Inactive, 1: Active, 2: Suspended, 3: Pending)
+</ParamField>
+
+<ParamField query="fecha_desde" type="date">
+  Filter relationships created from this date onwards (YYYY-MM-DD)
+</ParamField>
+
+<ParamField query="fecha_hasta" type="date">
+  Filter relationships created up to this date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField query="limit" type="integer" default="20">
+  Number of records to return per page
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination
+</ParamField>
+
+## Update Workshop-Company Relationship
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.restapi.com/taller-empresa/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "estado": 2,
+    "fecha_modificacion": "2026-03-10"
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-empresa/1"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+data = {
+    "estado": 2,
+    "fecha_modificacion": "2026-03-10"
+}
+
+response = requests.put(url, json=data, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-empresa/1', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    estado: 2,
+    fecha_modificacion: '2026-03-10'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_taller": 1,
+  "id_empresa": 5,
+  "estado": 2,
+  "fecha_creacion": "2026-03-09",
+  "fecha_modificacion": "2026-03-10"
+}
+```
+</ResponseExample>
+
+<ParamField body="estado" type="integer">
+  Updated relationship status
+</ParamField>
+
+<ParamField body="fecha_modificacion" type="date">
+  Update timestamp in YYYY-MM-DD format
+</ParamField>
+
+## Delete Workshop-Company Relationship
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://api.restapi.com/taller-empresa/1 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-empresa/1"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+response = requests.delete(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-empresa/1', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "message": "Workshop-company relationship deleted successfully",
+  "id_taller": 1
+}
+```
+</ResponseExample>
+
+## Get Workshops for Company
+
+Retrieve all workshops associated with a specific company.
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.restapi.com/taller-empresa/empresa/5/talleres \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-empresa/empresa/5/talleres"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-empresa/empresa/5/talleres', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_empresa": 5,
+  "nombre_empresa": "TechCorp Ecuador",
+  "talleres": [
+    {
+      "id_taller": 1,
+      "nombre": "Auto Wrap Ecuador",
+      "direccion": "Av. 6 de Diciembre N45-125",
+      "telefono": "+593999888777",
+      "estado_relacion": 1,
+      "fecha_asociacion": "2026-03-09"
+    },
+    {
+      "id_taller": 2,
+      "nombre": "Vinyl Graphics Pro",
+      "direccion": "Av. República del Salvador N34-567",
+      "telefono": "+593998765432",
+      "estado_relacion": 1,
+      "fecha_asociacion": "2026-02-20"
+    },
+    {
+      "id_taller": 3,
+      "nombre": "LED Panel Installers",
+      "direccion": "Calle Los Pinos E12-890",
+      "telefono": "+593987123456",
+      "estado_relacion": 1,
+      "fecha_asociacion": "2026-01-15"
+    }
+  ],
+  "total": 3
+}
+```
+</ResponseExample>
+
+## Get Companies for Workshop
+
+Retrieve all companies served by a specific workshop.
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.restapi.com/taller-empresa/taller/1/empresas \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-empresa/taller/1/empresas"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-empresa/taller/1/empresas', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_taller": 1,
+  "nombre_taller": "Auto Wrap Ecuador",
+  "empresas": [
+    {
+      "id_empresa": 5,
+      "nombre": "TechCorp Ecuador",
+      "ruc": "1234567890001",
+      "estado_relacion": 1,
+      "fecha_asociacion": "2026-03-09"
+    },
+    {
+      "id_empresa": 8,
+      "nombre": "Marketing Plus S.A.",
+      "ruc": "0987654321001",
+      "estado_relacion": 1,
+      "fecha_asociacion": "2026-02-15"
+    },
+    {
+      "id_empresa": 12,
+      "nombre": "Delivery Express",
+      "ruc": "1122334455001",
+      "estado_relacion": 1,
+      "fecha_asociacion": "2026-01-10"
+    }
+  ],
+  "total": 3
+}
+```
+</ResponseExample>
+
+## Bulk Create Workshop-Company Relationships
+
+Associate multiple workshops with a company in a single request.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.restapi.com/taller-empresa/bulk \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "id_empresa": 5,
+    "id_talleres": [1, 2, 3],
+    "estado": 1,
+    "fecha_creacion": "2026-03-09",
+    "fecha_modificacion": "2026-03-09"
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/taller-empresa/bulk"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+data = {
+    "id_empresa": 5,
+    "id_talleres": [1, 2, 3],
+    "estado": 1,
+    "fecha_creacion": "2026-03-09",
+    "fecha_modificacion": "2026-03-09"
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/taller-empresa/bulk', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    id_empresa: 5,
+    id_talleres: [1, 2, 3],
+    estado: 1,
+    fecha_creacion: '2026-03-09',
+    fecha_modificacion: '2026-03-09'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "message": "3 workshop-company relationships created successfully",
+  "relationships": [
+    {
+      "id_taller": 1,
+      "id_empresa": 5,
+      "estado": 1
+    },
+    {
+      "id_taller": 2,
+      "id_empresa": 5,
+      "estado": 1
+    },
+    {
+      "id_taller": 3,
+      "id_empresa": 5,
+      "estado": 1
+    }
+  ]
+}
+```
+</ResponseExample>
+
+<ParamField body="id_empresa" type="integer" required>
+  Company ID to associate with workshops
+</ParamField>
+
+<ParamField body="id_talleres" type="array" required>
+  Array of workshop IDs to associate with the company
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Status for all relationships
+</ParamField>
+
+<ParamField body="fecha_creacion" type="date" required>
+  Creation date for all relationships
+</ParamField>
+
+<ParamField body="fecha_modificacion" type="date" required>
+  Modification date for all relationships
+</ParamField>

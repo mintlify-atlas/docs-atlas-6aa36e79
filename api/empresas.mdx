@@ -1,0 +1,338 @@
+---
+title: 'Empresas API'
+description: 'API endpoints for managing companies in the advertising platform'
+---
+
+## Overview
+
+The Empresas (Companies) API allows you to create, retrieve, update, and delete company records. Companies are organizations that create advertising campaigns and manage their brand presence on the platform.
+
+## Base Endpoint
+
+```
+POST   /Database/Database/empresas/
+GET    /Database/Database/empresas/
+GET    /Database/Database/empresas/{id_empresa}/
+PUT    /Database/Database/empresas/{id_empresa}/
+PATCH  /Database/Database/empresas/{id_empresa}/
+DELETE /Database/Database/empresas/{id_empresa}/
+```
+
+## The Empresa Object
+
+<ResponseField name="id_empresa" type="integer" required>
+  Unique identifier for the company (auto-generated)
+</ResponseField>
+
+<ResponseField name="id_usuario" type="integer" required>
+  Foreign key reference to the Usuario (User) that owns this company account
+</ResponseField>
+
+<ResponseField name="ruc" type="string" required>
+  Tax identification number (RUC). Maximum 13 characters
+</ResponseField>
+
+<ResponseField name="nombre" type="string" required>
+  Company name. Maximum 30 characters
+</ResponseField>
+
+<ResponseField name="descripcion" type="string" required>
+  Company description. Maximum 300 characters
+</ResponseField>
+
+<ResponseField name="mail_contacto" type="string" required>
+  Contact email address. Maximum 40 characters
+</ResponseField>
+
+<ResponseField name="telefono" type="string" required>
+  Contact phone number. Maximum 10 characters
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer" required>
+  Foreign key reference to the Pais (Country) where the company is located. Defaults to 1
+</ResponseField>
+
+<ResponseField name="fecha_creacion" type="date" required>
+  Date when the company was created (YYYY-MM-DD format)
+</ResponseField>
+
+<ResponseField name="fecha_modificacion" type="date" required>
+  Date when the company was last modified (YYYY-MM-DD format)
+</ResponseField>
+
+<ResponseField name="estado" type="integer" required>
+  Foreign key reference to Estado (Status) indicating the company's current state
+</ResponseField>
+
+## Create a Company
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.example.com/Database/Database/empresas/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_usuario": 5,
+    "ruc": "1234567890001",
+    "nombre": "TechCorp Solutions",
+    "descripcion": "Leading technology solutions provider specializing in digital transformation and innovation",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234567",
+    "id_pais": 1,
+    "fecha_creacion": "2024-01-15",
+    "fecha_modificacion": "2024-01-15",
+    "estado": 1
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresas/"
+payload = {
+    "id_usuario": 5,
+    "ruc": "1234567890001",
+    "nombre": "TechCorp Solutions",
+    "descripcion": "Leading technology solutions provider specializing in digital transformation and innovation",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234567",
+    "id_pais": 1,
+    "fecha_creacion": "2024-01-15",
+    "fecha_modificacion": "2024-01-15",
+    "estado": 1
+}
+
+response = requests.post(url, json=payload)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresas/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    id_usuario: 5,
+    ruc: '1234567890001',
+    nombre: 'TechCorp Solutions',
+    descripcion: 'Leading technology solutions provider specializing in digital transformation and innovation',
+    mail_contacto: '[email protected]',
+    telefono: '0991234567',
+    id_pais: 1,
+    fecha_creacion: '2024-01-15',
+    fecha_modificacion: '2024-01-15',
+    estado: 1
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_empresa": 12,
+  "id_usuario": 5,
+  "ruc": "1234567890001",
+  "nombre": "TechCorp Solutions",
+  "descripcion": "Leading technology solutions provider specializing in digital transformation and innovation",
+  "mail_contacto": "[email protected]",
+  "telefono": "0991234567",
+  "id_pais": 1,
+  "fecha_creacion": "2024-01-15",
+  "fecha_modificacion": "2024-01-15",
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## Retrieve a Company
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.example.com/Database/Database/empresas/12/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresas/12/"
+response = requests.get(url)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresas/12/')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_empresa": 12,
+  "id_usuario": 5,
+  "ruc": "1234567890001",
+  "nombre": "TechCorp Solutions",
+  "descripcion": "Leading technology solutions provider specializing in digital transformation and innovation",
+  "mail_contacto": "[email protected]",
+  "telefono": "0991234567",
+  "id_pais": 1,
+  "fecha_creacion": "2024-01-15",
+  "fecha_modificacion": "2024-01-15",
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## List All Companies
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.example.com/Database/Database/empresas/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresas/"
+response = requests.get(url)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresas/')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "id_empresa": 12,
+    "id_usuario": 5,
+    "ruc": "1234567890001",
+    "nombre": "TechCorp Solutions",
+    "descripcion": "Leading technology solutions provider specializing in digital transformation and innovation",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234567",
+    "id_pais": 1,
+    "fecha_creacion": "2024-01-15",
+    "fecha_modificacion": "2024-01-15",
+    "estado": 1
+  },
+  {
+    "id_empresa": 13,
+    "id_usuario": 6,
+    "ruc": "9876543210001",
+    "nombre": "Marketing Plus",
+    "descripcion": "Full-service marketing agency focused on brand development and digital advertising",
+    "mail_contacto": "[email protected]",
+    "telefono": "0987654321",
+    "id_pais": 1,
+    "fecha_creacion": "2024-02-10",
+    "fecha_modificacion": "2024-02-10",
+    "estado": 1
+  }
+]
+```
+</ResponseExample>
+
+## Update a Company
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.example.com/Database/Database/empresas/12/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_usuario": 5,
+    "ruc": "1234567890001",
+    "nombre": "TechCorp Solutions Inc",
+    "descripcion": "Leading technology solutions provider specializing in digital transformation, innovation, and cloud services",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234567",
+    "id_pais": 1,
+    "fecha_creacion": "2024-01-15",
+    "fecha_modificacion": "2024-03-09",
+    "estado": 1
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresas/12/"
+payload = {
+    "id_usuario": 5,
+    "ruc": "1234567890001",
+    "nombre": "TechCorp Solutions Inc",
+    "descripcion": "Leading technology solutions provider specializing in digital transformation, innovation, and cloud services",
+    "mail_contacto": "[email protected]",
+    "telefono": "0991234567",
+    "id_pais": 1,
+    "fecha_creacion": "2024-01-15",
+    "fecha_modificacion": "2024-03-09",
+    "estado": 1
+}
+
+response = requests.put(url, json=payload)
+print(response.json())
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_empresa": 12,
+  "id_usuario": 5,
+  "ruc": "1234567890001",
+  "nombre": "TechCorp Solutions Inc",
+  "descripcion": "Leading technology solutions provider specializing in digital transformation, innovation, and cloud services",
+  "mail_contacto": "[email protected]",
+  "telefono": "0991234567",
+  "id_pais": 1,
+  "fecha_creacion": "2024-01-15",
+  "fecha_modificacion": "2024-03-09",
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## Delete a Company
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://api.example.com/Database/Database/empresas/12/
+```
+
+```python Python
+import requests
+
+url = "https://api.example.com/Database/Database/empresas/12/"
+response = requests.delete(url)
+print(response.status_code)
+```
+
+```javascript JavaScript
+fetch('https://api.example.com/Database/Database/empresas/12/', {
+  method: 'DELETE'
+})
+.then(response => console.log(response.status));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+HTTP 204 No Content
+```
+</ResponseExample>
+
+## Related Endpoints
+
+- [EmpresaImages API](/api/empresaimages) - Manage company logos and banners
+- [EmpresaXPublicista API](/api/empresaxpublicistas) - Manage relationships between companies and advertisers
+- [Campaigns API](/api/campanaspublicitarias) - Manage advertising campaigns for companies

@@ -1,0 +1,429 @@
+---
+title: 'Ciudades API'
+description: 'Manage cities and their geographic locations'
+---
+
+## Overview
+
+The Ciudades (Cities) API manages city records with geographic location data stored as JSON for Google Maps integration.
+
+## Model Structure
+
+The Ciudad model represents cities with country associations and Google Maps location data.
+
+### Fields
+
+<ParamField path="id_ciudad" type="integer" required>
+  Primary key. Auto-incremented unique identifier for the city.
+</ParamField>
+
+<ParamField path="id_pais" type="integer" required>
+  Foreign key reference to the Pais (Country) model. Links the city to its country.
+</ParamField>
+
+<ParamField path="nombre" type="string" required>
+  City name. Maximum 80 characters.
+</ParamField>
+
+<ParamField path="ubicacion_google_maps" type="object" required>
+  JSON field containing Google Maps location data. Stores latitude, longitude, and optional place information.
+  
+  Default: `{}`
+</ParamField>
+
+## Endpoints
+
+### List Cities
+
+```http
+GET /api/ciudades/
+```
+
+Retrieves all cities in the system.
+
+#### Query Parameters
+
+<ParamField query="id_pais" type="integer">
+  Optional. Filter cities by country ID.
+</ParamField>
+
+#### Response
+
+<ResponseField name="id_ciudad" type="integer">
+  Unique identifier for the city
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  ID of the country this city belongs to
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  Name of the city
+</ResponseField>
+
+<ResponseField name="ubicacion_google_maps" type="object">
+  Google Maps location data including coordinates
+  
+  <ResponseField name="ubicacion_google_maps.lat" type="number">
+    Latitude coordinate
+  </ResponseField>
+  
+  <ResponseField name="ubicacion_google_maps.lng" type="number">
+    Longitude coordinate
+  </ResponseField>
+  
+  <ResponseField name="ubicacion_google_maps.place_id" type="string">
+    Google Maps Place ID (optional)
+  </ResponseField>
+  
+  <ResponseField name="ubicacion_google_maps.formatted_address" type="string">
+    Formatted address string (optional)
+  </ResponseField>
+</ResponseField>
+
+#### Example Response
+
+```json
+[
+  {
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "nombre": "Quito",
+    "ubicacion_google_maps": {
+      "lat": -0.1806532,
+      "lng": -78.4678382,
+      "place_id": "ChIJUdXT06dBJZERcrgUJ3nTs_E",
+      "formatted_address": "Quito, Ecuador"
+    }
+  },
+  {
+    "id_ciudad": 2,
+    "id_pais": 1,
+    "nombre": "Guayaquil",
+    "ubicacion_google_maps": {
+      "lat": -2.1709979,
+      "lng": -79.9223592,
+      "place_id": "ChIJDY7kWmWLLZAR8RiDZ1bx5cg",
+      "formatted_address": "Guayaquil, Ecuador"
+    }
+  }
+]
+```
+
+### Get City
+
+```http
+GET /api/ciudades/{id_ciudad}/
+```
+
+Retrieves a specific city by ID.
+
+#### Path Parameters
+
+<ParamField path="id_ciudad" type="integer" required>
+  The unique identifier of the city to retrieve
+</ParamField>
+
+#### Response
+
+<ResponseField name="id_ciudad" type="integer">
+  Unique identifier for the city
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  ID of the country this city belongs to
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  Name of the city
+</ResponseField>
+
+<ResponseField name="ubicacion_google_maps" type="object">
+  Google Maps location data
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "nombre": "Quito",
+  "ubicacion_google_maps": {
+    "lat": -0.1806532,
+    "lng": -78.4678382,
+    "place_id": "ChIJUdXT06dBJZERcrgUJ3nTs_E",
+    "formatted_address": "Quito, Ecuador"
+  }
+}
+```
+
+### Create City
+
+```http
+POST /api/ciudades/
+```
+
+Creates a new city with location data.
+
+#### Request Body
+
+<ParamField body="id_pais" type="integer" required>
+  ID of the country this city belongs to
+</ParamField>
+
+<ParamField body="nombre" type="string" required>
+  Name of the city. Maximum 80 characters.
+</ParamField>
+
+<ParamField body="ubicacion_google_maps" type="object">
+  Google Maps location data. If not provided, defaults to empty object `{}`.
+  
+  <ParamField body="ubicacion_google_maps.lat" type="number" required>
+    Latitude coordinate
+  </ParamField>
+  
+  <ParamField body="ubicacion_google_maps.lng" type="number" required>
+    Longitude coordinate
+  </ParamField>
+  
+  <ParamField body="ubicacion_google_maps.place_id" type="string">
+    Google Maps Place ID (optional)
+  </ParamField>
+  
+  <ParamField body="ubicacion_google_maps.formatted_address" type="string">
+    Formatted address string (optional)
+  </ParamField>
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "id_pais": 1,
+  "nombre": "Cuenca",
+  "ubicacion_google_maps": {
+    "lat": -2.9001285,
+    "lng": -79.0058965,
+    "place_id": "ChIJ_T5g5WZis5ERzQZKz_hCAAE",
+    "formatted_address": "Cuenca, Ecuador"
+  }
+}
+```
+
+#### Response
+
+<ResponseField name="id_ciudad" type="integer">
+  Unique identifier for the newly created city
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  ID of the country
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  Name of the city
+</ResponseField>
+
+<ResponseField name="ubicacion_google_maps" type="object">
+  Google Maps location data
+</ResponseField>
+
+### Update City
+
+```http
+PUT /api/ciudades/{id_ciudad}/
+```
+
+Updates an existing city's information.
+
+#### Path Parameters
+
+<ParamField path="id_ciudad" type="integer" required>
+  The unique identifier of the city to update
+</ParamField>
+
+#### Request Body
+
+<ParamField body="id_pais" type="integer" required>
+  ID of the country this city belongs to
+</ParamField>
+
+<ParamField body="nombre" type="string" required>
+  Updated name of the city. Maximum 80 characters.
+</ParamField>
+
+<ParamField body="ubicacion_google_maps" type="object">
+  Updated Google Maps location data
+  
+  <ParamField body="ubicacion_google_maps.lat" type="number">
+    Latitude coordinate
+  </ParamField>
+  
+  <ParamField body="ubicacion_google_maps.lng" type="number">
+    Longitude coordinate
+  </ParamField>
+  
+  <ParamField body="ubicacion_google_maps.place_id" type="string">
+    Google Maps Place ID (optional)
+  </ParamField>
+  
+  <ParamField body="ubicacion_google_maps.formatted_address" type="string">
+    Formatted address string (optional)
+  </ParamField>
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "id_pais": 1,
+  "nombre": "Quito - Distrito Metropolitano",
+  "ubicacion_google_maps": {
+    "lat": -0.1806532,
+    "lng": -78.4678382,
+    "place_id": "ChIJUdXT06dBJZERcrgUJ3nTs_E",
+    "formatted_address": "Quito, Pichincha, Ecuador",
+    "zoom": 12
+  }
+}
+```
+
+### Partial Update City
+
+```http
+PATCH /api/ciudades/{id_ciudad}/
+```
+
+Partially updates a city's information. Only provided fields will be updated.
+
+#### Path Parameters
+
+<ParamField path="id_ciudad" type="integer" required>
+  The unique identifier of the city to update
+</ParamField>
+
+#### Request Body
+
+Any subset of the city fields can be provided.
+
+#### Example Request
+
+```json
+{
+  "ubicacion_google_maps": {
+    "lat": -0.1806532,
+    "lng": -78.4678382,
+    "zoom": 13
+  }
+}
+```
+
+### Delete City
+
+```http
+DELETE /api/ciudades/{id_ciudad}/
+```
+
+Deletes a city from the system.
+
+#### Path Parameters
+
+<ParamField path="id_ciudad" type="integer" required>
+  The unique identifier of the city to delete
+</ParamField>
+
+#### Response
+
+Returns 204 No Content on successful deletion.
+
+## Google Maps Location Structure
+
+The `ubicacion_google_maps` field is a flexible JSON field that typically contains:
+
+### Basic Structure
+
+```json
+{
+  "lat": -0.1806532,
+  "lng": -78.4678382
+}
+```
+
+### Extended Structure
+
+```json
+{
+  "lat": -0.1806532,
+  "lng": -78.4678382,
+  "place_id": "ChIJUdXT06dBJZERcrgUJ3nTs_E",
+  "formatted_address": "Quito, Ecuador",
+  "zoom": 12,
+  "viewport": {
+    "northeast": {
+      "lat": -0.0536722,
+      "lng": -78.3595432
+    },
+    "southwest": {
+      "lat": -0.3583852,
+      "lng": -78.5943072
+    }
+  }
+}
+```
+
+### Common Fields
+
+<ParamField path="lat" type="number" required>
+  Latitude coordinate (decimal degrees)
+</ParamField>
+
+<ParamField path="lng" type="number" required>
+  Longitude coordinate (decimal degrees)
+</ParamField>
+
+<ParamField path="place_id" type="string">
+  Google Maps Place ID for precise location identification
+</ParamField>
+
+<ParamField path="formatted_address" type="string">
+  Human-readable address string
+</ParamField>
+
+<ParamField path="zoom" type="integer">
+  Recommended zoom level for map display (typically 10-15 for cities)
+</ParamField>
+
+<ParamField path="viewport" type="object">
+  Bounding box for the city area
+  
+  <ParamField path="viewport.northeast" type="object">
+    Northeast corner coordinates
+  </ParamField>
+  
+  <ParamField path="viewport.southwest" type="object">
+    Southwest corner coordinates
+  </ParamField>
+</ParamField>
+
+## Relationships
+
+The Ciudad model is referenced by:
+- **Usuario**: Users are located in specific cities
+- **Chofer**: Drivers operate in specific cities
+- **Cliente**: Clients are based in specific cities
+- **Empresa**: Companies may be registered in specific cities
+- **CampanaPublicitaria**: Campaigns target specific cities
+- **Sector**: Geographic sectors belong to cities
+- **TallerBrandeo**: Branding workshops are located in cities
+- **RecorridoRealizado**: Routes are tracked within cities
+- **MovimientoCapital**: Financial transactions are city-specific
+
+## Usage Notes
+
+- A city must belong to a valid country (Pais)
+- The `ubicacion_google_maps` field is required and should contain at minimum `lat` and `lng` coordinates
+- Deleting a city will cascade delete all related records
+- When integrating with Google Maps, use the `place_id` for precise location lookups
+- Coordinates should use WGS84 datum (standard for GPS and Google Maps)
+- Latitude ranges from -90 to 90, longitude from -180 to 180

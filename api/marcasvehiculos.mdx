@@ -1,0 +1,193 @@
+---
+title: 'Marcas Vehiculos'
+api: 'GET/POST /api/marcasvehiculos'
+---
+
+# Marcas Vehiculos API
+
+Manage vehicle makes/brands.
+
+## Vehicle Make Object
+
+<ResponseField name="id_marca" type="integer" required>
+  Unique identifier for the vehicle make (auto-generated primary key)
+</ResponseField>
+
+<ResponseField name="nombre" type="string" required>
+  Name of the vehicle make/brand (max 15 characters)
+</ResponseField>
+
+<ResponseField name="estado" type="string">
+  Status of the make (default: "Activo")
+</ResponseField>
+
+## GET /api/marcasvehiculos
+
+Retrieve a list of all vehicle makes.
+
+### Query Parameters
+
+<ParamField query="nombre" type="string">
+  Filter by make name
+</ParamField>
+
+<ParamField query="estado" type="string">
+  Filter by status
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+[
+  {
+    "id_marca": 1,
+    "nombre": "Toyota",
+    "estado": "Activo"
+  },
+  {
+    "id_marca": 2,
+    "nombre": "Honda",
+    "estado": "Activo"
+  },
+  {
+    "id_marca": 3,
+    "nombre": "Ford",
+    "estado": "Activo"
+  },
+  {
+    "id_marca": 4,
+    "nombre": "Chevrolet",
+    "estado": "Activo"
+  },
+  {
+    "id_marca": 5,
+    "nombre": "Nissan",
+    "estado": "Activo"
+  }
+]
+```
+</ResponseExample>
+
+## POST /api/marcasvehiculos
+
+Create a new vehicle make.
+
+### Request Body
+
+<ParamField body="nombre" type="string" required>
+  Name of the vehicle make (max 15 characters)
+</ParamField>
+
+<ParamField body="estado" type="string">
+  Status of the make (defaults to "Activo" if not provided)
+</ParamField>
+
+### Request Example
+
+```json
+{
+  "nombre": "Mazda",
+  "estado": "Activo"
+}
+```
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "id_marca": 6,
+  "nombre": "Mazda",
+  "estado": "Activo"
+}
+```
+</ResponseExample>
+
+## GET /api/marcasvehiculos/{id_marca}
+
+Retrieve a specific vehicle make by ID.
+
+### Path Parameters
+
+<ParamField path="id_marca" type="integer" required>
+  The ID of the vehicle make
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "id_marca": 1,
+  "nombre": "Toyota",
+  "estado": "Activo"
+}
+```
+</ResponseExample>
+
+## PUT /api/marcasvehiculos/{id_marca}
+
+Update an existing vehicle make.
+
+### Path Parameters
+
+<ParamField path="id_marca" type="integer" required>
+  The ID of the vehicle make to update
+</ParamField>
+
+### Request Body
+
+<ParamField body="nombre" type="string">
+  Updated name of the vehicle make
+</ParamField>
+
+<ParamField body="estado" type="string">
+  Updated status of the make
+</ParamField>
+
+### Request Example
+
+```json
+{
+  "nombre": "Toyota Motors",
+  "estado": "Activo"
+}
+```
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "id_marca": 1,
+  "nombre": "Toyota Motors",
+  "estado": "Activo"
+}
+```
+</ResponseExample>
+
+## DELETE /api/marcasvehiculos/{id_marca}
+
+Delete a vehicle make.
+
+### Path Parameters
+
+<ParamField path="id_marca" type="integer" required>
+  The ID of the vehicle make to delete
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "message": "Vehicle make deleted successfully"
+}
+```
+</ResponseExample>
+
+## Related Endpoints
+
+- [ModelosVehiculos](/api/modelosvehiculos) - Vehicle models (linked to makes)
+- [Vehiculos](/api/vehiculos) - Vehicles (references makes)

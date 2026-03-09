@@ -1,0 +1,169 @@
+---
+title: 'Environment Variables'
+description: 'Configure your RestAPI Django application using environment variables'
+icon: 'gear'
+---
+
+## Overview
+
+The RestAPI project uses environment variables for configuration management through the `django-environ` package. All sensitive configuration values should be stored in a `.env` file in the project root directory.
+
+## Setup
+
+Create a `.env` file in your project root based on the `.env.example` template:
+
+```bash
+cp .env.example .env
+```
+
+<Warning>
+Never commit your `.env` file to version control. It should be listed in `.gitignore` to prevent accidentally exposing sensitive credentials.
+</Warning>
+
+## Environment Variables Reference
+
+### Application Settings
+
+<ParamField path="DEBUG" type="boolean" default="False" required>
+  Controls Django's debug mode. Set to `True` for development and `False` for production.
+  
+  When `DEBUG=True`:
+  - CORS allows all origins
+  - All hosts are allowed
+  - Detailed error pages are shown
+  
+  When `DEBUG=False`:
+  - CORS is restricted to specific origins
+  - Only whitelisted hosts are allowed
+  - Generic error pages are shown
+</ParamField>
+
+<ParamField path="DJANGO_KEY" type="string" required>
+  Django's secret key used for cryptographic signing. This must be kept secret in production.
+  
+  **Example:** `django-5a5s4d4as44vcu8cnasuau8sg!`
+  
+  <Note>
+  Generate a secure secret key using Django's built-in tool:
+  ```bash
+  python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+  ```
+  </Note>
+</ParamField>
+
+### Database Configuration
+
+<ParamField path="DB_NAME" type="string" default="migo" required>
+  The name of your PostgreSQL database.
+  
+  **Example:** `migo`
+</ParamField>
+
+<ParamField path="DB_USER" type="string" default="postgres" required>
+  PostgreSQL database username.
+  
+  **Example:** `postgres`
+</ParamField>
+
+<ParamField path="DB_PASSWORD" type="string" default="admin" required>
+  PostgreSQL database password for the specified user.
+  
+  **Example:** `admin`
+  
+  <Warning>
+  Use a strong password in production environments.
+  </Warning>
+</ParamField>
+
+<ParamField path="DB_HOST" type="string" default="localhost" required>
+  PostgreSQL server host address.
+  
+  **Example:** `localhost` or `127.0.0.1`
+</ParamField>
+
+<ParamField path="DB_PORT" type="string" default="5432" required>
+  PostgreSQL server port number.
+  
+  **Example:** `5432` (default PostgreSQL port)
+</ParamField>
+
+## Example Configuration
+
+Here's a complete example `.env` file:
+
+<CodeGroup>
+```bash Development
+DEBUG=True
+DB_NAME='migo_dev'
+DB_USER='postgres'
+DB_PASSWORD='admin'
+DB_HOST='localhost'
+DB_PORT='5432'
+DJANGO_KEY='django-insecure-dev-key-change-in-production'
+```
+
+```bash Production
+DEBUG=False
+DB_NAME='migo_production'
+DB_USER='migo_user'
+DB_PASSWORD='strong_secure_password_here'
+DB_HOST='db.example.com'
+DB_PORT='5432'
+DJANGO_KEY='django-secure-random-production-key'
+```
+</CodeGroup>
+
+## Loading Environment Variables
+
+The application loads environment variables in `RestAPI/settings.py`:
+
+```python RestAPI/settings.py
+import environ
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+
+# Access environment variables
+SECRET_KEY = env('DJANGO_KEY')
+DEBUG = env('DEBUG')
+DB_NAME = env('DB_NAME')
+DB_USER = env('DB_USER')
+DB_PASSWORD = env('DB_PASSWORD')
+DB_HOST = env('DB_HOST')
+DB_PORT = env('DB_PORT')
+```
+
+## Best Practices
+
+<Note>
+- **Development**: Use `DEBUG=True` and local database credentials
+- **Production**: Always use `DEBUG=False` and secure credentials
+- **Secret Key**: Generate unique keys for each environment
+- **Passwords**: Use strong, random passwords for database users
+- **Version Control**: Never commit `.env` files to Git
+</Note>
+
+## Troubleshooting
+
+### Missing Environment Variables
+
+If you see errors about missing environment variables:
+
+1. Verify `.env` file exists in the project root
+2. Check all required variables are defined
+3. Ensure no extra spaces around `=` signs
+4. Restart the Django development server after changes
+
+### Boolean Values
+
+For the `DEBUG` variable, use:
+- `DEBUG=True` or `DEBUG=1` for development
+- `DEBUG=False` or `DEBUG=0` for production
+
+<Warning>
+Do not use quotes around boolean values: `DEBUG=True` not `DEBUG="True"`
+</Warning>

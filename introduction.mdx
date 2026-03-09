@@ -1,0 +1,142 @@
+---
+title: Introduction
+description: Django REST API service for managing vehicle-based advertising campaigns
+---
+
+<Note>
+  RestAPI is a comprehensive Django REST Framework service designed for managing vehicle-based advertising campaigns with full-featured campaign, vehicle, and user management capabilities.
+</Note>
+
+## Overview
+
+RestAPI provides a complete backend solution for managing advertising campaigns on vehicles. The system supports multiple user roles, campaign management, vehicle tracking, financial transactions, and real-time notifications.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="JWT Authentication" icon="lock">
+    Secure authentication with 8-hour access tokens using Simple JWT
+  </Card>
+  <Card title="Campaign Management" icon="bullhorn">
+    Create and manage advertising campaigns with geographic sectors and geofencing
+  </Card>
+  <Card title="Vehicle Tracking" icon="car">
+    Track vehicles, routes, and advertising coverage in real-time
+  </Card>
+  <Card title="Multi-Role System" icon="users">
+    Support for admins, advertisers, companies, and drivers with role-based permissions
+  </Card>
+  <Card title="Firebase Integration" icon="bell">
+    Push notifications via Firebase Cloud Messaging
+  </Card>
+  <Card title="Email Notifications" icon="envelope">
+    HTML email templates for user communications
+  </Card>
+  <Card title="PostgreSQL Database" icon="database">
+    Robust data storage with Django ORM
+  </Card>
+  <Card title="Financial Tracking" icon="dollar-sign">
+    Track payments, transactions, and campaign budgets
+  </Card>
+</CardGroup>
+
+## What You Can Build
+
+With RestAPI, you can build:
+
+- **Campaign Management Platforms**: Create and manage advertising campaigns with geographic targeting
+- **Vehicle Tracking Systems**: Monitor vehicle routes and advertising exposure
+- **Driver Applications**: Allow drivers to register vehicles and track earnings
+- **Advertiser Dashboards**: Enable companies to create campaigns and monitor performance
+- **Workshop Management**: Coordinate vehicle branding installations across workshops
+
+## Architecture
+
+RestAPI is built with:
+
+- **Django 4.2.6**: Web framework for the backend
+- **Django REST Framework 3.14.0**: RESTful API development
+- **PostgreSQL**: Primary database
+- **Simple JWT**: Token-based authentication
+- **Firebase Cloud Messaging**: Push notifications
+- **CORS Headers**: Cross-origin resource sharing support
+
+## Core Components
+
+<AccordionGroup>
+  <Accordion title="Campaign System">
+    Manage advertising campaigns with customizable parameters including budget, geographic sectors, vehicle types, branding options, and monetization schedules.
+  </Accordion>
+  
+  <Accordion title="Vehicle Management">
+    Register and track vehicles with detailed information including make, model, images, and associated drivers or clients.
+  </Accordion>
+  
+  <Accordion title="User Roles">
+    Three primary user types: Administrators (full system access), Advertisers/Publicists (campaign creation), and Companies (campaign management). Driver and client roles for campaign participation.
+  </Accordion>
+  
+  <Accordion title="Geofencing">
+    Define geographic sectors with virtual boundaries using JSON coordinate data for targeted advertising zones.
+  </Accordion>
+  
+  <Accordion title="Financial System">
+    Track capital movements, transactions, and campaign budgets with detailed financial records.
+  </Accordion>
+  
+  <Accordion title="Permission System">
+    Granular role-based permissions with menu, view, and action-level controls.
+  </Accordion>
+</AccordionGroup>
+
+## Getting Started
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get your development environment up and running in minutes
+  </Card>
+  <Card title="Authentication" icon="key" href="/authentication">
+    Learn how to authenticate and secure your API requests
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/overview">
+    Explore the complete API documentation
+  </Card>
+  <Card title="Configuration" icon="gear" href="/configuration/environment">
+    Configure your environment variables and settings
+  </Card>
+</CardGroup>
+
+## API Endpoints
+
+RestAPI provides RESTful endpoints for all resources:
+
+- User management and authentication
+- Campaign creation and management
+- Vehicle registration and tracking
+- Company and advertiser profiles
+- Financial transactions
+- Geographic sectors
+- Workshop coordination
+- Email and push notifications
+
+All endpoints follow REST conventions with support for GET, POST, PUT, PATCH, and DELETE operations where appropriate.
+
+## Next Steps
+
+<Steps>
+  <Step title="Install Dependencies">
+    Set up Python 3.10 and install required packages from requirements.txt
+  </Step>
+  <Step title="Configure Database">
+    Set up PostgreSQL and configure your database connection
+  </Step>
+  <Step title="Environment Variables">
+    Create your .env file with required configuration
+  </Step>
+  <Step title="Run Migrations">
+    Apply database migrations to set up your schema
+  </Step>
+  <Step title="Start Development Server">
+    Launch the Django development server and start building
+  </Step>
+</Steps>

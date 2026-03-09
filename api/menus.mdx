@@ -1,0 +1,244 @@
+---
+title: 'Menus'
+api: 'GET /api/menus'
+---
+
+# Menus API
+
+The Menus endpoint manages top-level menu entries in the hierarchical permission system. Menus contain multiple Vistas (views) and represent the primary navigation structure.
+
+## Hierarchy
+
+```
+Menu (Top Level)
+ └── Vista (Views within menu)
+     └── Opciones (Actions within view)
+```
+
+## Model Structure
+
+The Menu model represents the top level of the permission hierarchy.
+
+### Fields
+
+<ParamField path="id_menu" type="integer" required>
+  Auto-incremented primary key identifying the menu
+</ParamField>
+
+<ParamField path="nombre_menu" type="string" required>
+  Name of the menu (max 40 characters)
+</ParamField>
+
+<ParamField path="descripcion" type="string">
+  Description of the menu's purpose (max 40 characters)
+</ParamField>
+
+<ParamField path="estado" type="integer" required>
+  Status of the menu
+  - `0`: Inactive
+  - `1`: Active
+</ParamField>
+
+## Endpoints
+
+### List All Menus
+
+```http
+GET /api/menus/
+```
+
+Retrieve all menus in the system.
+
+#### Response
+
+<ResponseField name="results" type="array">
+  <ResponseField name="id_menu" type="integer">
+    Unique identifier for the menu
+  </ResponseField>
+  <ResponseField name="nombre_menu" type="string">
+    Menu name
+  </ResponseField>
+  <ResponseField name="descripcion" type="string">
+    Menu description
+  </ResponseField>
+  <ResponseField name="estado" type="integer">
+    Menu status (0: Inactive, 1: Active)
+  </ResponseField>
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "results": [
+    {
+      "id_menu": 1,
+      "nombre_menu": "Dashboard",
+      "descripcion": "Main dashboard menu",
+      "estado": 1
+    },
+    {
+      "id_menu": 2,
+      "nombre_menu": "Campañas",
+      "descripcion": "Campaign management menu",
+      "estado": 1
+    },
+    {
+      "id_menu": 3,
+      "nombre_menu": "Usuarios",
+      "descripcion": "User management menu",
+      "estado": 1
+    }
+  ]
+}
+```
+
+### Get Menu by ID
+
+```http
+GET /api/menus/{id_menu}/
+```
+
+Retrieve details of a specific menu.
+
+#### Path Parameters
+
+<ParamField path="id_menu" type="integer" required>
+  The unique identifier of the menu
+</ParamField>
+
+#### Response
+
+<ResponseField name="id_menu" type="integer">
+  Unique identifier for the menu
+</ResponseField>
+
+<ResponseField name="nombre_menu" type="string">
+  Menu name
+</ResponseField>
+
+<ResponseField name="descripcion" type="string">
+  Menu description
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Menu status
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "id_menu": 1,
+  "nombre_menu": "Dashboard",
+  "descripcion": "Main dashboard menu",
+  "estado": 1
+}
+```
+
+### Create Menu
+
+```http
+POST /api/menus/
+```
+
+Create a new menu in the system.
+
+#### Request Body
+
+<ParamField body="nombre_menu" type="string" required>
+  Name of the menu (max 40 characters)
+</ParamField>
+
+<ParamField body="descripcion" type="string">
+  Description of the menu (max 40 characters)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Status of the menu (0: Inactive, 1: Active)
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "nombre_menu": "Reportes",
+  "descripcion": "Reports and analytics menu",
+  "estado": 1
+}
+```
+
+#### Response
+
+<ResponseField name="id_menu" type="integer">
+  The ID of the newly created menu
+</ResponseField>
+
+<ResponseField name="nombre_menu" type="string">
+  Menu name
+</ResponseField>
+
+<ResponseField name="descripcion" type="string">
+  Menu description
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Menu status
+</ResponseField>
+
+### Update Menu
+
+```http
+PUT /api/menus/{id_menu}/
+PATCH /api/menus/{id_menu}/
+```
+
+Update an existing menu. Use PUT for full updates or PATCH for partial updates.
+
+#### Path Parameters
+
+<ParamField path="id_menu" type="integer" required>
+  The unique identifier of the menu to update
+</ParamField>
+
+#### Request Body
+
+<ParamField body="nombre_menu" type="string">
+  Updated menu name
+</ParamField>
+
+<ParamField body="descripcion" type="string">
+  Updated description
+</ParamField>
+
+<ParamField body="estado" type="integer">
+  Updated status
+</ParamField>
+
+### Delete Menu
+
+```http
+DELETE /api/menus/{id_menu}/
+```
+
+Delete a menu from the system. Note: This will cascade delete all associated Vistas and their Opciones.
+
+#### Path Parameters
+
+<ParamField path="id_menu" type="integer" required>
+  The unique identifier of the menu to delete
+</ParamField>
+
+## Related Endpoints
+
+- [Vistas](/api/vistas) - Views within menus
+- [Opciones](/api/opciones) - Actions within views
+- [PermisosXRol](/api/permisosxrol) - Role-based permissions linking to menus
+
+## Usage Notes
+
+- Menus form the top level of the permission hierarchy
+- Each menu can contain multiple Vistas (views)
+- Deleting a menu will cascade delete all associated data
+- Menu estado should be set to 0 to disable rather than deleting
+- Use PermisosXRol to assign menu access to specific roles

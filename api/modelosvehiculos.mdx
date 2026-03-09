@@ -1,0 +1,265 @@
+---
+title: 'Modelos Vehiculos'
+api: 'GET/POST /api/modelosvehiculos'
+---
+
+# Modelos Vehiculos API
+
+Manage vehicle models. Each model belongs to a specific vehicle make (marca).
+
+## Vehicle Model Object
+
+<ResponseField name="id_modelo" type="integer" required>
+  Unique identifier for the vehicle model (auto-generated primary key)
+</ResponseField>
+
+<ResponseField name="id_marca" type="integer" required>
+  Foreign key reference to MarcasVehiculos (the make/brand this model belongs to)
+</ResponseField>
+
+<ResponseField name="nombre" type="string" required>
+  Name of the vehicle model (max 30 characters)
+</ResponseField>
+
+<ResponseField name="estado" type="string">
+  Status of the model (default: "Activo")
+</ResponseField>
+
+## GET /api/modelosvehiculos
+
+Retrieve a list of all vehicle models.
+
+### Query Parameters
+
+<ParamField query="id_marca" type="integer">
+  Filter models by vehicle make ID
+</ParamField>
+
+<ParamField query="nombre" type="string">
+  Filter by model name
+</ParamField>
+
+<ParamField query="estado" type="string">
+  Filter by status
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+[
+  {
+    "id_modelo": 1,
+    "id_marca": 1,
+    "nombre": "Corolla",
+    "estado": "Activo"
+  },
+  {
+    "id_modelo": 2,
+    "id_marca": 1,
+    "nombre": "Camry",
+    "estado": "Activo"
+  },
+  {
+    "id_modelo": 3,
+    "id_marca": 1,
+    "nombre": "RAV4",
+    "estado": "Activo"
+  },
+  {
+    "id_modelo": 4,
+    "id_marca": 2,
+    "nombre": "Civic",
+    "estado": "Activo"
+  },
+  {
+    "id_modelo": 5,
+    "id_marca": 2,
+    "nombre": "Accord",
+    "estado": "Activo"
+  }
+]
+```
+</ResponseExample>
+
+## POST /api/modelosvehiculos
+
+Create a new vehicle model.
+
+### Request Body
+
+<ParamField body="id_marca" type="integer" required>
+  ID of the vehicle make this model belongs to
+</ParamField>
+
+<ParamField body="nombre" type="string" required>
+  Name of the vehicle model (max 30 characters)
+</ParamField>
+
+<ParamField body="estado" type="string">
+  Status of the model (defaults to "Activo" if not provided)
+</ParamField>
+
+### Request Example
+
+```json
+{
+  "id_marca": 1,
+  "nombre": "Prius",
+  "estado": "Activo"
+}
+```
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "id_modelo": 6,
+  "id_marca": 1,
+  "nombre": "Prius",
+  "estado": "Activo"
+}
+```
+</ResponseExample>
+
+## GET /api/modelosvehiculos/{id_modelo}
+
+Retrieve a specific vehicle model by ID.
+
+### Path Parameters
+
+<ParamField path="id_modelo" type="integer" required>
+  The ID of the vehicle model
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "id_modelo": 1,
+  "id_marca": 1,
+  "nombre": "Corolla",
+  "estado": "Activo"
+}
+```
+</ResponseExample>
+
+## GET /api/marcasvehiculos/{id_marca}/modelos
+
+Retrieve all models for a specific vehicle make.
+
+### Path Parameters
+
+<ParamField path="id_marca" type="integer" required>
+  The ID of the vehicle make
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+[
+  {
+    "id_modelo": 1,
+    "id_marca": 1,
+    "nombre": "Corolla",
+    "estado": "Activo"
+  },
+  {
+    "id_modelo": 2,
+    "id_marca": 1,
+    "nombre": "Camry",
+    "estado": "Activo"
+  },
+  {
+    "id_modelo": 3,
+    "id_marca": 1,
+    "nombre": "RAV4",
+    "estado": "Activo"
+  }
+]
+```
+</ResponseExample>
+
+## PUT /api/modelosvehiculos/{id_modelo}
+
+Update an existing vehicle model.
+
+### Path Parameters
+
+<ParamField path="id_modelo" type="integer" required>
+  The ID of the vehicle model to update
+</ParamField>
+
+### Request Body
+
+<ParamField body="id_marca" type="integer">
+  Updated make ID
+</ParamField>
+
+<ParamField body="nombre" type="string">
+  Updated model name
+</ParamField>
+
+<ParamField body="estado" type="string">
+  Updated status
+</ParamField>
+
+### Request Example
+
+```json
+{
+  "nombre": "Corolla Cross",
+  "estado": "Activo"
+}
+```
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "id_modelo": 1,
+  "id_marca": 1,
+  "nombre": "Corolla Cross",
+  "estado": "Activo"
+}
+```
+</ResponseExample>
+
+## DELETE /api/modelosvehiculos/{id_modelo}
+
+Delete a vehicle model.
+
+### Path Parameters
+
+<ParamField path="id_modelo" type="integer" required>
+  The ID of the vehicle model to delete
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "message": "Vehicle model deleted successfully"
+}
+```
+</ResponseExample>
+
+## Make-Model Relationship
+
+Vehicle models are always associated with a specific make. For example:
+
+- **Toyota** (make) → Corolla, Camry, RAV4 (models)
+- **Honda** (make) → Civic, Accord, CR-V (models)
+- **Ford** (make) → F-150, Mustang, Explorer (models)
+
+When creating a vehicle, you must specify both the make (`id_marca`) and model (`id_modelo`).
+
+## Related Endpoints
+
+- [MarcasVehiculos](/api/marcasvehiculos) - Vehicle makes/brands
+- [Vehiculos](/api/vehiculos) - Vehicles (references both makes and models)

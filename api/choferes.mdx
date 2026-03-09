@@ -1,0 +1,402 @@
+---
+title: 'Drivers (Choferes)'
+description: 'API endpoints for managing drivers in the system'
+---
+
+## Overview
+
+The Drivers (Choferes) API allows you to manage driver information including personal details, identification, and location data. Drivers are linked to user accounts and can be associated with vehicles for campaign participation.
+
+## Base Endpoint
+
+```
+/Database/choferes/
+```
+
+## Model Structure
+
+### Chofer Model
+
+The Chofer model represents a driver in the system with the following fields:
+
+<ParamField path="id_chofer" type="integer" required>
+  Unique identifier for the driver (auto-generated primary key)
+</ParamField>
+
+<ParamField path="id_usuario" type="integer" required>
+  Foreign key reference to the Usuario (User) model. Links the driver to their user account
+</ParamField>
+
+<ParamField path="cedula_chofer" type="string" required>
+  Driver's identification number (cedula). Maximum 10 characters
+</ParamField>
+
+<ParamField path="nombre" type="string" required>
+  Driver's first name. Maximum 20 characters
+</ParamField>
+
+<ParamField path="apellido" type="string" required>
+  Driver's last name. Maximum 20 characters
+</ParamField>
+
+<ParamField path="fecha_nacimiento" type="date" required>
+  Driver's date of birth in ISO 8601 format (YYYY-MM-DD)
+</ParamField>
+
+<ParamField path="sexo" type="integer" required>
+  Driver's gender represented as an integer:
+  - `0`: Female
+  - `1`: Male
+</ParamField>
+
+<ParamField path="id_ciudad" type="integer" required>
+  Foreign key reference to the Ciudad (City) model. Defaults to 1
+</ParamField>
+
+<ParamField path="id_pais" type="integer" required>
+  Foreign key reference to the Pais (Country) model. Defaults to 1
+</ParamField>
+
+<ParamField path="estado" type="integer" required>
+  Current status of the driver:
+  - `0`: Inactive
+  - `1`: Active
+  - `3`: Disabled
+</ParamField>
+
+## Endpoints
+
+### List All Drivers
+
+<Card title="GET /Database/choferes/" icon="list">
+  Retrieve a list of all drivers in the system
+</Card>
+
+#### Response
+
+<ResponseField name="id_chofer" type="integer">
+  Driver's unique identifier
+</ResponseField>
+
+<ResponseField name="id_usuario" type="integer">
+  Associated user account ID
+</ResponseField>
+
+<ResponseField name="cedula_chofer" type="string">
+  Driver's identification number
+</ResponseField>
+
+<ResponseField name="nombre" type="string">
+  Driver's first name
+</ResponseField>
+
+<ResponseField name="apellido" type="string">
+  Driver's last name
+</ResponseField>
+
+<ResponseField name="fecha_nacimiento" type="date">
+  Driver's date of birth
+</ResponseField>
+
+<ResponseField name="sexo" type="integer">
+  Driver's gender (0: Female, 1: Male)
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer">
+  City ID where the driver is located
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  Country ID where the driver is located
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Driver's status (0: Inactive, 1: Active, 3: Disabled)
+</ResponseField>
+
+#### Example Response
+
+```json
+[
+  {
+    "id_chofer": 1,
+    "id_usuario": 15,
+    "cedula_chofer": "1234567890",
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "fecha_nacimiento": "1985-03-15",
+    "sexo": 1,
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+  },
+  {
+    "id_chofer": 2,
+    "id_usuario": 22,
+    "cedula_chofer": "0987654321",
+    "nombre": "María",
+    "apellido": "González",
+    "fecha_nacimiento": "1990-07-22",
+    "sexo": 0,
+    "id_ciudad": 2,
+    "id_pais": 1,
+    "estado": 1
+  }
+]
+```
+
+### Get Single Driver
+
+<Card title="GET /Database/choferes/{id}/" icon="user">
+  Retrieve details of a specific driver by ID
+</Card>
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the driver
+</ParamField>
+
+#### Example Response
+
+```json
+{
+  "id_chofer": 1,
+  "id_usuario": 15,
+  "cedula_chofer": "1234567890",
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "fecha_nacimiento": "1985-03-15",
+  "sexo": 1,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+
+### Create New Driver
+
+<Card title="POST /Database/choferes/" icon="plus">
+  Create a new driver in the system
+</Card>
+
+#### Request Body
+
+<ParamField body="id_usuario" type="integer" required>
+  User account ID to associate with this driver
+</ParamField>
+
+<ParamField body="cedula_chofer" type="string" required>
+  Driver's identification number (max 10 characters)
+</ParamField>
+
+<ParamField body="nombre" type="string" required>
+  Driver's first name (max 20 characters)
+</ParamField>
+
+<ParamField body="apellido" type="string" required>
+  Driver's last name (max 20 characters)
+</ParamField>
+
+<ParamField body="fecha_nacimiento" type="date" required>
+  Driver's date of birth (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="sexo" type="integer" required>
+  Driver's gender (0 or 1)
+</ParamField>
+
+<ParamField body="id_ciudad" type="integer" default="1">
+  City ID (defaults to 1 if not provided)
+</ParamField>
+
+<ParamField body="id_pais" type="integer" default="1">
+  Country ID (defaults to 1 if not provided)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Driver status (0, 1, or 3)
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "id_usuario": 25,
+  "cedula_chofer": "1122334455",
+  "nombre": "Carlos",
+  "apellido": "Rodríguez",
+  "fecha_nacimiento": "1988-11-10",
+  "sexo": 1,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+
+#### Example Response
+
+```json
+{
+  "id_chofer": 3,
+  "id_usuario": 25,
+  "cedula_chofer": "1122334455",
+  "nombre": "Carlos",
+  "apellido": "Rodríguez",
+  "fecha_nacimiento": "1988-11-10",
+  "sexo": 1,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+
+### Update Driver
+
+<Card title="PUT /Database/choferes/{id}/" icon="pen">
+  Update an existing driver's information (full update)
+</Card>
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the driver to update
+</ParamField>
+
+#### Request Body
+
+All fields from the create request are required for a full update.
+
+#### Example Request
+
+```json
+{
+  "id_usuario": 25,
+  "cedula_chofer": "1122334455",
+  "nombre": "Carlos",
+  "apellido": "Rodríguez García",
+  "fecha_nacimiento": "1988-11-10",
+  "sexo": 1,
+  "id_ciudad": 2,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+
+### Partial Update Driver
+
+<Card title="PATCH /Database/choferes/{id}/" icon="pen-to-square">
+  Partially update a driver's information
+</Card>
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the driver to update
+</ParamField>
+
+#### Request Body
+
+Include only the fields you want to update.
+
+#### Example Request
+
+```json
+{
+  "estado": 0,
+  "id_ciudad": 3
+}
+```
+
+### Delete Driver
+
+<Card title="DELETE /Database/choferes/{id}/" icon="trash">
+  Delete a driver from the system
+</Card>
+
+#### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the driver to delete
+</ParamField>
+
+#### Response
+
+```
+HTTP 204 No Content
+```
+
+## Relationships
+
+### Related Models
+
+The Chofer model has foreign key relationships with:
+
+- **Usuario** (`id_usuario`): Links to the user account. Each driver must have an associated user account with authentication credentials
+- **Ciudad** (`id_ciudad`): Links to the city where the driver is located
+- **Pais** (`id_pais`): Links to the country where the driver is located
+
+### Referenced By
+
+Drivers are referenced by:
+
+- **Vehiculo** model via `id_chofer` - Links vehicles to their drivers
+- **IngresoConductorCampana** model - Associates drivers with advertising campaigns
+
+## Business Logic
+
+### Driver Registration Flow
+
+1. A user account must be created first with `rol_usuario` set to driver role
+2. The Chofer record is then created linking to the user via `id_usuario`
+3. Drivers can register vehicles under their account
+4. Drivers can apply to participate in advertising campaigns
+
+### Status Management
+
+- **Active (1)**: Driver can participate in campaigns and use the system
+- **Inactive (0)**: Driver account exists but is not currently active
+- **Disabled (3)**: Driver has been disabled by administrators and cannot access the system
+
+## Validation Notes
+
+- `cedula_chofer` should be exactly 10 digits for most Latin American countries
+- `fecha_nacimiento` should represent an age of 18 years or older for driver eligibility
+- `id_usuario` must reference an existing user with appropriate driver role
+- The same `cedula_chofer` should not be registered multiple times
+
+## Example Use Cases
+
+### Creating a New Driver
+
+```bash
+curl -X POST https://api.example.com/Database/choferes/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_usuario": 30,
+    "cedula_chofer": "1234567890",
+    "nombre": "Luis",
+    "apellido": "Martínez",
+    "fecha_nacimiento": "1992-05-18",
+    "sexo": 1,
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+  }'
+```
+
+### Deactivating a Driver
+
+```bash
+curl -X PATCH https://api.example.com/Database/choferes/1/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "estado": 0
+  }'
+```
+
+### Filtering Active Drivers
+
+```bash
+curl -X GET "https://api.example.com/Database/choferes/?estado=1"
+```

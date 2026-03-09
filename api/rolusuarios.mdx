@@ -1,0 +1,308 @@
+---
+title: 'RolUsuarios API'
+description: 'API endpoints for managing user roles in the RestAPI system'
+---
+
+## Overview
+
+The RolUsuarios (User Roles) API provides endpoints for creating, reading, updating, and deleting user roles in the system. User roles define the permissions and access levels for users.
+
+**Base URL:** `/Database/rolusuarios/`
+
+## RolUsuario Model
+
+The RolUsuario model represents a user role with the following fields:
+
+<ResponseField name="id_rol_usuario" type="integer" required>
+  Auto-generated primary key for the user role
+</ResponseField>
+
+<ResponseField name="nombre" type="string" required>
+  Name of the role (max 15 characters)
+</ResponseField>
+
+<ResponseField name="estado" type="integer" required>
+  Role status (typically 0 for inactive, 1 for active)
+</ResponseField>
+
+<ResponseField name="fecha_registro" type="date" required>
+  Registration date of the role
+</ResponseField>
+
+## Common User Roles
+
+Based on the system implementation, the following role IDs are commonly used:
+
+- **1**: Administrator - Full system access
+- **2**: Publicista (Advertiser) - Access to associated companies
+- **3**: Empresa (Company) - Access to own company resources
+
+## Endpoints
+
+### List All User Roles
+
+Retrieve a list of all user roles in the system.
+
+```bash
+GET /Database/rolusuarios/
+```
+
+**Example Request:**
+
+```bash
+curl -X GET "http://your-domain.com/Database/rolusuarios/" \
+  -H "Content-Type: application/json"
+```
+
+**Example Response:**
+
+```json
+[
+  {
+    "id_rol_usuario": 1,
+    "nombre": "Administrador",
+    "estado": 1,
+    "fecha_registro": "2024-01-01"
+  },
+  {
+    "id_rol_usuario": 2,
+    "nombre": "Publicista",
+    "estado": 1,
+    "fecha_registro": "2024-01-01"
+  },
+  {
+    "id_rol_usuario": 3,
+    "nombre": "Empresa",
+    "estado": 1,
+    "fecha_registro": "2024-01-01"
+  }
+]
+```
+
+### Get Single User Role
+
+Retrieve details of a specific user role by ID.
+
+```bash
+GET /Database/rolusuarios/{id}/
+```
+
+**Path Parameters:**
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the user role
+</ParamField>
+
+**Example Request:**
+
+```bash
+curl -X GET "http://your-domain.com/Database/rolusuarios/1/" \
+  -H "Content-Type: application/json"
+```
+
+**Example Response:**
+
+```json
+{
+  "id_rol_usuario": 1,
+  "nombre": "Administrador",
+  "estado": 1,
+  "fecha_registro": "2024-01-01"
+}
+```
+
+### Create User Role
+
+Create a new user role in the system.
+
+```bash
+POST /Database/rolusuarios/
+```
+
+**Request Body Parameters:**
+
+<ParamField body="nombre" type="string" required>
+  Name of the role (max 15 characters)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Role status (0 for inactive, 1 for active)
+</ParamField>
+
+<ParamField body="fecha_registro" type="date" required>
+  Registration date in YYYY-MM-DD format
+</ParamField>
+
+**Example Request:**
+
+```bash
+curl -X POST "http://your-domain.com/Database/rolusuarios/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Conductor",
+    "estado": 1,
+    "fecha_registro": "2024-03-09"
+  }'
+```
+
+**Example Response:**
+
+```json
+{
+  "id_rol_usuario": 4,
+  "nombre": "Conductor",
+  "estado": 1,
+  "fecha_registro": "2024-03-09"
+}
+```
+
+### Update User Role
+
+Update an existing user role's information.
+
+```bash
+PUT /Database/rolusuarios/{id}/
+```
+
+**Path Parameters:**
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the user role to update
+</ParamField>
+
+**Request Body Parameters:**
+
+<ParamField body="nombre" type="string" required>
+  Name of the role
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Role status
+</ParamField>
+
+<ParamField body="fecha_registro" type="date" required>
+  Registration date
+</ParamField>
+
+**Example Request:**
+
+```bash
+curl -X PUT "http://your-domain.com/Database/rolusuarios/4/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Conductor",
+    "estado": 0,
+    "fecha_registro": "2024-03-09"
+  }'
+```
+
+**Example Response:**
+
+```json
+{
+  "id_rol_usuario": 4,
+  "nombre": "Conductor",
+  "estado": 0,
+  "fecha_registro": "2024-03-09"
+}
+```
+
+### Partial Update User Role
+
+Partially update a user role's information (only specified fields).
+
+```bash
+PATCH /Database/rolusuarios/{id}/
+```
+
+**Path Parameters:**
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the user role to update
+</ParamField>
+
+**Example Request:**
+
+```bash
+curl -X PATCH "http://your-domain.com/Database/rolusuarios/4/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "estado": 0
+  }'
+```
+
+**Example Response:**
+
+```json
+{
+  "id_rol_usuario": 4,
+  "nombre": "Conductor",
+  "estado": 0,
+  "fecha_registro": "2024-03-09"
+}
+```
+
+### Delete User Role
+
+Delete a user role from the system.
+
+```bash
+DELETE /Database/rolusuarios/{id}/
+```
+
+**Path Parameters:**
+
+<ParamField path="id" type="integer" required>
+  The unique identifier of the user role to delete
+</ParamField>
+
+**Example Request:**
+
+```bash
+curl -X DELETE "http://your-domain.com/Database/rolusuarios/4/" \
+  -H "Content-Type: application/json"
+```
+
+**Example Response:**
+
+```
+HTTP 204 No Content
+```
+
+<Warning>
+  **Deletion Constraints:** Deleting a user role that has associated users will fail due to foreign key constraints. Ensure all users with this role are either deleted or reassigned before deleting the role.
+</Warning>
+
+## Role-Based Access Control
+
+User roles are used throughout the system to control access to resources. For example:
+
+### Sectors Access
+
+When retrieving sectors (via `/sectores_por_usuario/{usuario_id}/`), access is determined by role:
+
+- **Administrator (id_rol = 1)**: Access to all sectors
+- **Publicista (id_rol = 2)**: Access to sectors from associated companies
+- **Empresa (id_rol = 3)**: Access to own company's sectors
+
+### Company Access
+
+When retrieving companies (via `/empresas_list/{usuario_id}/`), access is determined by role:
+
+- **Administrator (id_rol = 1)**: Access to all administered companies
+- **Publicista (id_rol = 2)**: Access to associated companies through EmpresaXPublicista
+
+## Related Endpoints
+
+- [Usuarios API](/api/usuarios) - Manage users with assigned roles
+- PermisosXRol API - Manage role-based permissions
+- DetallePermisos API - Manage detailed permissions
+
+## Notes
+
+- All endpoints use standard REST conventions with JSON request/response bodies
+- The API uses Django REST Framework's ModelViewSet which provides full CRUD operations
+- Role names are limited to 15 characters
+- The `estado` field typically uses 0 for inactive and 1 for active status
+- User roles are referenced by `Usuario` model via the `rol_usuario` foreign key
+- Roles are also used in permission models (`PermisosXRol`) to control access to menus and views

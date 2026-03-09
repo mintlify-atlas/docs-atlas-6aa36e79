@@ -1,0 +1,294 @@
+---
+title: "Driver Campaign Verification"
+api: "POST /api/verificacionesconductorcampana"
+description: "Record verification checks for drivers during campaign execution with photographic evidence"
+---
+
+This endpoint captures verification events throughout a campaign's lifecycle, ensuring drivers maintain compliance with branding requirements and campaign terms. Each verification includes photographic evidence and is categorized by type.
+
+## Request Body
+
+<ParamField body="cedula_conductor" type="integer" required>
+  Driver's national ID number for identification
+</ParamField>
+
+<ParamField body="id_campana" type="integer" required>
+  Campaign ID being verified
+</ParamField>
+
+<ParamField body="fecha_registro" type="string" required>
+  Verification date in YYYY-MM-DD format
+</ParamField>
+
+<ParamField body="tipo_verificacion" type="string" required>
+  Type of verification being performed:
+  - `inicial`: Initial vehicle branding verification
+  - `periodica`: Periodic compliance check
+  - `aleatorio`: Random spot check
+  - `mantenimiento`: Branding maintenance verification
+  - `final`: Campaign completion verification
+  - `incidente`: Incident or complaint investigation
+</ParamField>
+
+<ParamField body="imagen_evidencia" type="file" required>
+  Photographic evidence of the verification
+  - Uploaded to: `media/` directory
+  - Supported formats: JPG, PNG
+  - Should clearly show vehicle branding status
+  - Recommended minimum resolution: 1920x1080
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Verification result status:
+  - `0`: Failed/Non-compliant
+  - `1`: Passed/Compliant
+  - `2`: Pending review
+  - `3`: Requires follow-up
+</ParamField>
+
+## Response
+
+<ResponseField name="id_verificacion" type="integer">
+  Unique identifier for the verification record
+</ResponseField>
+
+<ResponseField name="cedula_conductor" type="integer">
+  Driver's national ID number
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer">
+  Campaign ID verified
+</ResponseField>
+
+<ResponseField name="fecha_registro" type="string">
+  Date of verification (YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="tipo_verificacion" type="string">
+  Type of verification performed
+</ResponseField>
+
+<ResponseField name="imagen_evidencia" type="string">
+  URL path to the uploaded evidence photo
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Verification result status
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.example.com/api/verificacionesconductorcampana \
+  -H "Content-Type: multipart/form-data" \
+  -F "cedula_conductor=1234567890" \
+  -F "id_campana=45" \
+  -F "fecha_registro=2026-03-09" \
+  -F "tipo_verificacion=inicial" \
+  -F "imagen_evidencia=@/path/to/vehicle_photo.jpg" \
+  -F "estado=1"
+```
+
+```python Python
+import requests
+from datetime import date
+
+url = "https://api.example.com/api/verificacionesconductorcampana"
+
+files = {
+    'imagen_evidencia': open('vehicle_branding.jpg', 'rb')
+}
+
+data = {
+    'cedula_conductor': 1234567890,
+    'id_campana': 45,
+    'fecha_registro': date.today().isoformat(),
+    'tipo_verificacion': 'inicial',
+    'estado': 1
+}
+
+response = requests.post(url, files=files, data=data)
+print(response.json())
+```
+
+```javascript JavaScript
+const formData = new FormData();
+const today = new Date().toISOString().split('T')[0];
+
+formData.append('cedula_conductor', '1234567890');
+formData.append('id_campana', '45');
+formData.append('fecha_registro', today);
+formData.append('tipo_verificacion', 'inicial');
+formData.append('imagen_evidencia', evidencePhotoFile);
+formData.append('estado', '1');
+
+fetch('https://api.example.com/api/verificacionesconductorcampana', {
+  method: 'POST',
+  body: formData
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Initial Verification Success
+{
+  "id_verificacion": 891,
+  "cedula_conductor": 1234567890,
+  "id_campana": 45,
+  "fecha_registro": "2026-03-09",
+  "tipo_verificacion": "inicial",
+  "imagen_evidencia": "media/verification_45_1234567890_20260309_inicial.jpg",
+  "estado": 1
+}
+```
+
+```json 200 - Periodic Check
+{
+  "id_verificacion": 892,
+  "cedula_conductor": 1234567890,
+  "id_campana": 45,
+  "fecha_registro": "2026-03-15",
+  "tipo_verificacion": "periodica",
+  "imagen_evidencia": "media/verification_45_1234567890_20260315_periodica.jpg",
+  "estado": 1
+}
+```
+
+```json 200 - Failed Verification
+{
+  "id_verificacion": 893,
+  "cedula_conductor": 1234567890,
+  "id_campana": 45,
+  "fecha_registro": "2026-03-20",
+  "tipo_verificacion": "aleatorio",
+  "imagen_evidencia": "media/verification_45_1234567890_20260320_aleatorio.jpg",
+  "estado": 0,
+  "message": "Branding damaged or removed. Driver notified for maintenance."
+}
+```
+
+```json 400 - Bad Request
+{
+  "error": "Invalid verification type",
+  "message": "tipo_verificacion must be one of: inicial, periodica, aleatorio, mantenimiento, final, incidente"
+}
+```
+
+```json 404 - Not Found
+{
+  "error": "Driver not found in campaign",
+  "message": "No active IngresoConductorCampana record found for this driver and campaign"
+}
+```
+</ResponseExample>
+
+## Verification Workflow
+
+### 1. Initial Verification (inicial)
+- **When**: After vehicle branding is complete
+- **Purpose**: Confirm proper branding installation
+- **Requirements**:
+  - All selected branding areas properly installed
+  - Branding matches campaign specifications
+  - No damage or defects
+- **Evidence**: Photos of all branded vehicle parts
+- **Next Steps**: Driver approved to start tracking routes
+
+### 2. Periodic Verification (periodica)
+- **When**: Scheduled intervals (weekly/bi-weekly)
+- **Purpose**: Ensure ongoing branding compliance
+- **Requirements**:
+  - Branding remains intact
+  - No significant wear or damage
+  - Vehicle maintains cleanliness standards
+- **Evidence**: Photos of vehicle exterior
+- **Impact**: Continued campaign participation
+
+### 3. Random Spot Check (aleatorio)
+- **When**: Unannounced inspections
+- **Purpose**: Quality assurance and fraud prevention
+- **Requirements**:
+  - Immediate verification upon request
+  - Real-time photo submission
+  - Location verification
+- **Evidence**: GPS-tagged photos
+- **Consequences**: Failed checks may suspend earnings
+
+### 4. Maintenance Verification (mantenimiento)
+- **When**: After branding repair or replacement
+- **Purpose**: Confirm maintenance work completed
+- **Requirements**:
+  - Damaged branding repaired/replaced
+  - Matches original specifications
+  - Professional installation quality
+- **Evidence**: Before/after photos
+- **Result**: Driver reinstated to active status
+
+### 5. Final Verification (final)
+- **When**: Campaign end date
+- **Purpose**: Document branding removal and final state
+- **Requirements**:
+  - Complete branding removal
+  - No vehicle damage from removal
+  - Final earnings calculation
+- **Evidence**: Photos of cleaned vehicle
+- **Outcome**: Campaign completion and payment release
+
+### 6. Incident Verification (incidente)
+- **When**: After complaints or reported issues
+- **Purpose**: Investigate and document problems
+- **Requirements**:
+  - Respond to specific complaint details
+  - Provide evidence addressing concerns
+  - May require immediate action
+- **Evidence**: Relevant photos/documentation
+- **Resolution**: Admin review determines outcome
+
+## Verification Types and Frequency
+
+| Type | Frequency | Required | Critical |
+|------|-----------|----------|----------|
+| inicial | Once at start | Yes | Yes |
+| periodica | Weekly/Bi-weekly | Yes | Yes |
+| aleatorio | As needed | No | Yes |
+| mantenimiento | As needed | When applicable | Yes |
+| final | Once at end | Yes | Yes |
+| incidente | As needed | When reported | Yes |
+
+## Status Codes Impact
+
+- **Status 0 (Failed)**: 
+  - Driver notified immediately
+  - Route tracking may be suspended
+  - Maintenance verification required
+  - Earnings on hold until resolved
+
+- **Status 1 (Passed)**:
+  - Driver remains active
+  - Earnings continue normally
+  - Next verification scheduled
+  - Good standing maintained
+
+- **Status 2 (Pending)**:
+  - Admin review required
+  - Driver can continue routes
+  - Decision expected within 48 hours
+  - No immediate action required
+
+- **Status 3 (Follow-up)**:
+  - Minor issues identified
+  - Driver given timeline to correct
+  - Temporary status
+  - Re-verification scheduled
+
+## Notes
+
+- Evidence photos must clearly show vehicle identification (plate number)
+- Photos should be taken in good lighting conditions
+- Multiple angles recommended for comprehensive verification
+- GPS metadata in photos helps prevent fraud
+- Failed verifications trigger automatic notifications
+- Verification history tracked for driver performance metrics
+- Three consecutive failed verifications may result in campaign removal
+- Evidence images stored for duration of campaign plus 90 days

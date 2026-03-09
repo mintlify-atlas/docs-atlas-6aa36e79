@@ -1,0 +1,307 @@
+---
+title: "API Overview"
+description: "Complete overview of the RestAPI endpoints, authentication, and response formats"
+---
+
+## Base URL
+
+All API endpoints are accessible through the following base URL structure:
+
+```bash
+https://your-domain.com/Database/
+```
+
+<Note>
+All endpoints listed in this documentation are relative to the `/Database/` base path.
+</Note>
+
+## Authentication
+
+The RestAPI uses **JWT (JSON Web Token)** authentication for secure access to protected endpoints.
+
+### JWT Configuration
+
+- **Authentication Class**: `JWTAuthentication` from `rest_framework_simplejwt`
+- **Token Lifetime**: 8 hours
+- **Token Type**: Bearer token
+
+### Using JWT Tokens
+
+Include the JWT token in the Authorization header of your requests:
+
+```bash
+Authorization: Bearer <your-jwt-token>
+```
+
+### Example Request with Authentication
+
+```bash
+curl -X GET https://your-domain.com/Database/usuarios/ \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+## HTTP Methods
+
+The API supports the following HTTP methods for CRUD operations:
+
+| Method | Description | Usage |
+|--------|-------------|-------|
+| `GET` | Retrieve resources | List all items or get a specific item by ID |
+| `POST` | Create new resources | Create a new item with provided data |
+| `PUT` | Update entire resource | Replace all fields of an existing item |
+| `PATCH` | Partial update | Update specific fields of an existing item |
+| `DELETE` | Remove resources | Delete an item by ID |
+
+## Response Formats
+
+All API responses are returned in JSON format with appropriate HTTP status codes.
+
+### Success Responses
+
+#### List Resources (GET)
+```json
+[
+  {
+    "id": 1,
+    "field1": "value1",
+    "field2": "value2"
+  },
+  {
+    "id": 2,
+    "field1": "value3",
+    "field2": "value4"
+  }
+]
+```
+
+#### Single Resource (GET/POST/PUT/PATCH)
+```json
+{
+  "id": 1,
+  "field1": "value1",
+  "field2": "value2",
+  "created_at": "2024-03-09T10:30:00Z"
+}
+```
+
+#### Delete Resource (DELETE)
+```json
+{
+  "message": "Resource deleted successfully"
+}
+```
+
+### HTTP Status Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| `200` | OK | Request succeeded |
+| `201` | Created | Resource created successfully |
+| `204` | No Content | Resource deleted successfully |
+| `400` | Bad Request | Invalid request data or validation error |
+| `401` | Unauthorized | Missing or invalid authentication token |
+| `403` | Forbidden | Insufficient permissions |
+| `404` | Not Found | Resource not found |
+| `500` | Internal Server Error | Server-side error occurred |
+
+## Error Handling
+
+### Error Response Format
+
+```json
+{
+  "error": "Error message describing what went wrong"
+}
+```
+
+### Common Error Scenarios
+
+#### Validation Errors (400)
+```json
+{
+  "field_name": [
+    "This field is required."
+  ],
+  "another_field": [
+    "Invalid value provided."
+  ]
+}
+```
+
+#### Not Found Errors (404)
+```json
+{
+  "error": "Usuario no encontrado"
+}
+```
+
+#### Server Errors (500)
+```json
+{
+  "error": "An error occurred"
+}
+```
+
+## Available Endpoint Categories
+
+The RestAPI provides comprehensive endpoints organized into the following categories:
+
+<CardGroup cols={2}>
+  <Card title="System & Configuration" icon="gear" href="#system-configuration">
+    State management, countries, cities, and banking entities
+  </Card>
+  
+  <Card title="User Management" icon="users" href="#user-management">
+    Users, roles, permissions, and authentication
+  </Card>
+  
+  <Card title="Company & Business" icon="building" href="#company-business">
+    Companies, advertisers, clients, and business relationships
+  </Card>
+  
+  <Card title="Vehicle Management" icon="car" href="#vehicle-management">
+    Vehicles, brands, models, and drivers
+  </Card>
+  
+  <Card title="Campaign Management" icon="bullhorn" href="#campaign-management">
+    Advertising campaigns, verifications, and registrations
+  </Card>
+  
+  <Card title="Financial Operations" icon="dollar-sign" href="#financial-operations">
+    Capital movements and revenue tracking
+  </Card>
+  
+  <Card title="Services & Operations" icon="wrench" href="#services-operations">
+    Workshops, branding services, and completed routes
+  </Card>
+  
+  <Card title="Communication" icon="envelope" href="#communication">
+    Notifications, email, and FCM push notifications
+  </Card>
+</CardGroup>
+
+### System & Configuration
+
+- **Estado**: `/Database/estado/` - Status management
+- **Países**: `/Database/paises/` - Country information
+- **Ciudades**: `/Database/ciudades/` - City information
+- **Entidades Bancarias**: `/Database/entidadesbancarias/` - Banking entity management
+
+### User Management
+
+- **Usuarios**: `/Database/usuarios/` - User CRUD operations
+- **Rol Usuarios**: `/Database/rolusuarios/` - User role management
+- **Detalle Permisos**: `/Database/detallepermisos/` - Permission details
+- **Permisos por Rol**: `/Database/permisosxrol/` - Role-based permissions
+- **Menús**: `/Database/menus/` - Menu configuration
+- **Vistas**: `/Database/vistas/` - View management
+- **Opciones**: `/Database/opciones/` - System options
+
+### Company & Business
+
+- **Empresas**: `/Database/empresas/` - Company management
+- **Empresa Imágenes**: `/Database/empresaimages/` - Company image uploads
+- **Publicistas**: `/Database/publicistas/` - Advertiser management
+- **Empresa por Publicista**: `/Database/empresaxpublicistas/` - Company-advertiser relationships
+- **Clientes**: `/Database/clientes/` - Client management
+- **Sectores**: `/Database/sectores/` - Sector/zone management
+- **Sectores por Usuario**: `/Database/sectores_por_usuario/<usuario_id>/` - User-specific sectors
+
+### Vehicle Management
+
+- **Marcas de Vehículos**: `/Database/marcasvehiculos/` - Vehicle brands
+- **Modelos de Vehículos**: `/Database/modelosvehiculos/` - Vehicle models
+- **Vehículos**: `/Database/vehiculos/` - Vehicle registry
+- **Choferes**: `/Database/choferes/` - Driver management
+- **Recorridos Realizados**: `/Database/recorridosrealizados/` - Completed route tracking
+
+### Campaign Management
+
+- **Campañas Publicitarias**: `/Database/campaniaspublicitarias/` - Advertising campaigns
+- **Publicidades**: `/Database/publicidades/` - Advertisement content
+- **Formulario Registro Campaña**: `/Database/formularioregistrocampana/` - Campaign registration forms
+- **Vehículos Admisibles**: `/Database/vehiculosadmisiblescampana/` - Campaign-eligible vehicles
+- **Verificación Conductor**: `/Database/verificacionesconductorcampana/` - Driver verification for campaigns
+- **Ingreso Conductor Campaña**: `/Database/ingresoconductorcampana/` - Driver campaign enrollment
+
+### Financial Operations
+
+- **Movimiento Capital**: `/Database/movimientocapital/` - Capital movement tracking
+
+### Services & Operations
+
+- **Taller por Empresa**: `/Database/tallerxempresas/` - Company workshop assignments
+- **Taller Brandeo**: `/Database/tallerbrandeos/` - Branding workshop services
+
+### Communication
+
+- **Notificaciones**: `/Database/notificaciones/` - In-app notifications
+- **Enviar Email**: `/Database/send_email/` - Email sending service
+- **Enviar Notificación FCM**: `/Database/send_fcm_notification/` - Firebase Cloud Messaging notifications
+
+## Custom Endpoints
+
+### Get Sectors by User
+
+Retrieves sectors accessible to a specific user based on their role.
+
+```http
+GET /Database/sectores_por_usuario/<usuario_id>/
+```
+
+**Role-based logic:**
+- **Administrator (role 1)**: Returns all sectors
+- **Advertiser (role 2)**: Returns sectors from associated companies
+- **Company (role 3)**: Returns sectors belonging to the company
+
+### Get Companies List by User
+
+Retrieves companies accessible to a specific user based on their role.
+
+```http
+GET /Database/empresas_list/<usuario_id>/
+```
+
+**Role-based logic:**
+- **Administrator (role 1)**: Returns companies where user is administrator
+- **Advertiser (role 2)**: Returns associated companies
+
+## API Documentation
+
+Interactive API documentation is available at:
+
+```bash
+https://your-domain.com/Database/documents/
+```
+
+This provides a browsable interface to explore all endpoints and test requests.
+
+## CORS Configuration
+
+The API supports Cross-Origin Resource Sharing (CORS) with the following methods:
+
+- GET
+- POST
+- PUT
+- PATCH
+- DELETE
+- OPTIONS
+
+<Note>
+In production, CORS is configured with specific allowed origins. In development mode, all origins are allowed for testing purposes.
+</Note>
+
+## Pagination & Filtering
+
+All ViewSet endpoints support Django REST Framework's default pagination and filtering capabilities. Refer to individual endpoint documentation for specific query parameters and filtering options.
+
+## Getting Started
+
+To start using the API:
+
+1. Obtain a JWT token through the authentication endpoint
+2. Include the token in the Authorization header
+3. Make requests to the desired endpoints
+4. Handle responses according to the HTTP status codes
+
+For detailed information about specific endpoints, refer to the individual endpoint documentation pages.

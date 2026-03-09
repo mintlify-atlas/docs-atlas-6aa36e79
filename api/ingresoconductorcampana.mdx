@@ -1,0 +1,255 @@
+---
+title: "Campaign Driver Entry"
+api: "POST /api/ingresoconductorcampana"
+description: "Register an approved driver into an active campaign with QR code generation for tracking"
+---
+
+This endpoint finalizes a driver's entry into a campaign after their registration form has been approved. It generates unique QR codes for the driver-campaign relationship, enabling tracking and verification throughout the campaign duration.
+
+## Request Body
+
+<ParamField body="id_usuario" type="integer" required>
+  User ID of the driver entering the campaign
+</ParamField>
+
+<ParamField body="id_campana" type="integer" required>
+  Campaign ID that the driver is joining
+</ParamField>
+
+<ParamField body="id_vehiculo" type="integer" required>
+  Vehicle ID that will be used in the campaign
+</ParamField>
+
+<ParamField body="id_formulario_registro" type="integer" default="1">
+  Reference to the approved FormularioRegistroCampana ID
+</ParamField>
+
+<ParamField body="fecha_registro" type="string" required>
+  Registration date in YYYY-MM-DD format
+</ParamField>
+
+<ParamField body="documento_QR" type="file" required>
+  QR code document file (PDF format)
+  - Uploaded to: `documents/` directory
+  - Contains encoded driver-campaign information
+  - Used for official verification and record-keeping
+</ParamField>
+
+<ParamField body="imagen_QR" type="file" required>
+  QR code image file (PNG, JPG formats)
+  - Uploaded to: `media/` directory
+  - Used for quick scanning and verification
+  - Should be scannable by mobile devices
+</ParamField>
+
+<ParamField body="id_ciudad" type="integer" default="1">
+  City ID where the driver operates
+</ParamField>
+
+<ParamField body="id_pais" type="integer" default="1">
+  Country ID where the driver operates
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Entry status code:
+  - `0`: Inactive
+  - `1`: Active
+  - `2`: Suspended
+  - `3`: Completed
+</ParamField>
+
+## Response
+
+<ResponseField name="id_usuario" type="integer">
+  User ID of the driver
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer">
+  Campaign ID the driver has joined
+</ResponseField>
+
+<ResponseField name="id_vehiculo" type="integer">
+  Vehicle ID registered for the campaign
+</ResponseField>
+
+<ResponseField name="id_formulario_registro" type="integer">
+  Reference to the original registration form
+</ResponseField>
+
+<ResponseField name="fecha_registro" type="string">
+  Date of campaign entry (YYYY-MM-DD)
+</ResponseField>
+
+<ResponseField name="documento_QR" type="string">
+  URL path to the uploaded QR document
+</ResponseField>
+
+<ResponseField name="imagen_QR" type="string">
+  URL path to the uploaded QR image
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Current status of the campaign entry
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer">
+  City ID
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  Country ID
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.example.com/api/ingresoconductorcampana \
+  -H "Content-Type: multipart/form-data" \
+  -F "id_usuario=123" \
+  -F "id_campana=45" \
+  -F "id_vehiculo=78" \
+  -F "id_formulario_registro=567" \
+  -F "fecha_registro=2026-03-09" \
+  -F "documento_QR=@/path/to/qr_document.pdf" \
+  -F "imagen_QR=@/path/to/qr_image.png" \
+  -F "estado=1" \
+  -F "id_ciudad=1" \
+  -F "id_pais=1"
+```
+
+```python Python
+import requests
+from datetime import date
+
+url = "https://api.example.com/api/ingresoconductorcampana"
+
+files = {
+    'documento_QR': open('qr_document.pdf', 'rb'),
+    'imagen_QR': open('qr_image.png', 'rb')
+}
+
+data = {
+    'id_usuario': 123,
+    'id_campana': 45,
+    'id_vehiculo': 78,
+    'id_formulario_registro': 567,
+    'fecha_registro': date.today().isoformat(),
+    'estado': 1,
+    'id_ciudad': 1,
+    'id_pais': 1
+}
+
+response = requests.post(url, files=files, data=data)
+print(response.json())
+```
+
+```javascript JavaScript
+const formData = new FormData();
+const today = new Date().toISOString().split('T')[0];
+
+formData.append('id_usuario', '123');
+formData.append('id_campana', '45');
+formData.append('id_vehiculo', '78');
+formData.append('id_formulario_registro', '567');
+formData.append('fecha_registro', today);
+formData.append('documento_QR', qrDocumentFile);
+formData.append('imagen_QR', qrImageFile);
+formData.append('estado', '1');
+formData.append('id_ciudad', '1');
+formData.append('id_pais', '1');
+
+fetch('https://api.example.com/api/ingresoconductorcampana', {
+  method: 'POST',
+  body: formData
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Success
+{
+  "id_usuario": 123,
+  "id_campana": 45,
+  "id_vehiculo": 78,
+  "id_formulario_registro": 567,
+  "fecha_registro": "2026-03-09",
+  "documento_QR": "documents/qr_campaign45_driver123.pdf",
+  "imagen_QR": "media/qr_campaign45_driver123.png",
+  "estado": 1,
+  "id_ciudad": 1,
+  "id_pais": 1
+}
+```
+
+```json 400 - Bad Request
+{
+  "error": "Invalid QR file format",
+  "message": "documento_QR must be a PDF file"
+}
+```
+
+```json 403 - Forbidden
+{
+  "error": "Registration not approved",
+  "message": "The driver's registration form must be approved before campaign entry"
+}
+```
+
+```json 409 - Conflict
+{
+  "error": "Driver already registered",
+  "message": "This driver is already active in the specified campaign"
+}
+```
+</ResponseExample>
+
+## Campaign Entry Workflow
+
+1. **Prerequisites**:
+   - Driver must have submitted `FormularioRegistroCampana`
+   - Registration form must be in "aprobado" (approved) status
+   - Campaign must be in active registration period
+
+2. **QR Code Generation**:
+   - System generates unique QR code containing:
+     - Driver ID
+     - Campaign ID
+     - Vehicle ID
+     - Registration date
+     - Verification token
+   - QR code created in two formats:
+     - **PDF document**: Official record with metadata
+     - **Image**: Scannable version for mobile verification
+
+3. **File Upload**:
+   - `documento_QR` uploaded to `documents/` directory
+   - `imagen_QR` uploaded to `media/` directory
+   - Files named with convention: `qr_campaign{id}_driver{id}.{ext}`
+
+4. **Status Activation**:
+   - Entry is created with status `1` (Active)
+   - Driver can now proceed to vehicle verification
+   - Driver can start tracking routes once verified
+
+5. **Next Steps**:
+   - Driver must complete initial `VerificacionConductorCampana`
+   - Driver can then start creating `RecorridoRealizado` entries
+   - QR code used for periodic verification checks
+
+## QR Code Usage
+
+- **Initial Verification**: Scanned during first vehicle branding verification
+- **Route Tracking**: Associated with each `RecorridoRealizado` entry
+- **Periodic Checks**: Used in `VerificacionConductorCampana` for ongoing compliance
+- **Payment Processing**: Linked to driver's earnings calculations
+- **Campaign Analytics**: Tracks individual driver performance
+
+## Notes
+
+- QR code must be unique per driver-campaign combination
+- Image QR should be high resolution (minimum 500x500px) for scanning
+- PDF document QR includes additional metadata not in image version
+- QR codes remain valid throughout campaign duration
+- Status can be updated via separate endpoint to suspend/reactivate drivers
+- One driver can participate in multiple campaigns with different QR codes

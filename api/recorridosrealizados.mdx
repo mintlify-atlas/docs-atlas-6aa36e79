@@ -1,0 +1,492 @@
+---
+title: "Route Tracking"
+api: "POST /api/recorridosrealizados"
+description: "Record and track completed routes with GPS locations, duration, and earnings for campaign drivers"
+---
+
+This endpoint captures detailed route information for drivers participating in advertising campaigns. It tracks GPS coordinates, calculates distance and duration, and computes earnings based on campaign rates and monetizable hours.
+
+## Request Body
+
+<ParamField body="id_usuario" type="integer" required>
+  User ID of the driver completing the route
+</ParamField>
+
+<ParamField body="id_campana" type="integer" required>
+  Campaign ID under which the route is being tracked
+</ParamField>
+
+<ParamField body="id_vehiculo" type="integer" required>
+  Vehicle ID used for this route
+</ParamField>
+
+<ParamField body="fecha_hora_inicio" type="string" required>
+  Route start timestamp in ISO 8601 format (YYYY-MM-DDTHH:MM:SS)
+  - Example: "2026-03-09T08:30:00"
+  - Used to determine if route falls within monetizable hours
+</ParamField>
+
+<ParamField body="fecha_hora_fin" type="string" required>
+  Route end timestamp in ISO 8601 format (YYYY-MM-DDTHH:MM:SS)
+  - Example: "2026-03-09T12:45:00"
+  - Used to calculate route duration
+</ParamField>
+
+<ParamField body="kilometraje_recorrido" type="float" default="0.0">
+  Total kilometers traveled during the route
+  - Automatically calculated from GPS coordinates
+  - Used for earnings calculation
+  - Must be non-negative
+</ParamField>
+
+<ParamField body="dinero_recaudado" type="float" required>
+  Earnings generated from this route
+  - Calculated based on: distance × campaign rate × time factor
+  - Only counts time within campaign's monetizable hours
+  - Subject to minimum and maximum rates
+</ParamField>
+
+<ParamField body="ubicaciones" type="array" required>
+  Array of GPS location points captured during the route
+  - Each location object contains:
+    - `latitude`: Decimal degrees latitude
+    - `longitude`: Decimal degrees longitude
+    - `timestamp`: ISO 8601 timestamp
+    - `speed`: Speed in km/h (optional)
+    - `accuracy`: GPS accuracy in meters (optional)
+  - Minimum 2 locations required (start and end)
+  - More frequent sampling improves accuracy
+</ParamField>
+
+<ParamField body="id_ciudad" type="integer" default="1">
+  City ID where the route was completed
+</ParamField>
+
+<ParamField body="id_pais" type="integer" default="1">
+  Country ID where the route was completed
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Route status:
+  - `0`: Pending validation
+  - `1`: Validated/Approved
+  - `2`: Rejected (out of sector/hours)
+  - `3`: Under review
+</ParamField>
+
+## Response
+
+<ResponseField name="id_recorrido" type="integer">
+  Unique identifier for the route record
+</ResponseField>
+
+<ResponseField name="id_usuario" type="integer">
+  User ID of the driver
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer">
+  Campaign ID
+</ResponseField>
+
+<ResponseField name="id_vehiculo" type="integer">
+  Vehicle ID used
+</ResponseField>
+
+<ResponseField name="fecha_hora_inicio" type="string">
+  Route start timestamp
+</ResponseField>
+
+<ResponseField name="fecha_hora_fin" type="string">
+  Route end timestamp
+</ResponseField>
+
+<ResponseField name="kilometraje_recorrido" type="float">
+  Total kilometers traveled
+</ResponseField>
+
+<ResponseField name="dinero_recaudado" type="float">
+  Earnings from this route
+</ResponseField>
+
+<ResponseField name="ubicaciones" type="array">
+  Array of GPS location points
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer">
+  City ID
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer">
+  Country ID
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Route validation status
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.example.com/api/recorridosrealizados \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_usuario": 123,
+    "id_campana": 45,
+    "id_vehiculo": 78,
+    "fecha_hora_inicio": "2026-03-09T08:30:00",
+    "fecha_hora_fin": "2026-03-09T12:45:00",
+    "kilometraje_recorrido": 42.5,
+    "dinero_recaudado": 15.75,
+    "ubicaciones": [
+      {
+        "latitude": -0.180653,
+        "longitude": -78.467834,
+        "timestamp": "2026-03-09T08:30:00",
+        "speed": 0,
+        "accuracy": 10
+      },
+      {
+        "latitude": -0.185234,
+        "longitude": -78.472156,
+        "timestamp": "2026-03-09T09:00:00",
+        "speed": 35,
+        "accuracy": 8
+      },
+      {
+        "latitude": -0.192847,
+        "longitude": -78.479321,
+        "timestamp": "2026-03-09T10:15:00",
+        "speed": 42,
+        "accuracy": 12
+      },
+      {
+        "latitude": -0.198123,
+        "longitude": -78.485674,
+        "timestamp": "2026-03-09T12:45:00",
+        "speed": 0,
+        "accuracy": 9
+      }
+    ],
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+  }'
+```
+
+```python Python
+import requests
+from datetime import datetime
+
+url = "https://api.example.com/api/recorridosrealizados"
+
+data = {
+    "id_usuario": 123,
+    "id_campana": 45,
+    "id_vehiculo": 78,
+    "fecha_hora_inicio": "2026-03-09T08:30:00",
+    "fecha_hora_fin": "2026-03-09T12:45:00",
+    "kilometraje_recorrido": 42.5,
+    "dinero_recaudado": 15.75,
+    "ubicaciones": [
+        {
+            "latitude": -0.180653,
+            "longitude": -78.467834,
+            "timestamp": "2026-03-09T08:30:00",
+            "speed": 0,
+            "accuracy": 10
+        },
+        {
+            "latitude": -0.185234,
+            "longitude": -78.472156,
+            "timestamp": "2026-03-09T09:00:00",
+            "speed": 35,
+            "accuracy": 8
+        },
+        {
+            "latitude": -0.192847,
+            "longitude": -78.479321,
+            "timestamp": "2026-03-09T10:15:00",
+            "speed": 42,
+            "accuracy": 12
+        },
+        {
+            "latitude": -0.198123,
+            "longitude": -78.485674,
+            "timestamp": "2026-03-09T12:45:00",
+            "speed": 0,
+            "accuracy": 9
+        }
+    ],
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+}
+
+response = requests.post(url, json=data)
+print(response.json())
+```
+
+```javascript JavaScript
+const routeData = {
+  id_usuario: 123,
+  id_campana: 45,
+  id_vehiculo: 78,
+  fecha_hora_inicio: "2026-03-09T08:30:00",
+  fecha_hora_fin: "2026-03-09T12:45:00",
+  kilometraje_recorrido: 42.5,
+  dinero_recaudado: 15.75,
+  ubicaciones: [
+    {
+      latitude: -0.180653,
+      longitude: -78.467834,
+      timestamp: "2026-03-09T08:30:00",
+      speed: 0,
+      accuracy: 10
+    },
+    {
+      latitude: -0.185234,
+      longitude: -78.472156,
+      timestamp: "2026-03-09T09:00:00",
+      speed: 35,
+      accuracy: 8
+    },
+    {
+      latitude: -0.192847,
+      longitude: -78.479321,
+      timestamp: "2026-03-09T10:15:00",
+      speed: 42,
+      accuracy: 12
+    },
+    {
+      latitude: -0.198123,
+      longitude: -78.485674,
+      timestamp: "2026-03-09T12:45:00",
+      speed: 0,
+      accuracy: 9
+    }
+  ],
+  id_ciudad: 1,
+  id_pais: 1,
+  estado: 1
+};
+
+fetch('https://api.example.com/api/recorridosrealizados', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(routeData)
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 - Success
+{
+  "id_recorrido": 1523,
+  "id_usuario": 123,
+  "id_campana": 45,
+  "id_vehiculo": 78,
+  "fecha_hora_inicio": "2026-03-09T08:30:00",
+  "fecha_hora_fin": "2026-03-09T12:45:00",
+  "kilometraje_recorrido": 42.5,
+  "dinero_recaudado": 15.75,
+  "ubicaciones": [
+    {
+      "latitude": -0.180653,
+      "longitude": -78.467834,
+      "timestamp": "2026-03-09T08:30:00",
+      "speed": 0,
+      "accuracy": 10
+    },
+    {
+      "latitude": -0.185234,
+      "longitude": -78.472156,
+      "timestamp": "2026-03-09T09:00:00",
+      "speed": 35,
+      "accuracy": 8
+    },
+    {
+      "latitude": -0.192847,
+      "longitude": -78.479321,
+      "timestamp": "2026-03-09T10:15:00",
+      "speed": 42,
+      "accuracy": 12
+    },
+    {
+      "latitude": -0.198123,
+      "longitude": -78.485674,
+      "timestamp": "2026-03-09T12:45:00",
+      "speed": 0,
+      "accuracy": 9
+    }
+  ],
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+
+```json 400 - Invalid Route Data
+{
+  "error": "Invalid route data",
+  "message": "fecha_hora_fin must be after fecha_hora_inicio"
+}
+```
+
+```json 400 - Insufficient Location Data
+{
+  "error": "Insufficient location data",
+  "message": "ubicaciones array must contain at least 2 GPS points"
+}
+```
+
+```json 403 - Outside Monetizable Hours
+{
+  "error": "Route outside monetizable hours",
+  "message": "This route falls outside the campaign's monetizable hours (09:00-18:00). Partial earnings may apply.",
+  "id_recorrido": 1524,
+  "dinero_recaudado": 8.50,
+  "estado": 2
+}
+```
+
+```json 404 - Campaign Not Found
+{
+  "error": "Campaign not found",
+  "message": "The specified campaign is not active or does not exist"
+}
+```
+</ResponseExample>
+
+## Route Tracking Workflow
+
+### 1. Start Route Tracking
+- Driver starts the route in mobile app
+- System captures initial GPS coordinates
+- Records `fecha_hora_inicio` timestamp
+- Begins periodic GPS sampling (every 30-60 seconds)
+
+### 2. Active Tracking
+- GPS coordinates collected continuously
+- Each location point stored in `ubicaciones` array
+- Real-time distance calculation using Haversine formula
+- Speed and accuracy metrics captured
+- Route validated against campaign sector boundaries
+
+### 3. End Route Tracking
+- Driver stops the route in mobile app
+- System captures final GPS coordinates
+- Records `fecha_hora_fin` timestamp
+- Calculates total `kilometraje_recorrido`
+- Computes `dinero_recaudado` based on campaign rates
+
+### 4. Earnings Calculation
+```
+Base Earnings = kilometraje × campaign.tarifa_base
+
+Time Factor = minutes_in_monetizable_hours / total_minutes
+
+Adjusted Earnings = Base Earnings × Time Factor
+
+Final Earnings = max(min(Adjusted Earnings, campaign.tarifa_max), campaign.tarifa_min)
+
+if Final Earnings < campaign.cobro_minimo:
+    Final Earnings = 0
+```
+
+### 5. Validation
+- Check if route is within campaign sector (geofencing)
+- Verify route during monetizable hours
+- Detect suspicious patterns (GPS spoofing, unusual speeds)
+- Confirm driver has passed recent verification
+- Status set based on validation results
+
+## GPS Location Object Structure
+
+```json
+{
+  "latitude": -0.180653,           // Required: Decimal degrees
+  "longitude": -78.467834,         // Required: Decimal degrees
+  "timestamp": "2026-03-09T08:30:00", // Required: ISO 8601 format
+  "speed": 35,                     // Optional: km/h
+  "accuracy": 10,                  // Optional: meters
+  "altitude": 2850,                // Optional: meters above sea level
+  "bearing": 180                   // Optional: degrees (0-360)
+}
+```
+
+## Monetizable Hours Example
+
+If campaign has:
+- `hora_monetizable_inicio`: "09:00"
+- `hora_monetizable_fin`: "18:00"
+- `tarifa_base`: 0.50 per km
+- `cobro_minimo`: 5.00
+
+Route from 08:30 to 12:45 (4h 15min = 255 minutes):
+- Minutes in monetizable hours: 09:00-12:45 = 225 minutes
+- Time factor: 225/255 = 0.882
+- Distance: 42.5 km
+- Base earnings: 42.5 × 0.50 = 21.25
+- Adjusted earnings: 21.25 × 0.882 = 18.74
+- Final earnings: 18.74 (above minimum)
+
+## Route Status Meanings
+
+- **Status 0 (Pending)**: 
+  - Route submitted, awaiting validation
+  - GPS data being analyzed
+  - Earnings not yet credited
+
+- **Status 1 (Approved)**:
+  - Route validated successfully
+  - Earnings credited to driver account
+  - Counts toward campaign metrics
+
+- **Status 2 (Rejected)**:
+  - Route outside campaign sector
+  - Outside monetizable hours
+  - GPS data quality issues
+  - No earnings awarded
+
+- **Status 3 (Under Review)**:
+  - Manual review required
+  - Suspicious patterns detected
+  - Admin decision pending
+  - Temporary earnings hold
+
+## Best Practices
+
+### For Mobile App Implementation
+- Sample GPS every 30-60 seconds while route active
+- Increase sampling frequency in high-traffic areas
+- Store locations locally and batch upload
+- Include timestamp with each GPS point
+- Validate location accuracy before adding to array
+- Handle GPS signal loss gracefully
+
+### For Distance Calculation
+- Use Haversine formula for accuracy
+- Filter out stationary points (speed < 5 km/h)
+- Detect and remove GPS outliers
+- Consider road network distance vs straight-line
+
+### For Earnings Optimization
+- Focus driving during monetizable hours
+- Stay within designated campaign sectors
+- Maintain consistent GPS signal
+- Ensure vehicle passes periodic verifications
+- Monitor daily earnings against campaign caps
+
+## Notes
+
+- Minimum 2 GPS points required, but 100+ recommended for accuracy
+- Routes longer than 8 hours may require administrative approval
+- GPS coordinates used for sector geofencing validation
+- Speed data helps detect fraudulent route submissions
+- Accuracy values help determine GPS reliability
+- Routes automatically expire if not submitted within 24 hours
+- Maximum route distance: 500km per submission
+- Daily earnings may be capped per campaign settings

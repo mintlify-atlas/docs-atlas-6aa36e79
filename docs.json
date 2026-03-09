@@ -1,122 +1,146 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "RestAPI",
+  "theme": "sequoia",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#2563eb",
+    "light": "#3b82f6",
+    "dark": "#1e40af"
   },
-  "favicon": "/favicon.svg",
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/jairordtgz/RestAPI"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/jairordtgz/RestAPI"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Get Started",
             "pages": [
-              "index",
+              "introduction",
               "quickstart",
-              "development"
+              "authentication"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Configuration",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "configuration/environment",
+              "configuration/database",
+              "configuration/cors"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Overview",
             "pages": [
-              "api-reference/introduction"
+              "api/overview"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Authentication & Users",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api/usuarios",
+              "api/rolusuarios"
+            ]
+          },
+          {
+            "group": "Campaigns",
+            "pages": [
+              "api/campaniaspublicitarias",
+              "api/sectores",
+              "api/publicidades"
+            ]
+          },
+          {
+            "group": "Companies & Advertisers",
+            "pages": [
+              "api/empresas",
+              "api/empresaimages",
+              "api/publicistas",
+              "api/empresaxpublicistas"
+            ]
+          },
+          {
+            "group": "Vehicles",
+            "pages": [
+              "api/vehiculos",
+              "api/marcasvehiculos",
+              "api/modelosvehiculos",
+              "api/vehiculosadmisiblescampana"
+            ]
+          },
+          {
+            "group": "Drivers & Clients",
+            "pages": [
+              "api/choferes",
+              "api/clientes"
+            ]
+          },
+          {
+            "group": "Campaign Operations",
+            "pages": [
+              "api/formularioregistrocampana",
+              "api/ingresoconductorcampana",
+              "api/verificacionesconductorcampana",
+              "api/recorridosrealizados"
+            ]
+          },
+          {
+            "group": "Financial",
+            "pages": [
+              "api/movimientocapital",
+              "api/entidadesbancarias"
+            ]
+          },
+          {
+            "group": "Workshops",
+            "pages": [
+              "api/tallerbrandeos",
+              "api/tallerxempresas"
+            ]
+          },
+          {
+            "group": "Location & System",
+            "pages": [
+              "api/paises",
+              "api/ciudades",
+              "api/estado",
+              "api/notificaciones"
+            ]
+          },
+          {
+            "group": "Permissions",
+            "pages": [
+              "api/menus",
+              "api/vistas",
+              "api/opciones",
+              "api/permisosxrol",
+              "api/detallepermisos"
+            ]
+          },
+          {
+            "group": "Utilities",
+            "pages": [
+              "api/email",
+              "api/notifications"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

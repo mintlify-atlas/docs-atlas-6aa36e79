@@ -1,0 +1,124 @@
+---
+title: 'Send Email'
+api: 'POST /send_email/'
+description: 'Send HTML templated emails via SMTP'
+---
+
+## Overview
+
+The Send Email endpoint allows you to send HTML-formatted emails using Django's email system. The endpoint supports custom HTML templates that are rendered with dynamic context variables before being sent to recipients.
+
+## Endpoint
+
+```
+POST /send_email/
+```
+
+## Request Body
+
+<ParamField body="subject" type="string" required>
+  The subject line of the email. This is used as context data when rendering templates.
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  The message content. For the 'correo' template, this is used as a verification code. For other templates, this is the main message body.
+</ParamField>
+
+<ParamField body="template" type="string" required>
+  The name of the HTML template to use (without .html extension). Common templates include:
+  - `correo` - Password recovery template with verification code
+  - Custom templates - Any template in the templates directory
+  
+  The template receives context variables `subject` and `message` for rendering.
+</ParamField>
+
+<ParamField body="recipient_list" type="array" required>
+  Array of recipient email addresses. Each element must be a valid email address.
+  
+  Example: `["user@example.com", "admin@example.com"]`
+</ParamField>
+
+## Response
+
+<ResponseField name="message" type="string">
+  Success message indicating the email was sent successfully.
+</ResponseField>
+
+## Email Configuration
+
+The endpoint uses the following SMTP configuration from `settings.py`:
+
+- **EMAIL_BACKEND**: `django.core.mail.backends.smtp.EmailBackend`
+- **EMAIL_HOST**: `mail.hangaroa.ec`
+- **EMAIL_PORT**: `587`
+- **EMAIL_USE_TLS**: `True`
+- **EMAIL_HOST_USER**: `migo@hangaroa.ec` (sender address)
+
+## Template Rendering
+
+The endpoint supports two template modes:
+
+### Password Recovery Template (`correo`)
+
+When using the `correo` template, the context includes:
+- `name`: Subject value
+- `code`: Message value (verification code)
+
+Email subject: "Migo Ads - Recuperación de contraseña"
+
+### Custom Templates
+
+For other templates, the context includes:
+- `subject`: Subject value
+- `message`: Message value
+
+Email subject: "Migo Ads - Email de ejemplo"
+
+## Example Request
+
+```bash
+curl -X POST https://api.example.com/send_email/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "subject": "Password Reset",
+    "message": "123456",
+    "template": "correo",
+    "recipient_list": ["user@example.com"]
+  }'
+```
+
+## Example Response
+
+```json
+{
+  "message": "Email sent successfully."
+}
+```
+
+## Error Responses
+
+<ResponseField name="error" type="object">
+  Validation errors for invalid request data.
+</ResponseField>
+
+### 400 Bad Request
+
+Returned when the request data fails validation:
+
+```json
+{
+  "subject": ["This field is required."],
+  "recipient_list": ["This field is required."]
+}
+```
+
+## Implementation Details
+
+- HTML content is rendered using Django's `render_to_string` function
+- Email content type is set to HTML via `email.content_subtype = "html"`
+- Templates are loaded from the templates directory configured in Django settings
+- The sender address is automatically set from `EMAIL_HOST_USER` in settings
+
+## Related Endpoints
+
+- [Send FCM Notification](/api/notifications) - Send push notifications via Firebase

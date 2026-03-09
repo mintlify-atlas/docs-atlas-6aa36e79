@@ -1,0 +1,298 @@
+---
+title: 'Vehiculos Admisibles Campana'
+api: 'GET/POST /api/vehiculosadmisiblescampana'
+---
+
+# Vehiculos Admisibles Campana API
+
+Manage the relationship between vehicles and advertising campaigns. This table tracks which vehicles are eligible/admitted for specific campaigns.
+
+## Vehicle-Campaign Relationship Object
+
+<ResponseField name="id" type="integer" required>
+  Unique identifier for the relationship (auto-generated primary key)
+</ResponseField>
+
+<ResponseField name="id_vehiculo" type="integer" required>
+  Foreign key reference to Vehiculo (the eligible vehicle)
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer" required>
+  Foreign key reference to CampanaPublicitaria (the advertising campaign)
+</ResponseField>
+
+## GET /api/vehiculosadmisiblescampana
+
+Retrieve all vehicle-campaign eligibility relationships.
+
+### Query Parameters
+
+<ParamField query="id_vehiculo" type="integer">
+  Filter by vehicle ID to see all campaigns a vehicle is eligible for
+</ParamField>
+
+<ParamField query="id_campana" type="integer">
+  Filter by campaign ID to see all vehicles eligible for a campaign
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+[
+  {
+    "id": 1,
+    "id_vehiculo": 5,
+    "id_campana": 12
+  },
+  {
+    "id": 2,
+    "id_vehiculo": 8,
+    "id_campana": 12
+  },
+  {
+    "id": 3,
+    "id_vehiculo": 5,
+    "id_campana": 15
+  }
+]
+```
+</ResponseExample>
+
+## GET /api/vehiculosadmisiblescampana/campana/{id_campana}
+
+Retrieve all vehicles eligible for a specific campaign with full vehicle details.
+
+### Path Parameters
+
+<ParamField path="id_campana" type="integer" required>
+  The ID of the advertising campaign
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+[
+  {
+    "id": 1,
+    "id_vehiculo": 5,
+    "id_campana": 12,
+    "vehiculo": {
+      "id_vehiculo": 5,
+      "placa": "ABC1234",
+      "id_marca": 1,
+      "id_modelo": 3,
+      "anio": 2022,
+      "categoria_vehiculo": "sedan",
+      "color_vehiculo": "Negro",
+      "estado": 1
+    }
+  },
+  {
+    "id": 2,
+    "id_vehiculo": 8,
+    "id_campana": 12,
+    "vehiculo": {
+      "id_vehiculo": 8,
+      "placa": "XYZ5678",
+      "id_marca": 2,
+      "id_modelo": 7,
+      "anio": 2021,
+      "categoria_vehiculo": "suv",
+      "color_vehiculo": "Blanco",
+      "estado": 1
+    }
+  }
+]
+```
+</ResponseExample>
+
+## GET /api/vehiculosadmisiblescampana/vehiculo/{id_vehiculo}
+
+Retrieve all campaigns that a specific vehicle is eligible for.
+
+### Path Parameters
+
+<ParamField path="id_vehiculo" type="integer" required>
+  The ID of the vehicle
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+[
+  {
+    "id": 1,
+    "id_vehiculo": 5,
+    "id_campana": 12,
+    "campana": {
+      "id_campana": 12,
+      "nombre_campana": "Summer 2024",
+      "fecha_inicio": "2024-06-01",
+      "fecha_fin": "2024-08-31",
+      "presupuesto": 50000.00,
+      "sedan_admisible": true,
+      "suv_admisible": true,
+      "camion_admisible": false,
+      "camioneta_admisible": false,
+      "bus_admisible": false
+    }
+  },
+  {
+    "id": 3,
+    "id_vehiculo": 5,
+    "id_campana": 15,
+    "campana": {
+      "id_campana": 15,
+      "nombre_campana": "Winter Sale",
+      "fecha_inicio": "2024-12-01",
+      "fecha_fin": "2025-02-28",
+      "presupuesto": 75000.00,
+      "sedan_admisible": true,
+      "suv_admisible": false,
+      "camion_admisible": false,
+      "camioneta_admisible": false,
+      "bus_admisible": false
+    }
+  }
+]
+```
+</ResponseExample>
+
+## POST /api/vehiculosadmisiblescampana
+
+Add a vehicle to a campaign's eligible vehicles list.
+
+### Request Body
+
+<ParamField body="id_vehiculo" type="integer" required>
+  ID of the vehicle to make eligible
+</ParamField>
+
+<ParamField body="id_campana" type="integer" required>
+  ID of the campaign
+</ParamField>
+
+### Request Example
+
+```json
+{
+  "id_vehiculo": 5,
+  "id_campana": 12
+}
+```
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "id": 1,
+  "id_vehiculo": 5,
+  "id_campana": 12,
+  "message": "Vehicle successfully added to campaign"
+}
+```
+</ResponseExample>
+
+## DELETE /api/vehiculosadmisiblescampana/{id}
+
+Remove a vehicle from a campaign's eligible vehicles list.
+
+### Path Parameters
+
+<ParamField path="id" type="integer" required>
+  The ID of the vehicle-campaign relationship to delete
+</ParamField>
+
+### Response
+
+<ResponseExample>
+```json
+{
+  "message": "Vehicle removed from campaign eligibility"
+}
+```
+</ResponseExample>
+
+## Campaign Vehicle Eligibility Rules
+
+Campaigns define which vehicle categories are eligible through boolean flags:
+
+<ResponseField name="sedan_admisible" type="boolean">
+  Whether sedans are eligible for the campaign
+</ResponseField>
+
+<ResponseField name="suv_admisible" type="boolean">
+  Whether SUVs are eligible for the campaign
+</ResponseField>
+
+<ResponseField name="camion_admisible" type="boolean">
+  Whether trucks (camion) are eligible for the campaign
+</ResponseField>
+
+<ResponseField name="camioneta_admisible" type="boolean">
+  Whether pickup trucks are eligible for the campaign
+</ResponseField>
+
+<ResponseField name="bus_admisible" type="boolean">
+  Whether buses are eligible for the campaign
+</ResponseField>
+
+### Eligibility Check Example
+
+Before adding a vehicle to a campaign, verify that the vehicle's category matches the campaign's admissible types:
+
+```json
+{
+  "vehiculo": {
+    "categoria_vehiculo": "sedan"
+  },
+  "campana": {
+    "sedan_admisible": true,
+    "suv_admisible": false,
+    "camion_admisible": false,
+    "camioneta_admisible": false,
+    "bus_admisible": false
+  },
+  "eligible": true
+}
+```
+
+## Use Cases
+
+### 1. Register Vehicle for Campaign
+
+When a driver wants to participate in a campaign, create a relationship between their vehicle and the campaign:
+
+```bash
+POST /api/vehiculosadmisiblescampana
+{
+  "id_vehiculo": 5,
+  "id_campana": 12
+}
+```
+
+### 2. List All Available Vehicles for Campaign
+
+Get all vehicles that can participate in a specific campaign:
+
+```bash
+GET /api/vehiculosadmisiblescampana/campana/12
+```
+
+### 3. Check Driver's Active Campaigns
+
+Find all campaigns a driver's vehicle is enrolled in:
+
+```bash
+GET /api/vehiculosadmisiblescampana/vehiculo/5
+```
+
+## Related Endpoints
+
+- [Vehiculos](/api/vehiculos) - Vehicle information and categories
+- [CampanaPublicitaria](/api/campanapublicitaria) - Advertising campaign details
+- [IngresoConductorCampana](/api/ingresoconductorcampana) - Driver campaign registration

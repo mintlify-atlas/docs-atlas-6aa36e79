@@ -1,0 +1,486 @@
+---
+title: "MovimientoCapital"
+description: "API endpoints for managing financial capital movements and transactions in advertising campaigns"
+---
+
+## Overview
+
+The MovimientoCapital API manages financial transactions for advertising campaigns, tracking deposits, withdrawals, and accumulated balances for clients participating in campaigns.
+
+## The MovimientoCapital Object
+
+<ResponseField name="id_saldo" type="integer" required>
+  Unique identifier for the capital movement transaction
+</ResponseField>
+
+<ResponseField name="id_campana" type="integer" required>
+  Foreign key reference to the advertising campaign (CampanaPublicitaria)
+</ResponseField>
+
+<ResponseField name="tipo_transaccion" type="integer" required>
+  Transaction type identifier:
+  - `1` - Deposit/Credit
+  - `2` - Withdrawal/Debit
+  - `3` - Refund
+  - `4` - Adjustment
+</ResponseField>
+
+<ResponseField name="descripcion" type="string" required>
+  Brief description of the transaction (max 10 characters)
+</ResponseField>
+
+<ResponseField name="id_cliente" type="integer" required>
+  Foreign key reference to the client making the transaction
+</ResponseField>
+
+<ResponseField name="fecha_transaccion" type="date" required>
+  Date when the transaction occurred (YYYY-MM-DD format)
+</ResponseField>
+
+<ResponseField name="monto_transaccion" type="float" required>
+  Transaction amount in USD
+</ResponseField>
+
+<ResponseField name="saldo_acumulado" type="float" required>
+  Cumulative balance after this transaction
+</ResponseField>
+
+<ResponseField name="id_ciudad" type="integer" required>
+  Foreign key reference to the city where the transaction was processed
+</ResponseField>
+
+<ResponseField name="id_pais" type="integer" required>
+  Foreign key reference to the country where the transaction was processed
+</ResponseField>
+
+<ResponseField name="estado" type="integer" required>
+  Transaction status:
+  - `0` - Cancelled
+  - `1` - Active/Completed
+  - `2` - Pending
+  - `3` - Failed
+</ResponseField>
+
+## Create Capital Movement
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.restapi.com/movimiento-capital \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "id_campana": 15,
+    "tipo_transaccion": 1,
+    "descripcion": "Deposit",
+    "id_cliente": 42,
+    "fecha_transaccion": "2026-03-09",
+    "monto_transaccion": 1500.00,
+    "saldo_acumulado": 1500.00,
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/movimiento-capital"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+data = {
+    "id_campana": 15,
+    "tipo_transaccion": 1,
+    "descripcion": "Deposit",
+    "id_cliente": 42,
+    "fecha_transaccion": "2026-03-09",
+    "monto_transaccion": 1500.00,
+    "saldo_acumulado": 1500.00,
+    "id_ciudad": 1,
+    "id_pais": 1,
+    "estado": 1
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/movimiento-capital', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    id_campana: 15,
+    tipo_transaccion: 1,
+    descripcion: 'Deposit',
+    id_cliente: 42,
+    fecha_transaccion: '2026-03-09',
+    monto_transaccion: 1500.00,
+    saldo_acumulado: 1500.00,
+    id_ciudad: 1,
+    id_pais: 1,
+    estado: 1
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_saldo": 123,
+  "id_campana": 15,
+  "tipo_transaccion": 1,
+  "descripcion": "Deposit",
+  "id_cliente": 42,
+  "fecha_transaccion": "2026-03-09",
+  "monto_transaccion": 1500.00,
+  "saldo_acumulado": 1500.00,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+</ResponseExample>
+
+<ParamField body="id_campana" type="integer" required>
+  Campaign ID for which the transaction is being recorded
+</ParamField>
+
+<ParamField body="tipo_transaccion" type="integer" required>
+  Type of transaction (1: Deposit, 2: Withdrawal, 3: Refund, 4: Adjustment)
+</ParamField>
+
+<ParamField body="descripcion" type="string" required>
+  Short description of the transaction (max 10 characters)
+</ParamField>
+
+<ParamField body="id_cliente" type="integer" required>
+  Client ID associated with this transaction
+</ParamField>
+
+<ParamField body="fecha_transaccion" type="date" required>
+  Transaction date in YYYY-MM-DD format
+</ParamField>
+
+<ParamField body="monto_transaccion" type="float" required>
+  Transaction amount (positive for deposits, negative for withdrawals)
+</ParamField>
+
+<ParamField body="saldo_acumulado" type="float" required>
+  Running balance after applying this transaction
+</ParamField>
+
+<ParamField body="id_ciudad" type="integer" required>
+  City ID where the transaction occurred
+</ParamField>
+
+<ParamField body="id_pais" type="integer" required>
+  Country ID where the transaction occurred
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Transaction status (0: Cancelled, 1: Active, 2: Pending, 3: Failed)
+</ParamField>
+
+## Get Capital Movement
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.restapi.com/movimiento-capital/123 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/movimiento-capital/123"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/movimiento-capital/123', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_saldo": 123,
+  "id_campana": 15,
+  "tipo_transaccion": 1,
+  "descripcion": "Deposit",
+  "id_cliente": 42,
+  "fecha_transaccion": "2026-03-09",
+  "monto_transaccion": 1500.00,
+  "saldo_acumulado": 1500.00,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## List Capital Movements
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.restapi.com/movimiento-capital?id_campana=15&limit=50 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/movimiento-capital"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+params = {"id_campana": 15, "limit": 50}
+
+response = requests.get(url, headers=headers, params=params)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/movimiento-capital?id_campana=15&limit=50', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "data": [
+    {
+      "id_saldo": 123,
+      "id_campana": 15,
+      "tipo_transaccion": 1,
+      "descripcion": "Deposit",
+      "id_cliente": 42,
+      "fecha_transaccion": "2026-03-09",
+      "monto_transaccion": 1500.00,
+      "saldo_acumulado": 1500.00,
+      "id_ciudad": 1,
+      "id_pais": 1,
+      "estado": 1
+    },
+    {
+      "id_saldo": 124,
+      "id_campana": 15,
+      "tipo_transaccion": 2,
+      "descripcion": "Withdrawal",
+      "id_cliente": 42,
+      "fecha_transaccion": "2026-03-10",
+      "monto_transaccion": -500.00,
+      "saldo_acumulado": 1000.00,
+      "id_ciudad": 1,
+      "id_pais": 1,
+      "estado": 1
+    }
+  ],
+  "total": 2,
+  "page": 1,
+  "limit": 50
+}
+```
+</ResponseExample>
+
+<ParamField query="id_campana" type="integer">
+  Filter transactions by campaign ID
+</ParamField>
+
+<ParamField query="id_cliente" type="integer">
+  Filter transactions by client ID
+</ParamField>
+
+<ParamField query="tipo_transaccion" type="integer">
+  Filter by transaction type
+</ParamField>
+
+<ParamField query="fecha_inicio" type="date">
+  Filter transactions from this date onwards (YYYY-MM-DD)
+</ParamField>
+
+<ParamField query="fecha_fin" type="date">
+  Filter transactions up to this date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField query="limit" type="integer" default="20">
+  Number of records to return per page
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination
+</ParamField>
+
+## Update Capital Movement
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://api.restapi.com/movimiento-capital/123 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "descripcion": "Updated",
+    "estado": 1
+  }'
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/movimiento-capital/123"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+data = {
+    "descripcion": "Updated",
+    "estado": 1
+}
+
+response = requests.put(url, json=data, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/movimiento-capital/123', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    descripcion: 'Updated',
+    estado: 1
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_saldo": 123,
+  "id_campana": 15,
+  "tipo_transaccion": 1,
+  "descripcion": "Updated",
+  "id_cliente": 42,
+  "fecha_transaccion": "2026-03-09",
+  "monto_transaccion": 1500.00,
+  "saldo_acumulado": 1500.00,
+  "id_ciudad": 1,
+  "id_pais": 1,
+  "estado": 1
+}
+```
+</ResponseExample>
+
+## Delete Capital Movement
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://api.restapi.com/movimiento-capital/123 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/movimiento-capital/123"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+response = requests.delete(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/movimiento-capital/123', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "message": "Capital movement deleted successfully",
+  "id_saldo": 123
+}
+```
+</ResponseExample>
+
+## Get Campaign Balance
+
+Retrieve the current accumulated balance for a specific campaign.
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.restapi.com/movimiento-capital/campana/15/balance \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = "https://api.restapi.com/movimiento-capital/campana/15/balance"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://api.restapi.com/movimiento-capital/campana/15/balance', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id_campana": 15,
+  "saldo_actual": 3750.50,
+  "total_depositos": 5000.00,
+  "total_retiros": 1249.50,
+  "total_transacciones": 8,
+  "ultima_transaccion": "2026-03-09"
+}
+```
+</ResponseExample>

@@ -1,0 +1,345 @@
+---
+title: 'Vistas'
+api: 'GET /api/vistas'
+---
+
+# Vistas API
+
+The Vistas (Views) endpoint manages view-level entries in the hierarchical permission system. Vistas belong to Menus and contain multiple Opciones (action options).
+
+## Hierarchy
+
+```
+Menu (Top Level)
+ └── Vista (Views within menu) ← Current Level
+     └── Opciones (Actions within view)
+```
+
+## Model Structure
+
+The Vista model represents the middle level of the permission hierarchy, connecting Menus to specific actions (Opciones).
+
+### Fields
+
+<ParamField path="id_vista" type="integer" required>
+  Auto-incremented primary key identifying the vista
+</ParamField>
+
+<ParamField path="id_menu" type="integer" required>
+  Foreign key reference to the parent Menu
+</ParamField>
+
+<ParamField path="nombre_vista" type="string" required>
+  Name of the vista (max 40 characters)
+</ParamField>
+
+<ParamField path="descripcion" type="string">
+  Description of the vista's purpose (max 40 characters)
+</ParamField>
+
+<ParamField path="estado" type="integer" required>
+  Status of the vista
+  - `0`: Inactive
+  - `1`: Active
+</ParamField>
+
+## Endpoints
+
+### List All Vistas
+
+```http
+GET /api/vistas/
+```
+
+Retrieve all vistas in the system.
+
+#### Query Parameters
+
+<ParamField query="id_menu" type="integer">
+  Filter vistas by menu ID
+</ParamField>
+
+<ParamField query="estado" type="integer">
+  Filter by status (0: Inactive, 1: Active)
+</ParamField>
+
+#### Response
+
+<ResponseField name="results" type="array">
+  <ResponseField name="id_vista" type="integer">
+    Unique identifier for the vista
+  </ResponseField>
+  <ResponseField name="id_menu" type="integer">
+    Parent menu ID
+  </ResponseField>
+  <ResponseField name="nombre_vista" type="string">
+    Vista name
+  </ResponseField>
+  <ResponseField name="descripcion" type="string">
+    Vista description
+  </ResponseField>
+  <ResponseField name="estado" type="integer">
+    Vista status
+  </ResponseField>
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "results": [
+    {
+      "id_vista": 1,
+      "id_menu": 1,
+      "nombre_vista": "Panel Principal",
+      "descripcion": "Main dashboard view",
+      "estado": 1
+    },
+    {
+      "id_vista": 2,
+      "id_menu": 2,
+      "nombre_vista": "Gestión de Campañas",
+      "descripcion": "Campaign management view",
+      "estado": 1
+    },
+    {
+      "id_vista": 3,
+      "id_menu": 2,
+      "nombre_vista": "Estadísticas de Campañas",
+      "descripcion": "Campaign statistics view",
+      "estado": 1
+    }
+  ]
+}
+```
+
+### Get Vista by ID
+
+```http
+GET /api/vistas/{id_vista}/
+```
+
+Retrieve details of a specific vista.
+
+#### Path Parameters
+
+<ParamField path="id_vista" type="integer" required>
+  The unique identifier of the vista
+</ParamField>
+
+#### Response
+
+<ResponseField name="id_vista" type="integer">
+  Unique identifier for the vista
+</ResponseField>
+
+<ResponseField name="id_menu" type="integer">
+  Parent menu ID
+</ResponseField>
+
+<ResponseField name="nombre_vista" type="string">
+  Vista name
+</ResponseField>
+
+<ResponseField name="descripcion" type="string">
+  Vista description
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Vista status
+</ResponseField>
+
+#### Example Response
+
+```json
+{
+  "id_vista": 1,
+  "id_menu": 1,
+  "nombre_vista": "Panel Principal",
+  "descripcion": "Main dashboard view",
+  "estado": 1
+}
+```
+
+### Get Vistas by Menu
+
+```http
+GET /api/vistas/?id_menu={id_menu}
+```
+
+Retrieve all vistas belonging to a specific menu.
+
+#### Example Response
+
+```json
+{
+  "results": [
+    {
+      "id_vista": 2,
+      "id_menu": 2,
+      "nombre_vista": "Gestión de Campañas",
+      "descripcion": "Campaign management view",
+      "estado": 1
+    },
+    {
+      "id_vista": 3,
+      "id_menu": 2,
+      "nombre_vista": "Estadísticas de Campañas",
+      "descripcion": "Campaign statistics view",
+      "estado": 1
+    }
+  ]
+}
+```
+
+### Create Vista
+
+```http
+POST /api/vistas/
+```
+
+Create a new vista within a menu.
+
+#### Request Body
+
+<ParamField body="id_menu" type="integer" required>
+  The ID of the parent menu
+</ParamField>
+
+<ParamField body="nombre_vista" type="string" required>
+  Name of the vista (max 40 characters)
+</ParamField>
+
+<ParamField body="descripcion" type="string">
+  Description of the vista (max 40 characters)
+</ParamField>
+
+<ParamField body="estado" type="integer" required>
+  Status of the vista (0: Inactive, 1: Active)
+</ParamField>
+
+#### Example Request
+
+```json
+{
+  "id_menu": 2,
+  "nombre_vista": "Crear Campaña",
+  "descripcion": "Create new campaign view",
+  "estado": 1
+}
+```
+
+#### Response
+
+<ResponseField name="id_vista" type="integer">
+  The ID of the newly created vista
+</ResponseField>
+
+<ResponseField name="id_menu" type="integer">
+  Parent menu ID
+</ResponseField>
+
+<ResponseField name="nombre_vista" type="string">
+  Vista name
+</ResponseField>
+
+<ResponseField name="descripcion" type="string">
+  Vista description
+</ResponseField>
+
+<ResponseField name="estado" type="integer">
+  Vista status
+</ResponseField>
+
+### Update Vista
+
+```http
+PUT /api/vistas/{id_vista}/
+PATCH /api/vistas/{id_vista}/
+```
+
+Update an existing vista. Use PUT for full updates or PATCH for partial updates.
+
+#### Path Parameters
+
+<ParamField path="id_vista" type="integer" required>
+  The unique identifier of the vista to update
+</ParamField>
+
+#### Request Body
+
+<ParamField body="id_menu" type="integer">
+  Updated parent menu ID
+</ParamField>
+
+<ParamField body="nombre_vista" type="string">
+  Updated vista name
+</ParamField>
+
+<ParamField body="descripcion" type="string">
+  Updated description
+</ParamField>
+
+<ParamField body="estado" type="integer">
+  Updated status
+</ParamField>
+
+### Delete Vista
+
+```http
+DELETE /api/vistas/{id_vista}/
+```
+
+Delete a vista from the system. Note: This will cascade delete all associated Opciones.
+
+#### Path Parameters
+
+<ParamField path="id_vista" type="integer" required>
+  The unique identifier of the vista to delete
+</ParamField>
+
+## Hierarchy Example
+
+Here's how Vistas fit into the permission hierarchy:
+
+```json
+{
+  "menu": {
+    "id_menu": 2,
+    "nombre_menu": "Campañas",
+    "vistas": [
+      {
+        "id_vista": 2,
+        "nombre_vista": "Gestión de Campañas",
+        "opciones": [
+          {"id_opcion": 1, "nombre_vista": "Crear"},
+          {"id_opcion": 2, "nombre_vista": "Editar"},
+          {"id_opcion": 3, "nombre_vista": "Eliminar"}
+        ]
+      },
+      {
+        "id_vista": 3,
+        "nombre_vista": "Estadísticas de Campañas",
+        "opciones": [
+          {"id_opcion": 4, "nombre_vista": "Ver Reportes"},
+          {"id_opcion": 5, "nombre_vista": "Exportar Datos"}
+        ]
+      }
+    ]
+  }
+}
+```
+
+## Related Endpoints
+
+- [Menus](/api/menus) - Parent menus containing vistas
+- [Opciones](/api/opciones) - Actions within vistas
+- [PermisosXRol](/api/permisosxrol) - Role-based permissions linking to vistas
+
+## Usage Notes
+
+- Vistas must belong to a valid Menu (id_menu foreign key)
+- Each vista can contain multiple Opciones (action options)
+- Deleting a vista will cascade delete all associated Opciones
+- Set estado to 0 to disable rather than deleting
+- Use PermisosXRol to control which roles can access specific vistas
