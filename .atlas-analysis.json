@@ -1,0 +1,165 @@
+{
+  "projectType": "api-service",
+  "projectName": "RestAPI",
+  "projectDescription": "Django REST API service for managing vehicle-based advertising campaigns with comprehensive campaign, vehicle, and user management",
+  "theme": "sequoia",
+  "primaryColor": "#2563eb",
+  "lightColor": "#3b82f6",
+  "darkColor": "#1e40af",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "authentication"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/environment",
+              "configuration/database",
+              "configuration/cors"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api/overview"
+            ]
+          },
+          {
+            "group": "Authentication & Users",
+            "pages": [
+              "api/usuarios",
+              "api/rolusuarios"
+            ]
+          },
+          {
+            "group": "Campaigns",
+            "pages": [
+              "api/campaniaspublicitarias",
+              "api/sectores",
+              "api/publicidades"
+            ]
+          },
+          {
+            "group": "Companies & Advertisers",
+            "pages": [
+              "api/empresas",
+              "api/empresaimages",
+              "api/publicistas",
+              "api/empresaxpublicistas"
+            ]
+          },
+          {
+            "group": "Vehicles",
+            "pages": [
+              "api/vehiculos",
+              "api/marcasvehiculos",
+              "api/modelosvehiculos",
+              "api/vehiculosadmisiblescampana"
+            ]
+          },
+          {
+            "group": "Drivers & Clients",
+            "pages": [
+              "api/choferes",
+              "api/clientes"
+            ]
+          },
+          {
+            "group": "Campaign Operations",
+            "pages": [
+              "api/formularioregistrocampana",
+              "api/ingresoconductorcampana",
+              "api/verificacionesconductorcampana",
+              "api/recorridosrealizados"
+            ]
+          },
+          {
+            "group": "Financial",
+            "pages": [
+              "api/movimientocapital",
+              "api/entidadesbancarias"
+            ]
+          },
+          {
+            "group": "Workshops",
+            "pages": [
+              "api/tallerbrandeos",
+              "api/tallerxempresas"
+            ]
+          },
+          {
+            "group": "Location & System",
+            "pages": [
+              "api/paises",
+              "api/ciudades",
+              "api/estado",
+              "api/notificaciones"
+            ]
+          },
+          {
+            "group": "Permissions",
+            "pages": [
+              "api/menus",
+              "api/vistas",
+              "api/opciones",
+              "api/permisosxrol",
+              "api/detallepermisos"
+            ]
+          },
+          {
+            "group": "Utilities",
+            "pages": [
+              "api/email",
+              "api/notifications"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "JWT authentication with 8-hour access tokens",
+    "Comprehensive campaign management system",
+    "Vehicle tracking and geofencing with JSON fields",
+    "Multi-role user system (admin, advertiser, company)",
+    "Firebase Cloud Messaging integration",
+    "Email notifications with HTML templates",
+    "PostgreSQL database with Django ORM",
+    "RESTful API with Django REST Framework",
+    "Image upload handling for vehicles and companies",
+    "Financial transaction tracking",
+    "Workshop and branding management",
+    "Geographic sector-based advertising zones",
+    "Role-based permission system"
+  ],
+  "publicApiSurface": [
+    "GET/POST/PUT/DELETE /Database/Database/usuarios/",
+    "GET/POST/PUT/DELETE /Database/Database/campaniaspublicitarias/",
+    "GET/POST/PUT/DELETE /Database/Database/empresas/",
+    "GET/POST/PUT/DELETE /Database/Database/vehiculos/",
+    "GET/POST/PUT/DELETE /Database/Database/choferes/",
+    "GET/POST/PUT/DELETE /Database/Database/clientes/",
+    "GET/POST/PUT/DELETE /Database/Database/sectores/",
+    "GET/POST/PUT/DELETE /Database/Database/recorridosrealizados/",
+    "GET/POST/PUT/DELETE /Database/Database/formularioregistrocampana/",
+    "GET/POST/PUT/DELETE /Database/Database/movimientocapital/",
+    "POST /Database/send_email/",
+    "POST /Database/send_fcm_notification/",
+    "GET /Database/sectores_por_usuario/<int:usuario_id>/",
+    "GET /Database/empresas_list/<int:usuario_id>/"
+  ]
+}
